@@ -1,0 +1,15 @@
+/*===============================
+    デコレーションmixin
+===============================*/
+@use "./variable" as *;
+@use "./_font" as *;
+@use "./svg" as *;
+/*=========================================
+上部H3
+-----------------------------------------*/
+@mixin decorationHeadH3 {
+    background-color: #e6e6e6;
+    padding: 0.6em 1.4em;
+    border-top-left-radius: 1.2rem;
+    border-top-right-radius: 1.2rem;
+}

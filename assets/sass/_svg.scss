@@ -1,0 +1,8 @@
+// 宿名アイコン
+@mixin svg-iconShopHead($color) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="none"><path d="M25.61,4.39c-5.86-5.86-15.36-5.86-21.21,0-5.86,5.86-5.86,15.36,0,21.21s15.36,5.86,21.21,0c2.81-2.81,4.39-6.63,4.39-10.61,0-3.98-1.58-7.8-4.39-10.61ZM15.09,6.91h0c3.39,0,6.14,2.75,6.13,6.14,0,3.39-2.75,6.14-6.14,6.13-3.39,0-6.13-2.75-6.13-6.14,0-3.39,2.75-6.14,6.14-6.14ZM14.99,29.67h0c-2.91,0-5.76-.88-8.17-2.52.42-4.24,4.04-7.45,8.31-7.34,4.19-.1,7.78,3,8.29,7.16-2.46,1.76-5.41,2.71-8.43,2.7Z" fill="%23#{$color}"/></svg>');
+    aspect-ratio: 1;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+}
