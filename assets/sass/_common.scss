@@ -110,12 +110,12 @@ input[type="email"] {
         color: #a8a8a8;
     }
     &:focus {
-        border-color: $activeBlue;
+        // border-color: $activeBlue;
         transition: 0.3s ease-out;
         color: $BaseBlack;
     }
     &:hover {
-        border-color: $activeBlue;
+        // border-color: $activeBlue;
         transition: 0.3s ease-out;
     }
 }
@@ -145,11 +145,6 @@ main {
     transition: 0.1s ease-out;
     @media (max-width: 1024px) {
         padding: 2vw;
-    }
-    @each $menuCategory, $menuColor in $menuSelectColor {
-        &.#{$menuCategory} {
-            background-color: $menuColor;
-        }
     }
 }
 
@@ -214,14 +209,6 @@ header {
             border: solid 2px #292929;
             background-color: $BaseWhite;
             border-radius: 50%;
-            &::before {
-                content: "";
-                width: 100%;
-                @include svg-iconPlus("292929");
-                aspect-ratio: 1;
-                background-size: 60%;
-                transform: rotate(45deg);
-            }
         }
     }
 }

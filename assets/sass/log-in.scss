@@ -11,7 +11,7 @@ body {
     grid-template-rows: unset;
     place-items: center;
     padding: 1.2rem;
-    background-color: #f5f4ef;
+    background-color: #ffeed4;
     main {
         box-shadow: unset;
         align-self: stretch;
@@ -47,42 +47,6 @@ body {
                 margin: auto;
                 font-size: 1em;
                 width: 65%;
-            }
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.8em 0;
-            .wrap_input {
-                font-size: 1em;
-                position: relative;
-                input[type="text"],
-                input[type="password"] {
-                    font-size: FZ(16);
-                    width: 20em;
-                    height: 4rem;
-                }
-                h2 {
-                    position: absolute;
-                    right: calc(100% + 0.8em);
-                    top: 50%;
-                    translate: 0 -50%;
-                    font-size: FZ(16);
-                    font-weight: 700;
-                    width: max-content;
-                }
-            }
-            .check {
-                @include radioCheckSquareText;
-                font-size: 1em;
-                margin-top: 2em;
-            }
-            button {
-                @include btnBlue;
-                width: 15em;
-                height: 2.5em;
-                margin-top: 1em;
             }
         }
     }
