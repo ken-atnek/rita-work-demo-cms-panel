@@ -1,0 +1,211 @@
+@use "./_variable" as *;
+@use "./_font" as *;
+@use "./svg" as *;
+body {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased; //アンチエイリアス設定
+    -moz-osx-font-smoothing: grayscale; //アンチエイリアス設定
+    color: $BaseBlack;
+    display: grid;
+    grid-template-columns: 11em 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: stretch;
+    z-index: 1;
+    @include SunSerif;
+    // font-feature-settings: "palt";
+    font-size: clamp(1.2rem, calc($base-vw * 1vw) + calc($slice * 1px), 1.6rem);
+    // user-select: none; //USER選択禁止
+    @include tb {
+        font-size: 1.4vw;
+    }
+    @include sp {
+        font-size: 3.6vw;
+    }
+    // 画像右クリック・ドラッグ禁止
+    img {
+        width: 100%;
+        user-drag: none;
+        -webkit-user-drag: none;
+        -moz-user-select: none;
+        pointer-events: none;
+    }
+    // PCサイトTELリンク非アクティブ
+    @media (min-width: 768px) {
+        a[href*="tel:"] {
+            pointer-events: none;
+            cursor: default;
+            text-decoration: none;
+        }
+    }
+    br {
+        &.pc {
+            @include sp {
+                display: none;
+            }
+        }
+        &.sp {
+            display: none;
+            @include sp {
+                display: inline;
+            }
+        }
+    }
+}
+/*==========================================================
+	共通
+==========================================================*/
+main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    width: 100%;
+}
+section,
+article {
+    width: stretch;
+    position: relative;
+    font-size: 1em;
+}
+form {
+    position: relative;
+    width: 100%;
+    font-size: 1em;
+}
+/*================================
+入力フォーム
+--------------------------------*/
+// 入力タグ初期化
+input,
+select,
+textarea {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+// 入力フォームデフォルト装飾
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: stretch;
+    flex-grow: 1;
+    font-size: 1.6rem;
+    padding-inline: 0.8em;
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.8rem;
+    letter-spacing: 0.04em;
+    border: 1px solid #e2e0db;
+    transition: 0.2s ease-out;
+    &::placeholder {
+        color: #a8a8a8;
+    }
+    &:focus {
+        border: 1px solid $hover-blue;
+    }
+    &:active {
+        border: 1px solid $hover-blue;
+        background-color: #e6edf7;
+    }
+    &:hover {
+        border: 1px solid $hover-blue;
+        transition: 0.3s ease-out;
+    }
+}
+input[type="date"] {
+    background-color: #fff;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+    background-color: #fff;
+}
+svg {
+    fill: transparent;
+    stroke: transparent;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size: inherit;
+}
+
+/*==========================================
+    header(ヘッダー)
+------------------------------------------*/
+header {
+    position: relative;
+}
+/*==========================================================
+    モーダルウィンドウ
+==========================================================*/
+.block_modal {
+    position: fixed !important;
+    flex-direction: column;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    background-color: rgba(#101010, 0.8);
+    padding: 2vh 8vw;
+    color: $BaseWhite;
+    transition: 0.5s ease-out 0.5s;
+    opacity: 0;
+    z-index: -1;
+    transform: translateX(-100vw);
+    &__inner {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        max-width: 80rem;
+        gap: 1em 0;
+        font-size: 1em;
+        width: 100%;
+        padding: 1em 2em;
+        background-color: $BaseWhite;
+        .title {
+            margin-bottom: 1em;
+            text-align: center;
+            font-size: FZ(42);
+            color: $BaseBlack;
+        }
+        button {
+            position: absolute;
+            bottom: calc(100% - 0.8em);
+            left: calc(100% - 0.8em);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: FZ(28);
+            width: 2em;
+            aspect-ratio: 1;
+            color: $BaseWhite;
+            justify-content: center;
+            border: solid 2px #292929;
+            background-color: $BaseWhite;
+            border-radius: 50%;
+        }
+    }
+}
