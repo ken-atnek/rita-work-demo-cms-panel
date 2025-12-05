@@ -100,22 +100,27 @@ input[type="password"],
 input[type="email"] {
     width: stretch;
     flex-grow: 1;
-    font-size: FZ(14);
-    padding: 0.3em 0.5em 0.3em 0.8em;
-    border: 1px solid #c7c7c7;
-    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    padding-inline: 0.8em;
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.8rem;
     letter-spacing: 0.04em;
-    transition: 0.3s ease-out;
+    border: 1px solid #e2e0db;
+    transition: 0.2s ease-out;
     &::placeholder {
         color: #a8a8a8;
     }
     &:focus {
-        // border-color: $activeBlue;
-        transition: 0.3s ease-out;
-        color: $BaseBlack;
+        border: 1px solid $hover-blue;
+    }
+    &:active {
+        border: 1px solid $hover-blue;
+        background-color: #e6edf7;
     }
     &:hover {
-        // border-color: $activeBlue;
+        border: 1px solid $hover-blue;
         transition: 0.3s ease-out;
     }
 }
@@ -126,7 +131,7 @@ input[type="text"],
 input[type="password"],
 input[type="email"],
 textarea {
-    background-color: #fafafa;
+    background-color: #fff;
 }
 svg {
     fill: transparent;
@@ -137,15 +142,7 @@ main {
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 2.875em;
-    font-size: 1em;
-    box-shadow: -0.6rem 0.3rem 0.4rem rgba(#000, 0.08);
-    z-index: +1;
-    overflow-y: hidden;
-    transition: 0.1s ease-out;
-    @media (max-width: 1024px) {
-        padding: 2vw;
-    }
+    font-size: inherit;
 }
 
 /*==========================================

@@ -4,12 +4,36 @@
 @use "./variable" as *;
 @use "./_font" as *;
 @use "./svg" as *;
+
 /*=========================================
-上部H3
+中央寄せ
 -----------------------------------------*/
-@mixin decorationHeadH3 {
-    background-color: #e6e6e6;
-    padding: 0.6em 1.4em;
-    border-top-left-radius: 1.2rem;
-    border-top-right-radius: 1.2rem;
+@mixin flex-center($direction: row) {
+    display: flex;
+    flex-direction: $direction;
+    align-items: center;
+    justify-content: center;
+}
+
+/*=========================================
+確定・キャンセルボタン
+-----------------------------------------*/
+@mixin main-button($type: confirm) {
+    @include flex-center;
+    height: 44px;
+    border-radius: 7px;
+    transition: 0.3s ease-out;
+    @if $type == "confirm" {
+        background-color: $confirm-blue;
+        color: #fff;
+        &:hover {
+            background-color: #3146a9;
+        }
+        &:active {
+            background-color: #395bbe;
+        }
+    } @else {
+        background-color: #fff;
+        border: 1px solid #403726;
+    }
 }

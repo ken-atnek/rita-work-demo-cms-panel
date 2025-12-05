@@ -6,47 +6,89 @@
 @use "./svg" as *;
 @use "./_font" as *;
 @use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
 body {
     grid-template-columns: unset;
     grid-template-rows: unset;
     place-items: center;
     padding: 1.2rem;
     background-color: #ffeed4;
-    main {
-        box-shadow: unset;
-        align-self: stretch;
-        border-style: solid;
-        border-width: 1.2rem;
-        border-radius: 6px;
+    .contents-log-in {
+        padding: 5em;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        &::before {
-            content: "";
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            right: 6px;
-            bottom: 6px;
-            border-radius: 2px;
-            border-radius: 6px;
-            border-style: solid;
-            border-width: 0.8rem;
-        }
-        .wrap_logo {
-            position: relative;
-            // background-color: #0000ff;
-            width: 20rem;
-            aspect-ratio: 1;
-            font-size: 1em;
-            margin-bottom: 5em;
-            img {
-                position: absolute;
-                inset: 0;
-                margin: auto;
-                font-size: 1em;
-                width: 65%;
+        height: 100%;
+        article {
+            background-color: #fff;
+            padding: 5em 3em;
+            max-width: 60rem;
+            flex: 1;
+            border-radius: $radius20;
+            border: 1px solid $main-orange;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2em 0;
+            .item-logo {
+                width: 18rem;
+            }
+            .box-log-in,
+            .reset-password,
+            .again-reset-password {
+                position: relative;
+                font-size: inherit;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5em 0;
+                width: 100%;
+                max-width: 36rem;
+                h2 {
+                    font-size: FZ(18);
+                    font-weight: 600;
+                }
+                .title {
+                    font-size: FZ(14);
+                    font-weight: 600;
+                    margin-top: 1em;
+                }
+                button {
+                    @include main-button("confirm");
+                    width: 192px;
+                    align-self: center;
+                    margin-top: 2em;
+                }
+            }
+            // ログイン画面
+            .box-log-in {
+                // display: none;
+                .link-pw {
+                    color: $confirm-blue;
+                    font-size: FZ(14);
+                    font-weight: 300;
+                    align-self: center;
+                    margin-top: 1em;
+                }
+            }
+            // パスワード再設定
+            .reset-password {
+                margin-top: 1em;
+                // display: none;
+                p {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    line-height: 1.6em;
+                }
+            }
+            // パスワード再送信
+            .again-reset-password {
+                margin-top: 2em;
+                p {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    line-height: 1.6em;
+                }
             }
         }
     }
