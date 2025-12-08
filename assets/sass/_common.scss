@@ -179,6 +179,7 @@ header {
         justify-content: space-between;
         font-size: inherit;
         align-items: center;
+        padding-right: 14px;
         .page-check {
             font-size: inherit;
             display: flex;
@@ -305,6 +306,7 @@ header {
     gap: 0 2em;
     align-self: flex-end;
     align-items: center;
+    margin-top: 2em;
     .link-terms {
         font-size: FZ(14);
         font-weight: 300;

@@ -8,19 +8,18 @@
 /*================================
  メインコンテンツ白背景ボックス
 --------------------------------*/
-@mixin layoutContentsWhiteBlock {
+@mixin layout-inner-main {
+    flex: 1;
+    background-color: $main-orange;
+    padding: 5rem;
     display: flex;
     flex-direction: column;
-    // width: stretch;
-    width: stretch;
-    margin: 1.5em 1.4em 3.25em;
-    flex-grow: 1;
-    background-color: #fff;
-    border: 1px solid #c7c7c7;
-    border-radius: 1.2rem;
-    @media (max-width: 1025px) {
-        margin-inline: 0;
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: #fff;
+        margin: 2rem;
+        border-radius: $radius40;
     }
-    // 宿／プラン済み
-    // 組合・宿／宿管理済み
 }
