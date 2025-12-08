@@ -9,20 +9,16 @@
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
 
-.contents-top {
-    flex: 1;
-    background-color: $main-orange;
-    padding: 5rem;
-    display: flex;
-    flex-direction: column;
-    &::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-    }
-    &::before {
-        background-color: #fff;
-        margin: 2rem;
-        border-radius: $radius40;
+.inner-01 {
+    @include layout-inner-main;
+    gap: 1em 0;
+    section {
+        background-color: #ffeed4;
+        border-radius: 26px;
+        padding: 3rem 4rem 4rem;
+        h2 {
+            font-size: FZ(20);
+            font-weight: 600;
+        }
     }
 }
