@@ -8,87 +8,81 @@
 @use "./_common" as *;
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
-body {
-    grid-template-columns: unset;
-    grid-template-rows: unset;
-    place-items: center;
-    padding: 1.2rem;
-    background-color: #ffeed4;
-    .contents-log-in {
-        padding: 5em;
+
+.contents-log-in {
+    padding: 5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    article {
+        background-color: #fff;
+        padding: 5em 3em;
+        max-width: 60rem;
+        flex: 1;
+        border-radius: $radius20;
+        border: 1px solid $main-orange;
         display: flex;
         flex-direction: column;
         align-items: center;
-        height: 100%;
-        article {
-            background-color: #fff;
-            padding: 5em 3em;
-            max-width: 60rem;
-            flex: 1;
-            border-radius: $radius20;
-            border: 1px solid $main-orange;
+        gap: 2em 0;
+        .item-logo {
+            width: 18rem;
+        }
+        .box-log-in,
+        .reset-password,
+        .again-reset-password {
+            position: relative;
+            font-size: inherit;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 2em 0;
-            .item-logo {
-                width: 18rem;
+            gap: 0.5em 0;
+            width: 100%;
+            max-width: 36rem;
+            h2 {
+                font-size: FZ(18);
+                font-weight: 600;
             }
-            .box-log-in,
-            .reset-password,
-            .again-reset-password {
-                position: relative;
-                font-size: inherit;
-                display: flex;
-                flex-direction: column;
-                gap: 0.5em 0;
-                width: 100%;
-                max-width: 36rem;
-                h2 {
-                    font-size: FZ(18);
-                    font-weight: 600;
-                }
-                .title {
-                    font-size: FZ(14);
-                    font-weight: 600;
-                    margin-top: 1em;
-                }
-                button {
-                    @include main-button("confirm");
-                    width: 192px;
-                    align-self: center;
-                    margin-top: 2em;
-                }
-            }
-            // ログイン画面
-            .box-log-in {
-                // display: none;
-                .link-pw {
-                    color: $confirm-blue;
-                    font-size: FZ(14);
-                    font-weight: 300;
-                    align-self: center;
-                    margin-top: 1em;
-                }
-            }
-            // パスワード再設定
-            .reset-password {
+            .title {
+                font-size: FZ(14);
+                font-weight: 600;
                 margin-top: 1em;
-                // display: none;
-                p {
-                    font-size: FZ(16);
-                    font-weight: 300;
-                    line-height: 1.6em;
-                }
             }
-            // パスワード再送信
-            .again-reset-password {
+            button {
+                @include main-button("confirm");
+                width: 192px;
+                align-self: center;
                 margin-top: 2em;
-                p {
-                    font-size: FZ(16);
-                    font-weight: 300;
-                    line-height: 1.6em;
-                }
+            }
+        }
+        // ログイン画面
+        .box-log-in {
+            // display: none;
+            .link-pw {
+                color: $confirm-blue;
+                font-size: FZ(14);
+                font-weight: 300;
+                align-self: center;
+                margin-top: 1em;
+            }
+        }
+        // パスワード再設定
+        .reset-password {
+            margin-top: 1em;
+            // display: none;
+            p {
+                font-size: FZ(16);
+                font-weight: 300;
+                line-height: 1.6em;
+            }
+        }
+        // パスワード再送信
+        .again-reset-password {
+            margin-top: 2em;
+            p {
+                font-size: FZ(16);
+                font-weight: 300;
+                line-height: 1.6em;
             }
         }
     }
