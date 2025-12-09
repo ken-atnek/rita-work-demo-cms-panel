@@ -1,0 +1,24 @@
+/*==========================================================
+トップページ
+==========================================================*/
+@use "./_reset_v2.5" as *;
+@use "./_variable" as *;
+@use "./svg" as *;
+@use "./_font" as *;
+@use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
+
+.inner-01 {
+    @include layout-inner-main;
+    gap: 1em 0;
+    section {
+        background-color: #ffeed4;
+        border-radius: 26px;
+        padding: 3rem 4rem 4rem;
+        h2 {
+            font-size: FZ(20);
+            font-weight: 600;
+        }
+    }
+}

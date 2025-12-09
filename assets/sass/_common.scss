@@ -1,5 +1,7 @@
 @use "./_variable" as *;
 @use "./_font" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
 @use "./svg" as *;
 body {
     position: relative;
@@ -8,11 +10,10 @@ body {
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased; //アンチエイリアス設定
     -moz-osx-font-smoothing: grayscale; //アンチエイリアス設定
-    color: $BaseBlack;
-    display: grid;
-    grid-template-columns: 11em 1fr;
-    grid-template-rows: auto 1fr;
-    align-items: stretch;
+    color: $font-black;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffeed4;
     z-index: 1;
     @include SunSerif;
     // font-feature-settings: "palt";
@@ -63,6 +64,7 @@ main {
     flex-direction: column;
     font-size: 1em;
     width: 100%;
+    flex: 1;
 }
 section,
 article {
@@ -150,6 +152,180 @@ main {
 ------------------------------------------*/
 header {
     position: relative;
+    font-size: inherit;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr auto;
+    .item-logo {
+        padding: 3px;
+        display: block;
+        grid-row: span 2;
+        span {
+            display: block;
+            width: 141px;
+            height: 136px;
+            background-color: $font-black;
+            @include flex-center;
+            img {
+                width: 8rem;
+                filter: brightness(0) invert(100);
+            }
+        }
+    }
+    .box-head {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        font-size: inherit;
+        align-items: center;
+        padding-right: 14px;
+        .page-check {
+            font-size: inherit;
+            display: flex;
+            color: #fff;
+            background-color: $font-black;
+            border-radius: 4px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding-inline: 1.6em;
+            margin-left: 2rem;
+            span {
+                position: relative;
+                font-size: FZ(14);
+                font-weight: 600;
+                padding-left: 1.8em;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    translate: 0 -50%;
+                    width: 18px;
+                    @include svg-icon-pc("ffffff");
+                }
+            }
+        }
+        h1 {
+            font-size: inherit;
+            color: #fff;
+            background-color: var(--key-color);
+            display: flex;
+            padding: 2px 2px 2px 2em;
+            height: 38px;
+            gap: 0 1em;
+            border-radius: 100vmax;
+            span {
+                position: relative;
+                font-size: FZ(14);
+                font-weight: 300;
+                align-self: center;
+                padding-left: 2em;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    translate: 0 -50%;
+                    width: 18px;
+                    @include svg-icon-person("ffffff");
+                }
+            }
+            button {
+                background-color: #fff;
+                color: var(--key-color);
+                font-size: FZ(14);
+                font-weight: 300;
+                border-radius: 100vmax;
+                width: 106px;
+            }
+        }
+    }
+    nav {
+        display: grid;
+        padding-bottom: 3px;
+        font-size: inherit;
+        a {
+            position: relative;
+            font-size: inherit;
+            @include flex-center;
+            height: 8rem;
+            span {
+                font-size: FZ(16);
+                font-weight: 600;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                @include top-radius($radius8);
+                transition: 0.3s ease-out;
+                background-color: #fff;
+                z-index: -1;
+            }
+            &.is-active {
+                color: #fff;
+                &::before {
+                    height: calc(100% + 3px);
+                    background-color: $main-orange;
+                }
+            }
+            &:not(.is-active) {
+                &:hover {
+                    &::before {
+                        background-color: #fffbf5;
+                    }
+                }
+                &:active {
+                    &::before {
+                        background-color: #fff;
+                    }
+                }
+            }
+        }
+    }
+    &.area-master {
+        --key-color: #ef5f6e;
+        nav {
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0 3px;
+        }
+    }
+}
+/*==========================================================
+    box-footer
+==========================================================*/
+.box-footer {
+    position: relative;
+    font-size: inherit;
+    display: flex;
+    gap: 0 2em;
+    align-self: flex-end;
+    align-items: center;
+    margin-top: 2em;
+    .link-terms {
+        font-size: FZ(14);
+        font-weight: 300;
+    }
+    .page-top {
+        width: 36px;
+        aspect-ratio: 1;
+        background-color: $font-black;
+        position: relative;
+        border-radius: 50%;
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 9px;
+            @include svg-icon-arrow-top(fff);
+        }
+    }
 }
 /*==========================================================
     モーダルウィンドウ
