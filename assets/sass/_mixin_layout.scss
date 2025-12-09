@@ -6,7 +6,7 @@
 @use "./svg" as *;
 @use "./mixin_decoration" as *;
 /*================================
- メインコンテンツ白背景ボックス
+ メインコンテンツオレンジ背景
 --------------------------------*/
 @mixin layout-inner-main {
     flex: 1;
@@ -21,5 +21,179 @@
         background-color: #fff;
         margin: 2rem;
         border-radius: $radius40;
+    }
+}
+/*================================
+ セクションコンテンツ薄オレンジ背景
+--------------------------------*/
+@mixin layout-container-section {
+    background-color: #ffeed4;
+    border-radius: 26px;
+    padding: 3rem 4rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    h2 {
+        font-size: FZ(20);
+        font-weight: 600;
+    }
+}
+/*================================
+ 検索(絞り込み)ブロック
+--------------------------------*/
+@mixin layout-block-search {
+    background-color: #fff;
+    border-radius: $radius20;
+    padding-top: 19px;
+    display: flex;
+    flex-direction: column;
+    @include drop-shadow;
+    h3 {
+        font-size: FZ(18);
+        font-weight: 600;
+        margin-left: 25px;
+        margin-bottom: 19px;
+    }
+    & > ul {
+        position: relative;
+        width: 100%;
+        font-size: inherit;
+        border-top: 1px solid $border-gray;
+        border-bottom: 1px solid $border-gray;
+        & > li {
+            position: relative;
+            font-size: inherit;
+            padding-block: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0 0.8em;
+            h4 {
+                font-size: FZ(16);
+                font-weight: 300;
+                width: max-content;
+                display: inline-block;
+            }
+        }
+    }
+}
+/*================================
+ リスト表示部分白背景ブロック
+--------------------------------*/
+@mixin layout-block-article {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding-top: 12px;
+    border-radius: $radius20;
+    @include drop-shadow;
+    .box-head {
+        position: relative;
+        font-size: inherit;
+        display: flex;
+        align-items: center;
+        gap: 0 2em;
+        .announce-results {
+            display: flex;
+            align-items: center;
+            font-size: 1.6rem;
+            font-weight: 300;
+            margin-left: 25px;
+            span {
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin-inline: 0.2em;
+            }
+        }
+        .list-display {
+            --boxHeight: 4rem;
+            --itemPaddingRight: 1em;
+            width: 74px;
+            margin-left: 6em;
+            @include list-select-center;
+            &::before,
+            &::after {
+                position: absolute;
+                top: 50%;
+                translate: 0 -50%;
+                font-size: 1.4rem;
+            }
+            &::before {
+                content: "表示件数";
+                right: calc(100% + 0.5em);
+                width: max-content;
+            }
+            &::after {
+                content: "件";
+                left: calc(100% + 0.3em);
+            }
+        }
+    }
+}
+/*=========================================
+タイトル付テーブルレイアウト
+-----------------------------------------*/
+@mixin layout-table-list($columns, $columns-count) {
+    position: relative;
+    font-size: 1em;
+    display: grid;
+    grid-template-columns: $columns;
+    border-top: 1px solid $border-gray;
+    & > li {
+        position: relative;
+        font-size: 1em;
+        grid-column: span $columns-count;
+        display: grid;
+        grid-template-columns: subgrid;
+        border-bottom: 1px solid $border-gray;
+        transition: 0.3s ease-out;
+        z-index: +1;
+        &:not(:first-of-type) {
+            &::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-color: #edf1f8;
+                z-index: -1;
+                opacity: 0;
+            }
+            &:hover {
+                &::before {
+                    opacity: 1;
+                }
+            }
+        }
+        & > div {
+            position: relative;
+            font-size: inherit;
+            &:not(:last-of-type) {
+                border-right: 1px solid $border-gray;
+            }
+        }
+        &:first-of-type {
+            background-color: #ceccca;
+            min-height: 2em;
+            & > div {
+                font-size: FZ(14);
+                padding-inline: 0.8em;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                &:has(span) {
+                    padding-inline: 0;
+                }
+                span {
+                    padding-block: 0.2em;
+                    &:first-of-type {
+                        border-bottom: 1px solid #c7c7c7;
+                    }
+                }
+            }
+        }
+        &:not(:first-of-type) {
+            &:nth-of-type(2n - 1) {
+                background-color: #f8f8f8;
+            }
+        }
     }
 }

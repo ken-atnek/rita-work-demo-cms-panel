@@ -100,11 +100,10 @@ textarea,
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-    width: stretch;
     flex-grow: 1;
     font-size: 1.6rem;
     padding-inline: 0.8em;
-    height: 4.8rem;
+    height: 4.4rem;
     display: flex;
     align-items: center;
     border-radius: 0.8rem;

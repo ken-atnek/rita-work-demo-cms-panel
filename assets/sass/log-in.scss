@@ -51,6 +51,7 @@
             button {
                 @include main-button("confirm");
                 width: 192px;
+                height: 44px;
                 align-self: center;
                 margin-top: 2em;
             }
