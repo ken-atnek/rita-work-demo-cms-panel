@@ -205,12 +205,94 @@
         .block-search-results {
             @include layout-block-article;
             .list-search-results {
-                border: solid 1px #0000ff;
                 @include layout-table-list(auto auto auto 1fr auto, 5);
+                margin-top: 1.4rem;
+                .item-id,
+                .item-name {
+                    padding-inline: 1em;
+                    padding-block: 1.6rem;
+                }
+                .item-name {
+                    border-right: 1px solid $border-gray;
+                }
+                .item-id {
+                    text-align: center;
+                }
+                .list-contact {
+                    grid-column: span 3;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    font-size: inherit;
+                    & > li {
+                        position: relative;
+                        grid-column: span 3;
+                        display: grid;
+                        grid-template-columns: subgrid;
+                        font-size: inherit;
+                        .item-job,
+                        .item-destination {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            border-right: 1px solid $border-gray;
+                            span {
+                                font-size: FZ(14);
+                                padding-block: 1.6rem;
+                                display: inline-block;
+                            }
+                        }
+                        .item-date {
+                            font-size: FZ(14);
+                            padding-block: 1.6rem;
+                            padding-inline: 1em;
+                            text-align: center;
+                        }
+                    }
+                    &:has(> li:nth-child(2)) {
+                        li {
+                            &:not(:last-child) {
+                                border-bottom: 1px solid $border-gray;
+                            }
+                        }
+                    }
+                }
             }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
         }
     }
     .container-announcement {
         @include layout-container-section;
+        .list-announcement {
+            position: relative;
+            width: 100%;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.8rem 0;
+            li {
+                position: relative;
+                display: grid;
+                grid-column: span 2;
+                grid-template-columns: subgrid;
+                background-color: #fff;
+                @include drop-shadow;
+                font-size: inherit;
+                padding: 1.1rem 2.4rem;
+                border-radius: $radius20;
+                gap: 0 2.4rem;
+                transition: 0.3s ease-out;
+                cursor: pointer;
+                &:hover {
+                    background-color: $hover-bg-blue;
+                }
+                .item-date,
+                p {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                }
+            }
+        }
     }
 }

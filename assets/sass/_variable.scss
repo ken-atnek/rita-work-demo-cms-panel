@@ -71,7 +71,7 @@ $sp: 480px;
         @content;
     }
 }
-// タブレットサイズ縦
+// タブレットサイズ縦PAGE_URL_TEST
 @mixin tb {
     @media (max-width: ($tb)) and (orientation: portrait) {
         @content;

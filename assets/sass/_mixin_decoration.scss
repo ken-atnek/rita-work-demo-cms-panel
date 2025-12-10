@@ -90,7 +90,7 @@
             translate: 0 -50%;
             right: 0.8em;
             width: 0.7em;
-            @include svg-iconArrowBottom("335D95");
+            @include svg-icon-arrow-bottom("335D95");
             transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
         }
         &-placeholder {
@@ -278,7 +278,7 @@
     display: flex;
     gap: 0 0.3em;
     transition: 0.3s ease-out;
-    width: 36rem;
+    width: 37rem;
     height: 4.4rem;
     input {
         @include box-input-period;
