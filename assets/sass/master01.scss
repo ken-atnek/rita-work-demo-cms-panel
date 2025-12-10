@@ -156,7 +156,7 @@
                 .item-job {
                     .select-items {
                         --boxHeight: 4.4rem;
-                        width: 30rem;
+                        flex: 1;
                         @include list-select-left;
                         .select_label {
                             padding-left: 1.4em;

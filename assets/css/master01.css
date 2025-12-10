@@ -896,7 +896,7 @@ header.area-master nav {
   font-weight: 300;
   width: -moz-max-content;
   width: max-content;
-  display: inline-block;
+  display: block;
 }
 .inner-01 .container-status .block-search .box-search-items {
   display: flex;
@@ -915,7 +915,7 @@ header.area-master nav {
 }
 .inner-01 .container-status .block-search .box-search-items .item-job .select-items {
   --boxHeight: 4.4rem;
-  width: 30rem;
+  flex: 1;
   --itemPaddingLeft: 1.4em;
   height: var(--boxHeight);
   background-color: #fff;
