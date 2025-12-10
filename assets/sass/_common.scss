@@ -55,6 +55,11 @@ body {
         }
     }
 }
+html.modal-open,
+body.modal-open {
+    overflow: hidden;
+}
+
 /*==========================================================
 	共通
 ==========================================================*/
@@ -329,58 +334,107 @@ header {
 /*==========================================================
     モーダルウィンドウ
 ==========================================================*/
-.block_modal {
-    position: fixed !important;
-    flex-direction: column;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    height: 100dvh;
+.modal-block {
     display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    background-color: rgba(#101010, 0.8);
-    padding: 2vh 8vw;
-    color: $BaseWhite;
-    transition: 0.5s ease-out 0.5s;
-    opacity: 0;
-    z-index: -1;
-    transform: translateX(-100vw);
-    &__inner {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        max-width: 80rem;
-        gap: 1em 0;
-        font-size: 1em;
+    z-index: 100000;
+    &.is-active {
+        display: block;
+        position: fixed !important;
+        top: 0;
+        left: 0;
         width: 100%;
-        padding: 1em 2em;
-        background-color: $BaseWhite;
-        .title {
-            margin-bottom: 1em;
-            text-align: center;
-            font-size: FZ(42);
-            color: $BaseBlack;
-        }
-        button {
-            position: absolute;
-            bottom: calc(100% - 0.8em);
-            left: calc(100% - 0.8em);
+        height: 100%;
+        height: 100dvh;
+        background-color: rgba($font-black, 0.4);
+        @include flex-center;
+        padding: 2rem;
+        .inner-modal {
+            width: 100%;
+            max-width: 98rem;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: FZ(28);
-            width: 2em;
-            aspect-ratio: 1;
-            color: $BaseWhite;
-            justify-content: center;
-            border: solid 2px #292929;
-            background-color: $BaseWhite;
-            border-radius: 50%;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: $radius20;
+            @include drop-shadow;
+            font-size: inherit;
+            overflow-y: scroll;
+
+            .box-title {
+                padding: 2.7rem;
+                display: flex;
+                justify-content: space-between;
+                font-size: inherit;
+                border-bottom: 1px solid $border-gray;
+                width: 100%;
+                p {
+                    font-size: FZ(20);
+                    font-weight: 600;
+                }
+                .btn-top-close {
+                    position: relative;
+                    display: block;
+                    width: 1.4rem;
+                    aspect-ratio: 1;
+                    align-self: center;
+                    &::before,
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        margin: auto;
+                        width: 100%;
+                        height: 2px;
+                        background-color: $font-black;
+                    }
+                    &::before {
+                        rotate: -45deg;
+                    }
+                    &::after {
+                        rotate: 45deg;
+                    }
+                }
+            }
+            .box-details {
+                position: relative;
+                font-size: inherit;
+                display: flex;
+                flex-direction: column;
+                align-self: center;
+                padding: 5rem 5rem 8rem;
+                .wrap-details {
+                    font-size: inherit;
+                    max-width: 68rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem 0;
+                    .item-date {
+                        font-size: FZ(14);
+                        font-weight: 600;
+                    }
+                    .item-image {
+                        width: 100%;
+                    }
+                    .item-text {
+                        font-size: inherit;
+                        display: flex;
+                        flex-direction: column;
+                        p {
+                            font-size: FZ(16);
+                            font-weight: 300;
+                            text-align: justify;
+                            line-height: 1.6em;
+                        }
+                    }
+                }
+                .btn-bottom-close {
+                    @include main-button("cancel");
+                    width: 16rem;
+                    height: 4rem;
+                    font-size: FZ(14);
+                    align-self: center;
+                    margin-top: 7rem;
+                }
+            }
         }
     }
 }

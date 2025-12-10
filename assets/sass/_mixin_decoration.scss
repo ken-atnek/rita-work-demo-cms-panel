@@ -42,14 +42,20 @@
         background-color: #696969;
         color: #fff;
         &:hover {
-            background-color: #403726;
+            background-color: $font-black;
         }
         &:active {
             background-color: #696969;
         }
     } @else {
         background-color: #fff;
-        border: 1px solid #403726;
+        border: 1px solid $font-black;
+        &:hover {
+            background-color: $hover-bg-blue;
+        }
+        &:active {
+            background-color: #fff;
+        }
     }
 }
 

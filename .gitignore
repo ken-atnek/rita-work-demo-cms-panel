@@ -24,3 +24,6 @@ public_html/assets/ga/
 
 # 旧ページ情報
 public_html/event/image/
+
+# cssファイル除外
+assets/css/

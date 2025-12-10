@@ -5,7 +5,7 @@
   <title>リタワーク｜コントロールパネル(管理者)</title>
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
   <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
@@ -234,23 +234,23 @@
     <section class="container-announcement">
       <h2>運営からのお知らせ</h2>
       <ul class="list-announcement">
-        <li>
+        <li onclick="openModal()">
           <div class="item-date">2025/10/30</div>
           <p>こんな機能が使えるようになりました。</p>
         </li>
-        <li>
+        <li onclick="openModal()">
           <div class="item-date">2025/10/30</div>
           <p>こんな機能が使えるようになりました。</p>
         </li>
-        <li>
+        <li onclick="openModal()">
           <div class="item-date">2025/10/30</div>
           <p>こんな機能が使えるようになりました。</p>
         </li>
-        <li>
+        <li onclick="openModal()">
           <div class="item-date">2025/10/30</div>
           <p>こんな機能が使えるようになりました。</p>
         </li>
-        <li>
+        <li onclick="openModal()">
           <div class="item-date">2025/10/30</div>
           <p>こんな機能が使えるようになりました。</p>
         </li>
@@ -258,7 +258,48 @@
     </section>
     <!--#include virtual="./inc_page-top.html"-->
   </main>
-  <article class="modal-block is-active"></article>
+  <article class="modal-block" id="modalBlock">
+    <div class="inner-modal">
+      <div class="box-title">
+        <p>利用規約を改定いたしました<span>（改定日：2025年10月30日）</span></p>
+        <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+      </div>
+      <div class="box-details">
+        <div class="wrap-details">
+          <span class="item-date">3025/12/11</span>
+          <div class="item-image">
+            <picture>
+              <source src="../assets/images/_dummy/01.jpg">
+              <img src="../assets/images/_dummy/01.jpg" alt="">
+            </picture>
+          </div>
+          <div class="item-text">
+            <p>本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。<br>
+              <br>
+本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。 <br>
+本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
+      </div>
+    </div>
+  </article>
+  <script>
+    function openModal() {
+      const modal = document.getElementById('modalBlock');
+      if (!modal) return;
+      modal.classList.add('is-active');
+      document.documentElement.classList.add('modal-open');
+      document.body.classList.add('modal-open');
+    }
+    function closeModal() {
+      const modal = document.getElementById('modalBlock');
+      if (modal) modal.classList.remove('is-active');
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    }
+  </script>
 </body>
 
 </html>
