@@ -21,6 +21,31 @@
     align-items: center;
     justify-content: center;
 }
+/*=========================================
+×ボタン
+-----------------------------------------*/
+@mixin btn-close {
+    display: block;
+    width: 1.4rem;
+    aspect-ratio: 1;
+    align-self: center;
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 100%;
+        height: 2px;
+        background-color: $font-black;
+    }
+    &::before {
+        rotate: -45deg;
+    }
+    &::after {
+        rotate: 45deg;
+    }
+}
 
 /*=========================================
 確定・キャンセル等ボタン
@@ -55,6 +80,61 @@
         }
         &:active {
             background-color: #fff;
+        }
+    }
+}
+
+/*================================
+ チェックボックスボタン
+--------------------------------*/
+@mixin item-check-box {
+    input[type="checkbox"] {
+        position: absolute;
+        inset: 0;
+        z-index: +2;
+        &.read-only {
+            pointer-events: none;
+        }
+    }
+    label {
+        position: relative;
+        display: grid;
+        place-items: center;
+        position: relative;
+        font-size: FZ(14);
+        color: #696969;
+        padding: 0.5em 0.8em;
+        transition: 0.3s ease-out;
+        z-index: 1;
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: #ceccca;
+            border-radius: 100vmax;
+            z-index: -1;
+            transition: 0.3s ease-out;
+        }
+    }
+    input[type="checkbox"]:checked + label {
+        color: #fff;
+        &::before {
+            background-color: $hover-blue;
+        }
+    }
+    &:hover {
+        label {
+            &::before {
+                border: 1px solid $hover-blue;
+            }
+        }
+    }
+    &:active {
+        label {
+            &::before {
+                background-color: $hover-bg-blue;
+                border: 1px solid $hover-blue;
+            }
         }
     }
 }

@@ -143,7 +143,6 @@ svg {
     fill: transparent;
     stroke: transparent;
 }
-
 main {
     position: relative;
     display: flex;
@@ -358,7 +357,6 @@ header {
             @include drop-shadow;
             font-size: inherit;
             overflow-y: scroll;
-
             .box-title {
                 padding: 2.7rem;
                 display: flex;
@@ -372,26 +370,7 @@ header {
                 }
                 .btn-top-close {
                     position: relative;
-                    display: block;
-                    width: 1.4rem;
-                    aspect-ratio: 1;
-                    align-self: center;
-                    &::before,
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        inset: 0;
-                        margin: auto;
-                        width: 100%;
-                        height: 2px;
-                        background-color: $font-black;
-                    }
-                    &::before {
-                        rotate: -45deg;
-                    }
-                    &::after {
-                        rotate: 45deg;
-                    }
+                    @include btn-close;
                 }
             }
             .box-details {

@@ -29,7 +29,8 @@
 @mixin layout-container-section {
     background-color: #ffeed4;
     border-radius: 26px;
-    padding: 3rem 4rem 4rem;
+    padding-top: 3rem;
+    padding-inline: 4rem;
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
@@ -48,6 +49,12 @@
     display: flex;
     flex-direction: column;
     @include drop-shadow;
+    .btn-close {
+        position: absolute;
+        right: 3.2rem;
+        top: 2.4rem;
+        @include btn-close;
+    }
     h3 {
         font-size: FZ(18);
         font-weight: 600;
@@ -72,6 +79,17 @@
                 font-weight: 300;
                 width: max-content;
                 display: block;
+            }
+            .wrap-select {
+                position: relative;
+                font-size: inherit;
+                display: flex;
+                gap: 0 0.4rem;
+                .item-check-box {
+                    position: relative;
+                    font-size: inherit;
+                    @include item-check-box;
+                }
             }
         }
     }
@@ -177,14 +195,40 @@
                 font-size: FZ(14);
                 padding-inline: 0.8em;
                 text-align: center;
+                padding-inline: 1.8rem;
                 @include flex-center;
-                &:has(span) {
-                    padding-inline: 0;
-                }
-                span {
-                    padding-block: 0.2em;
-                    &:first-of-type {
-                        border-bottom: 1px solid #c7c7c7;
+                .wrap-sort-btn {
+                    display: flex;
+                    gap: 0 0.2rem;
+                    margin-left: 0.5rem;
+                    button {
+                        position: relative;
+                        display: block;
+                        width: 1.8rem;
+                        aspect-ratio: 1;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            margin: auto;
+                            width: 8px;
+                            aspect-ratio: 1/0.85;
+                            background-color: $font-black;
+                            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+                        }
+                        &.arrow-top {
+                            &::before {
+                                translate: 0 -1px;
+                            }
+                        }
+                        &.arrow-bottom {
+                            &::before {
+                                scale: 1 -1;
+                                translate: 0 1px;
+                            }
+                        }
                     }
                 }
             }

@@ -8,12 +8,12 @@
 @use "./_common" as *;
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
-
 .inner-01 {
     @include layout-inner-main;
     gap: 1em 0;
     // 現在の応募状況
     .container-status {
+        padding-bottom: 5rem;
         @include layout-container-section;
         .block-status {
             position: relative;
@@ -203,6 +203,7 @@
         }
         // 状況一覧
         .block-search-results {
+            padding-bottom: 5rem;
             @include layout-block-article;
             .list-search-results {
                 @include layout-table-list(auto auto auto 1fr auto, 5);
@@ -263,6 +264,7 @@
         }
     }
     .container-announcement {
+        padding-bottom: 5rem;
         @include layout-container-section;
         .list-announcement {
             position: relative;
