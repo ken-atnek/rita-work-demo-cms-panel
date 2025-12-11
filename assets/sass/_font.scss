@@ -5,7 +5,7 @@
 	フォント指定
 ==========================================================*/
 @mixin SunSerif {
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    font-family: "Hiragino Kaku Gothic ProN", "Helvetica Neue", Arial,
         "Hiragino Sans", Meiryo, sans-serif;
     font-weight: 400;
     font-style: normal;

@@ -5,26 +5,301 @@
   <title>リタワーク｜コントロールパネル(管理者)</title>
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
   <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
   <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico">
-  <link rel="stylesheet" href="../assets/css/master01.min.css">
+  <link rel="stylesheet" href="../assets/css/master01.css">
 </head>
 
 <body>
   <!--#include virtual="./inc_header.html"-->
   <main class="inner-01">
-    <section>
+    <section class="container-status">
       <h2>現在の応募状況</h2>
+      <nav class="block-status">
+        <button type="button" class="status-registered is-active">
+          <span class="label">登録中</span>
+          <span class="count">100</span>
+        </button>
+        <button type="button" class="status-applied   ">
+          <span class="label">応募中</span>
+          <span class="count">800</span>
+        </button>
+        <button type="button" class="status-interview">
+          <span class="label">面談中</span>
+          <span class="count">150</span>
+        </button>
+        <button type="button" class="status-hired">
+          <span class="label">内定</span>
+          <span class="count">1200</span>
+        </button>
+        <button type="button" class="status-unresponsive">
+          <span class="label">音信不通</span>
+          <span class="count">1020</span>
+        </button>
+      </nav>
+      <form class="block-search">
+        <h3>条件で検索</h3>
+        <ul class="box-search-items">
+          <li class="item-line-id">
+            <h4>LINE ID</h4>
+            <input type="text">
+          </li>
+          <li class="item-name">
+            <h4>名前</h4>
+            <input type="text">
+          </li>
+          <li class="item-job">
+            <h4>職種</h4>
+            <ul class="select-items">
+              <li>
+                <input class="select_close" type="radio" name="referJobMethod" id="job-close" value="">
+                <label class="select_label select_label-placeholder" for="job-close">選択してください</label>
+              </li>
+              <li class="select_items">
+                <input type="radio" name="referJobMethod" id="job-opener">
+                <label class="select_closeLabel" for="job-close"></label>
+                <ul>
+                  <li>
+                    <input type="radio" name="referJobMethod" value="1" id="job01">
+                    <label class="select_label" for="job01">看護師</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="referJobMethod" value="2" id="job02">
+                    <label class="select_label" for="job02">介護士</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="referJobMethod" value="3" id="job03">
+                    <label class="select_label" for="job03">理学療法士</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="referJobMethod" value="4" id="job04">
+                    <label class="select_label" for="job04">作業療法士</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="referJobMethod" value="5" id="job05">
+                    <label class="select_label" for="job05">言語聴覚士</label>
+                  </li>
+                </ul>
+                <label class="select_expandLabel" for="job-opener"></label>
+              </li>
+            </ul>
+          </li>
+          <li class="item-application-destination">
+            <h4>応募先</h4>
+            <input type="text">
+          </li>
+          <li class="item-application-date">
+            <h4>応募日</h4>
+            <div class="wrap-period">
+              <input type="date" name="searchStartDay">
+              <span>〜</span>
+              <input type="date" name="searchEndDay">
+            </div>
+          </li>
+        </ul>
+        <div class="box-btn">
+          <button type="button" class="item-clear">条件をクリア</button>
+          <button type="button" class="item-search">条件で検索</button>
+        </div>
+      </form>
+      <article class="block-search-results">
+        <div class="box-head">
+          <p class="announce-results">条件に<span>123件</span>が該当</p>
+          <ul class="list-display">
+            <li>
+              <input class="select_close" type="radio" name="display" id="display-close" value="">
+              <label class="select_label select_label-placeholder" for="display-close">10</label>
+            </li>
+            <li class="select_items">
+              <input type="radio" name="display" id="display-opener">
+              <label class="select_closeLabel" for="display-close"></label>
+              <ul>
+                <li>
+                  <input type="radio" name="display" id="display01" value="10" checked="">
+                  <label class="select_label" for="display01">10</label>
+                </li>
+                <li>
+                  <input type="radio" name="display" id="display02" value="20">
+                  <label class="select_label" for="display02">20</label>
+                </li>
+                <li>
+                  <input type="radio" name="display" id="display03" value="30">
+                  <label class="select_label" for="display03">30</label>
+                </li>
+                <li>
+                  <input type="radio" name="display" id="display04" value="50">
+                  <label class="select_label" for="display04">50</label>
+                </li>
+                <li>
+                  <input type="radio" name="display" id="display05" value="100" ">
+                  <label class=" select_label" for="display05">100</label>
+                </li>
+              </ul>
+              <label class="select_expandLabel" for="display-opener"></label>
+            </li>
+          </ul>
+        </div>
+        <ul class="list-search-results"">
+          <li>
+            <div>LINE ID</div>
+            <div>名前</div>
+            <div>職種</div>
+            <div>応募先</div>
+            <div>応募日</div>
+          </li>
+          <li>
+            <div class=" item-id">aaaa565600aaaa565600</div>
+          <div class="item-name"> 山田 太郎 </div>
+          <ul class="list-contact">
+            <li>
+              <div class="item-job"><span>看護師</span></div>
+              <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+              <div class="item-date">2025/10/24</div>
+            </li>
+            <li>
+              <div class="item-job"><span>言語聴覚士</span></div>
+              <div class="item-destination"><span>住宅型有料老人ホーム メディケアあああ</span></div>
+              <div class="item-date">2025/9/22</div>
+            </li>
+          </ul>
+          </li>
+          <li>
+            <div class=" item-id">32150855</div>
+            <div class="item-name"> 森山 ハナコ </div>
+            <ul class="list-contact">
+              <li>
+                <div class="item-job"><span>看護師</span></div>
+                <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+                <div class="item-date">2025/8/4</div>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <div class=" item-id">32150855</div>
+            <div class="item-name"> 山田 太郎 </div>
+            <ul class="list-contact">
+              <li>
+                <div class="item-job"><span>看護師</span></div>
+                <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+                <div class="item-date">2025/8/4</div>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <div class=" item-id">32150855</div>
+            <div class="item-name"> 森山 ハナコ </div>
+            <ul class="list-contact">
+              <li>
+                <div class="item-job"><span>看護師</span></div>
+                <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+                <div class="item-date">2025/8/4</div>
+              </li>
+              <li>
+                <div class="item-job"><span>介護士</span></div>
+                <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+                <div class="item-date">2025/8/4</div>
+              </li>
+              <li>
+                <div class="item-job"><span>言語聴覚士</span></div>
+                <div class="item-destination"><span>住宅型有料老人ホーム メディケア癒やしDX花園</span></div>
+                <div class="item-date">2025/12/11</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="box-pager">
+          <div class="box_number">
+            <nav>
+              <a href="#" class="is-active"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+              <a href="#"></a>
+            </nav>
+            <button type="button" class="btn_next"></button>
+          </div>
+          <div class="box_input">
+            <input type="text" placeholder="1/16513">
+          </div>
+        </div>
+      </article>
     </section>
-    <section>
+    <section class="container-announcement">
       <h2>運営からのお知らせ</h2>
+      <ul class="list-announcement">
+        <li onclick="openModal()">
+          <div class="item-date">2025/10/30</div>
+          <p>こんな機能が使えるようになりました。</p>
+        </li>
+        <li onclick="openModal()">
+          <div class="item-date">2025/10/30</div>
+          <p>こんな機能が使えるようになりました。</p>
+        </li>
+        <li onclick="openModal()">
+          <div class="item-date">2025/10/30</div>
+          <p>こんな機能が使えるようになりました。</p>
+        </li>
+        <li onclick="openModal()">
+          <div class="item-date">2025/10/30</div>
+          <p>こんな機能が使えるようになりました。</p>
+        </li>
+        <li onclick="openModal()">
+          <div class="item-date">2025/10/30</div>
+          <p>こんな機能が使えるようになりました。</p>
+        </li>
+      </ul>
     </section>
     <!--#include virtual="./inc_page-top.html"-->
   </main>
+  <article class="modal-block" id="modalBlock">
+    <div class="inner-modal">
+      <div class="box-title">
+        <p>利用規約を改定いたしました<span>（改定日：2025年10月30日）</span></p>
+        <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+      </div>
+      <div class="box-details">
+        <div class="wrap-details">
+          <span class="item-date">3025/12/11</span>
+          <div class="item-image">
+            <picture>
+              <source src="../assets/images/_dummy/01.jpg">
+              <img src="../assets/images/_dummy/01.jpg" alt="">
+            </picture>
+          </div>
+          <div class="item-text">
+            <p>本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。<br>
+              <br>
+本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。 <br>
+本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
+      </div>
+    </div>
+  </article>
+  <script>
+    function openModal() {
+      const modal = document.getElementById('modalBlock');
+      if (!modal) return;
+      modal.classList.add('is-active');
+      document.documentElement.classList.add('modal-open');
+      document.body.classList.add('modal-open');
+    }
+    function closeModal() {
+      const modal = document.getElementById('modalBlock');
+      if (modal) modal.classList.remove('is-active');
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    }
+  </script>
 </body>
 
 </html>
