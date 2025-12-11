@@ -8,17 +8,32 @@
 /*================================
  メインコンテンツオレンジ背景
 --------------------------------*/
-@mixin layout-inner-main {
+@mixin layout-inner-main($direction: column) {
     flex: 1;
     background-color: $main-orange;
     padding: 5rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: $direction;
     &::before {
         content: "";
         position: absolute;
         inset: 0;
-        background-color: #fff;
+        background-color: #fffbf5;
+        margin: 2rem;
+        border-radius: $radius40;
+    }
+}
+@mixin layout-inner-main-grid {
+    flex: 1;
+    background-color: $main-orange;
+    padding: 5rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: #fffbf5;
         margin: 2rem;
         border-radius: $radius40;
     }
@@ -144,6 +159,61 @@
                 content: "件";
                 left: calc(100% + 0.3em);
             }
+        }
+    }
+}
+/*=========================================
+ページ内LEFTメニュー
+-----------------------------------------*/
+@mixin container-left-menu {
+    grid-row: span 2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    min-width: 208px;
+    h2 {
+        font-size: FZ(16);
+        font-weight: 600;
+        color: #696969;
+        border-bottom: 1px solid #e2e0db;
+        padding-bottom: 0.3em;
+    }
+    nav {
+        position: relative;
+        font-size: inherit;
+        display: flex;
+        flex-direction: column;
+        padding-top: 2.4rem;
+        padding-right: 2.4rem;
+        gap: 8px 0;
+        a,
+        span {
+            position: relative;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding-left: 1.8rem;
+            font-size: FZ(16);
+            font-weight: 300;
+        }
+        a {
+            transition: 0.3s ease-out;
+            &.is-active {
+                color: #fff;
+                background-color: $main-orange;
+            }
+            &:hover {
+                background-color: #ffeed4;
+            }
+            &:active {
+                background-color: transparent;
+            }
+        }
+        span {
+            color: #fff;
+            background-color: $main-orange;
         }
     }
 }

@@ -70,3 +70,11 @@
     background-size: contain;
     background-position: center center;
 }
+// プラス（＋）アイコン
+@mixin svg-icon-plus($color) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="%23#{$color}"><path d="M6.38235 14V7.61765H0V6.38235H6.38235V0H7.61765V6.38235H14V7.61765H7.61765V14H6.38235Z"/></svg>');
+    aspect-ratio: 1;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+}
