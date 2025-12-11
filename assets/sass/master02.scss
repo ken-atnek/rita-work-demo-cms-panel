@@ -1,0 +1,138 @@
+/*==========================================================
+法人管理
+==========================================================*/
+@use "./_reset_v2.5" as *;
+@use "./_variable" as *;
+@use "./svg" as *;
+@use "./_font" as *;
+@use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
+.inner-02 {
+    @include layout-inner-main;
+    gap: 1em 0;
+    // 現在の応募状況
+    .container-company-list {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+
+        // 条件で検索
+        .block-search {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-application-date {
+                    padding-inline: 2em;
+                    .wrap-period {
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+                .item-search {
+                    @include main-button("confirm");
+                }
+            }
+        }
+        // 絞り込み
+        .block-filter {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-application-date {
+                    padding-inline: 2em;
+                    .wrap-period {
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+            }
+        }
+        // 法人一覧
+        .block-company-list {
+            @include layout-block-article;
+            .list-search-results {
+                @include layout-table-list(auto 1fr auto auto auto auto, 6);
+                margin-top: 1.4rem;
+                .item-number,
+                .item-name,
+                .item-tel,
+                .item-email,
+                .item-date,
+                .item-add {
+                    padding-inline: 1em;
+                    padding-block: 1.6rem;
+                }
+                .item-number {
+                    @include flex-center;
+                }
+                .item-date {
+                    text-align: center;
+                }
+                .item-add {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
+        }
+    }
+    .bottom-box-btn {
+        align-self: center;
+        position: relative;
+        font-size: inherit;
+        margin-top: 3rem;
+        .item-register {
+            @include main-button("confirm");
+            width: 20rem;
+            height: 48px;
+            span {
+                font-size: 1.6rem;
+            }
+        }
+    }
+}
