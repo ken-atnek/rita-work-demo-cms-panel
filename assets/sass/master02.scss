@@ -8,6 +8,9 @@
 @use "./_common" as *;
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
+/*=================================
+***法人一覧
+=================================*/
 .inner-02 {
     @include layout-inner-main;
     gap: 1em 0;
@@ -29,6 +32,7 @@
                 .item-application-date {
                     padding-inline: 2em;
                     .wrap-period {
+                        width: 37rem;
                         @include item-period;
                     }
                 }
@@ -67,6 +71,7 @@
                 .item-application-date {
                     padding-inline: 2em;
                     .wrap-period {
+                        width: 37rem;
                         @include item-period;
                     }
                 }
@@ -131,7 +136,144 @@
             width: 20rem;
             height: 48px;
             span {
+                position: relative;
                 font-size: 1.6rem;
+                padding-left: 1.6em;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    translate: 0 -50%;
+                    width: 1.4rem;
+                    @include svg-icon-plus("fff");
+                }
+            }
+        }
+    }
+}
+/*=================================
+***法人登録・修正・確認
+=================================*/
+.inner-02-02,
+.inner-02-03 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-company-register,
+    .container-company-check {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        flex: 1;
+        .block-form,
+        .block-check {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 5rem 9rem 5rem 3rem;
+            position: relative;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            dl {
+                width: 100%;
+                font-size: inherit;
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 0 2rem;
+                dt {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    position: relative;
+                    min-width: 9rem;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                dd {
+                    position: relative;
+                    font-size: inherit;
+                    display: flex;
+                }
+            }
+        }
+        .bottom-box-btn {
+            align-self: center;
+            position: relative;
+            font-size: inherit;
+            margin-top: 3rem;
+            display: flex;
+            gap: 0 2.4rem;
+            .item-back {
+                @include main-button("cancel");
+                width: 16rem;
+                height: 48px;
+                font-size: FZ(14);
+            }
+            .item-check {
+                @include main-button("confirm");
+                width: 20rem;
+                height: 48px;
+                span {
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+// 法人登録・ 修正
+.inner-02-02 {
+    .container-company-register {
+        .link-page-back {
+            @include link-page-back;
+        }
+        .block-form {
+            gap: 2.4rem 0;
+            dl {
+                dt {
+                    padding-top: 1.4rem;
+                    &::after {
+                        content: "※";
+                        font-size: 1rem;
+                    }
+                }
+                dd {
+                    flex-direction: column;
+                    gap: 8px 0;
+                    .input-date {
+                        width: 19rem;
+                        @include item-period;
+                    }
+                }
+                .item-add {
+                    input {
+                        &:first-of-type {
+                            width: 14rem;
+                        }
+                    }
+                }
+            }
+        }
+        // 修正ページ用
+        .btn-delate-item {
+            @include btn-delate-item;
+        }
+    }
+}
+// 法人情報確認
+.inner-02-03 {
+    .container-company-check {
+        .block-check {
+            gap: 4.8rem 0;
+            dl {
+                dt,
+                dd {
+                    display: flex;
+                    align-items: center;
+                }
+                .item-add {
+                    gap: 0 1em;
+                }
             }
         }
     }

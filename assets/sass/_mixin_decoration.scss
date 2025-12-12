@@ -22,6 +22,33 @@
     justify-content: center;
 }
 /*=========================================
+上部「戻る」ボタン
+-----------------------------------------*/
+@mixin link-page-back {
+    position: absolute;
+    right: 3rem;
+    top: 1.4rem;
+    font-size: FZ(14);
+    @include flex-center;
+    width: 8rem;
+    height: 36px;
+    border: 1px solid $font-black;
+    border-radius: 8px;
+}
+/*=========================================
+下部「削除する」ボタン
+-----------------------------------------*/
+@mixin btn-delate-item {
+    position: absolute;
+    right: 3rem;
+    top: 1.4rem;
+    font-size: FZ(14);
+
+    width: 8rem;
+    height: 36px;
+    @include main-button("");
+}
+/*=========================================
 ×ボタン
 -----------------------------------------*/
 @mixin btn-close {
@@ -72,6 +99,15 @@
         &:active {
             background-color: #696969;
         }
+    } @else if $type == "cancel" {
+        // background-color: #fff;
+        border: 1px solid $font-black;
+        &:hover {
+            background-color: $hover-bg-blue;
+        }
+        &:active {
+            background-color: #fff;
+        }
     } @else {
         background-color: #fff;
         border: 1px solid $font-black;
@@ -82,6 +118,18 @@
             background-color: #fff;
         }
     }
+}
+/*=========================================
+下部「削除する」ボタン
+-----------------------------------------*/
+@mixin btn-delate-item {
+    position: absolute;
+    right: 4rem;
+    bottom: 2rem;
+    font-size: FZ(14);
+    width: 12rem;
+    height: 4rem;
+    @include main-button("clear");
 }
 
 /*================================
@@ -364,7 +412,7 @@
     display: flex;
     gap: 0 0.3em;
     transition: 0.3s ease-out;
-    width: 37rem;
+
     height: 4.4rem;
     input {
         @include box-input-period;

@@ -1,0 +1,91 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/master02.css" />
+  </head>
+
+  <body>
+    <!--#include virtual="./inc_header.html"-->
+    <main class="inner-02-02">
+      <section class="page-nav">
+        <h2>法人管理</h2>
+        <nav>
+          <span>新規法人管理</span>
+        </nav>
+      </section>
+      <section class="container-company-register">
+        <a href="#" class="link-page-back">戻る</a>
+        <h2>新規法人登録</h2>
+        <form class="block-form">
+          <dl>
+            <dt>契約日</dt>
+            <dd>
+              <div class="input-date"><input type="date" /></div>
+            </dd>
+          </dl>
+          <dl>
+            <dt>法人名</dt>
+            <dd><input type="text" /></dd>
+          </dl>
+          <dl>
+            <dt>ふりがな</dt>
+            <dd><input type="text" /></dd>
+          </dl>
+          <dl>
+            <dt>住所</dt>
+            <dd class="item-add">
+              <input type="text" /><input type="text" /><input type="text" />
+            </dd>
+          </dl>
+          <dl>
+            <dt>電話番号</dt>
+            <dd><input type="text" /></dd>
+          </dl>
+          <dl>
+            <dt>E-mail</dt>
+            <dd><input type="text" /></dd>
+          </dl>
+        </form>
+        <div class="bottom-box-btn">
+          <button type="button" class="item-back">戻る</button>
+          <button type="button" class="item-check">入力を確認する</button>
+        </div>
+        <!--NOTE 修正画面のみ表示 -->
+        <button type="button" class="btn-delate-item">削除する</button>
+      </section>
+      <!--#include virtual="./inc_page-top.html"-->
+    </main>
+    <!-- NOTE 修正画面用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
+    <article class="modal-alert" id="modalBlock">
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>新規事業所削除</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <p>新規法人情報を削除します。よろしいですか？</p>
+          <div class="box-btn">
+            <button type="button" class="btn-cancel">キャンセル</button>
+            <button type="button" class="btn-confirm">はい</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </body>
+</html>
