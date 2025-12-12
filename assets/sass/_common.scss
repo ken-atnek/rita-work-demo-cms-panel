@@ -73,7 +73,7 @@ main {
 }
 section,
 article {
-    width: stretch;
+    width: 100%;
     position: relative;
     font-size: 1em;
 }
@@ -138,6 +138,9 @@ input[type="password"],
 input[type="email"],
 textarea {
     background-color: #fff;
+    // min-height: 11lh;
+    field-sizing: content;
+    padding-block: 0.8em;
 }
 svg {
     fill: transparent;

@@ -78,3 +78,11 @@
     background-size: contain;
     background-position: center center;
 }
+// チェックアイコン
+@mixin svg-icon-check($color) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" fill="%23#{$color}"><path d="M3.08092 6L0 3.16991L0.618497 2.60177L3.08671 4.86903L8.3815 0L9 0.568142L3.08092 6Z" /></svg>');
+    aspect-ratio: 9/6;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+}
