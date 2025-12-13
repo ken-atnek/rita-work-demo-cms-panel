@@ -82,22 +82,30 @@
 -----------------------------------------*/
 @mixin btn-toggle {
     display: block;
-    width: 1.4rem;
+    width: 3.6rem;
     aspect-ratio: 1;
     align-self: center;
+    border-radius: 50%;
+    transition: 0.3s ease-out;
     &::before,
     &::after {
         content: "";
         position: absolute;
         inset: 0;
         margin: auto;
-        width: 100%;
+        width: 1.4rem;
         height: 2px;
         background-color: $font-black;
         transition: 0.2s ease-out;
     }
     &::before {
         rotate: -90deg;
+    }
+    &:hover {
+        background-color: $hover-bg-blue;
+    }
+    &:active {
+        background-color: #fff;
     }
     &.is-active {
         &::before {
