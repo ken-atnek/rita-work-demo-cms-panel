@@ -64,11 +64,11 @@
     display: flex;
     flex-direction: column;
     @include drop-shadow;
-    .btn-close {
+    .btn-switch {
         position: absolute;
         right: 3.2rem;
         top: 2.4rem;
-        @include btn-close;
+        @include btn-toggle;
     }
     h3 {
         font-size: FZ(18);
@@ -76,36 +76,54 @@
         margin-left: 25px;
         margin-bottom: 19px;
     }
-    & > ul {
+    article {
         position: relative;
-        width: 100%;
-        font-size: inherit;
-        border-top: 1px solid $border-gray;
-        border-bottom: 1px solid $border-gray;
-        & > li {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: 0.2s ease-out;
+        .blockGrid {
+            overflow: hidden;
             position: relative;
             font-size: inherit;
-            padding-block: 1rem;
             display: flex;
-            align-items: center;
-            gap: 0 0.8em;
-            h4 {
-                font-size: FZ(16);
-                font-weight: 300;
-                width: max-content;
-                display: block;
-            }
-            .wrap-select {
+            flex-direction: column;
+            & > ul {
                 position: relative;
+                width: 100%;
                 font-size: inherit;
-                display: flex;
-                gap: 0 0.4rem;
-                .item-check-box {
+                border-top: 1px solid $border-gray;
+                border-bottom: 1px solid $border-gray;
+                & > li {
                     position: relative;
                     font-size: inherit;
-                    @include item-check-box;
+                    padding-block: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0 0.8em;
+                    h4 {
+                        font-size: FZ(16);
+                        font-weight: 300;
+                        width: max-content;
+                        display: block;
+                    }
+                    .wrap-select {
+                        position: relative;
+                        font-size: inherit;
+                        display: flex;
+                        gap: 0 0.4rem;
+                        .item-check-box {
+                            position: relative;
+                            font-size: inherit;
+                            @include item-check-box;
+                        }
+                    }
                 }
             }
+        }
+
+        &.is-active {
+            pointer-events: auto;
+            grid-template-rows: 1fr;
         }
     }
 }
@@ -277,8 +295,9 @@
                         display: block;
                         width: 1.8rem;
                         aspect-ratio: 1;
-                        background-color: #fff;
+                        background-color: #f7f7f7;
                         border-radius: 50%;
+                        transition: 0.3s ease-out;
                         &::before {
                             content: "";
                             position: absolute;
@@ -288,6 +307,7 @@
                             aspect-ratio: 1/0.85;
                             background-color: $font-black;
                             clip-path: polygon(0 100%, 50% 0, 100% 100%);
+                            transition: 0.3se ease-out;
                         }
                         &.arrow-top {
                             &::before {
@@ -298,6 +318,24 @@
                             &::before {
                                 scale: 1 -1;
                                 translate: 0 1px;
+                            }
+                        }
+                        &.is-active {
+                            background-color: $hover-blue;
+                            &::before {
+                                background-color: #fff;
+                            }
+                        }
+                        &:hover {
+                            background-color: $hover-bg-blue;
+                            &::before {
+                                background-color: $font-black;
+                            }
+                        }
+                        &:active {
+                            background-color: #f7f7f7;
+                            &::before {
+                                background-color: $font-black;
                             }
                         }
                     }

@@ -196,6 +196,7 @@ header {
             align-items: center;
             padding-inline: 1.6em;
             margin-left: 2rem;
+            transition: 0.3s ease-out;
             span {
                 position: relative;
                 font-size: FZ(14);
@@ -209,6 +210,25 @@ header {
                     translate: 0 -50%;
                     width: 18px;
                     @include svg-icon-pc("ffffff");
+                    transition: 0.3s ease-out;
+                }
+            }
+            &:hover {
+                color: $font-black;
+                background-color: FFD045;
+                span {
+                    &::before {
+                        @include svg-icon-pc("403726");
+                    }
+                }
+            }
+            &:active {
+                color: #fff;
+                background-color: $font-black;
+                span {
+                    &::before {
+                        @include svg-icon-pc("ffffff");
+                    }
                 }
             }
         }
@@ -323,6 +343,7 @@ header {
         background-color: $font-black;
         position: relative;
         border-radius: 50%;
+        transition: 0.3s ease-out;
         &::after {
             content: "";
             position: absolute;
@@ -330,6 +351,9 @@ header {
             margin: auto;
             width: 9px;
             @include svg-icon-arrow-top(fff);
+        }
+        &:hover {
+            background-color: #655e50;
         }
     }
 }

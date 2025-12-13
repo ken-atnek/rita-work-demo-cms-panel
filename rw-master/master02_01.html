@@ -22,94 +22,114 @@
 
   <body>
     <!--#include virtual="./inc_header.html"-->
-    <main class="inner-02">
+    <main class="inner-02-01">
       <section class="container-company-list">
         <h2>法人一覧</h2>
         <form class="block-search">
-          <button type="button" class="btn-close"></button>
+          <button
+            type="button"
+            id="btnSwitchSearch"
+            class="btn-switch"
+            aria-controls="innerSearch"
+            aria-expanded="false"
+          ></button>
           <h3>条件で検索</h3>
-          <ul class="box-search-items">
-            <li class="item-name">
-              <h4>法人名</h4>
-              <input type="text" />
-            </li>
-            <li class="item-application-date">
-              <h4>契約日</h4>
-              <div class="wrap-period">
-                <input type="date" name="searchStartDay" />
-                <span>〜</span>
-                <input type="date" name="searchEndDay" />
+          <article id="innerSearch">
+            <div class="blockGrid">
+              <ul class="box-search-items">
+                <li class="item-name">
+                  <h4>法人名</h4>
+                  <input type="text" />
+                </li>
+                <li class="item-application-date">
+                  <h4>契約日</h4>
+                  <div class="wrap-period">
+                    <input type="date" name="searchStartDay" />
+                    <span>〜</span>
+                    <input type="date" name="searchEndDay" />
+                  </div>
+                </li>
+              </ul>
+              <div class="box-btn">
+                <button type="button" class="item-clear">条件をクリア</button>
+                <button type="button" class="item-search">条件で検索</button>
               </div>
-            </li>
-          </ul>
-          <div class="box-btn">
-            <button type="button" class="item-clear">条件をクリア</button>
-            <button type="button" class="item-search">条件で検索</button>
-          </div>
+            </div>
+          </article>
         </form>
         <form class="block-filter">
-          <button type="button" class="btn-close"></button>
+          <button
+            type="button"
+            id="btnSwitchFilter"
+            class="btn-switch"
+            aria-controls="innerFilter"
+            aria-expanded="false"
+          ></button>
           <h3>絞り込み</h3>
-          <ul class="box-search-items">
-            <li class="item-name">
-              <h4>法人名</h4>
-              <div class="wrap-select">
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials01" /><label for="select-initials01"
-                    >あ行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials02" /><label for="select-initials02"
-                    >か行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials03" /><label for="select-initials03"
-                    >さ行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials04" /><label for="select-initials04"
-                    >た行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials05" /><label for="select-initials05"
-                    >な行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials06" /><label for="select-initials06"
-                    >は行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials07" /><label for="select-initials07"
-                    >ま行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials08" /><label for="select-initials08"
-                    >や行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials09" /><label for="select-initials09"
-                    >ら行</label
-                  >
-                </div>
-                <div class="item-check-box">
-                  <input type="checkbox" id="select-initials10" /><label for="select-initials10"
-                    >わ行</label
-                  >
-                </div>
+          <article id="innerFilter">
+            <div class="blockGrid">
+              <ul class="box-search-items">
+                <li class="item-name">
+                  <h4>法人名</h4>
+                  <div class="wrap-select">
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials01" /><label for="select-initials01"
+                        >あ行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials02" /><label for="select-initials02"
+                        >か行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials03" /><label for="select-initials03"
+                        >さ行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials04" /><label for="select-initials04"
+                        >た行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials05" /><label for="select-initials05"
+                        >な行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials06" /><label for="select-initials06"
+                        >は行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials07" /><label for="select-initials07"
+                        >ま行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials08" /><label for="select-initials08"
+                        >や行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials09" /><label for="select-initials09"
+                        >ら行</label
+                      >
+                    </div>
+                    <div class="item-check-box">
+                      <input type="checkbox" id="select-initials10" /><label for="select-initials10"
+                        >わ行</label
+                      >
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="box-btn">
+                <button type="button" class="item-clear">絞り込みを解除</button>
               </div>
-            </li>
-          </ul>
-          <div class="box-btn">
-            <button type="button" class="item-clear">絞り込みを解除</button>
-          </div>
+            </div>
+          </article>
         </form>
         <article class="block-company-list">
           <div class="box-head">
@@ -247,5 +267,6 @@
       </section>
       <!--#include virtual="./inc_page-top.html"-->
     </main>
+    <script src="../assets/js/common.js" defer></script>
   </body>
 </html>
