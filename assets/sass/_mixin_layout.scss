@@ -143,6 +143,7 @@
             width: 74px;
             margin-left: 6em;
             @include list-select-center;
+            z-index: 10;
             &::before,
             &::after {
                 position: absolute;

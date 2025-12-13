@@ -28,12 +28,11 @@ body {
     // 画像右クリック・ドラッグ禁止
     img {
         width: 100%;
-        user-drag: none;
+        user-select: none;
+        -webkit-user-select: none;
         -webkit-user-drag: none;
-        -moz-user-select: none;
         pointer-events: none;
     }
-    // PCサイトTELリンク非アクティブ
     @media (min-width: 768px) {
         a[href*="tel:"] {
             pointer-events: none;
