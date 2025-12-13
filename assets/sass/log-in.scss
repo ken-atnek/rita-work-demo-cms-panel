@@ -65,6 +65,24 @@
                 align-self: center;
                 margin-top: 1em;
             }
+            .text-caution {
+                position: relative;
+                font-size: FZ(12);
+                color: $caution-red;
+                font-weight: 600;
+                margin-top: 2rem;
+                align-self: center;
+                padding-left: 2em;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    translate: 0 -50%;
+                    left: 0;
+                    width: 19px;
+                    @include svg-icon-caution("DF3D3D");
+                }
+            }
         }
         // パスワード再設定
         .reset-password {

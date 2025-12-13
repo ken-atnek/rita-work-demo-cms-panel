@@ -1,0 +1,507 @@
+/*==========================================================
+事業所管理
+==========================================================*/
+@use "./_reset_v2.5" as *;
+@use "./_variable" as *;
+@use "./svg" as *;
+@use "./_font" as *;
+@use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
+/*=================================
+***事業所一覧
+=================================*/
+.inner-03 {
+    @include layout-inner-main;
+    gap: 1em 0;
+    // 現在の応募状況
+    .container-vendor-list {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        // 条件で検索
+        .block-search {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                flex-wrap: wrap;
+                li {
+                    padding-inline: 2.4rem;
+                }
+                .item-id {
+                    width: 35%;
+                    min-width: 36rem;
+                    border-right: 1px solid $border-gray;
+                    border-bottom: 1px solid $border-gray;
+                }
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-bottom: 1px solid $border-gray;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-plan {
+                    border-right: 1px solid $border-gray;
+                    width: 57%;
+                    min-width: 60rem;
+                    .wrap-radio {
+                        position: relative;
+                        font-size: inherit;
+                        display: flex;
+                        gap: 0 0.4rem;
+                        .item-check-box {
+                            position: relative;
+                            font-size: inherit;
+                            @include item-select-radio;
+                        }
+                    }
+                }
+                .item-application-date {
+                    flex: 1;
+                    .wrap-period {
+                        // width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+                .item-search {
+                    @include main-button("confirm");
+                }
+            }
+        }
+        // 絞り込み
+        .block-filter {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-application-date {
+                    padding-inline: 2em;
+                    .wrap-period {
+                        width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+            }
+        }
+        // 事業所一覧
+        .block-vendor-list {
+            @include layout-block-article;
+            .list-search-results {
+                @include layout-table-list(auto auto 1fr auto auto auto auto auto, 8);
+                margin-top: 1.4rem;
+                .item-id,
+                .item-number,
+                .item-name,
+                .item-add {
+                    padding-inline: 1em;
+                    padding-block: 1.6rem;
+                }
+                .item-number {
+                    @include flex-center;
+                }
+                .item-date {
+                    text-align: center;
+                }
+                .item-add {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .wrap-items {
+                    position: relative;
+                    grid-column: span 4;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    font-size: inherit;
+                    align-items: stretch;
+                    .card-list {
+                        font-size: inherit;
+                        display: contents;
+                        &:has(> li:nth-last-child(2)) {
+                            & > li {
+                                &:not(:last-of-type) {
+                                    .item-job-category,
+                                    .item-plan,
+                                    .item-date {
+                                        border-bottom: solid 1px $border-gray;
+                                    }
+                                }
+                            }
+                        }
+                        & > li {
+                            display: contents;
+                            font-size: inherit;
+                            .item-job-category,
+                            .item-plan,
+                            .item-date {
+                                font-size: FZ(14);
+                                padding-block: 1rem;
+                                padding-inline: 1em;
+                            }
+                            .item-job-category {
+                                grid-column: 1;
+                                border-right: solid 1px $border-gray;
+                            }
+                            .item-plan {
+                                grid-column: 2;
+                                border-right: solid 1px $border-gray;
+                            }
+                            .item-date {
+                                grid-column: 4;
+                            }
+                        }
+                    }
+                    .item-ban {
+                        position: relative;
+                        border-right: solid 1px $border-gray;
+                        grid-column: 3;
+                        grid-row: 1 / span 1;
+                        i {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            translate: -50% -50%;
+                            width: 3rem;
+                            aspect-ratio: 1;
+                            border-radius: 50%;
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                inset: 0;
+                                margin: auto;
+                                width: 8px;
+                                height: 1px;
+                                background-color: $font-black;
+                            }
+                        }
+                        &.is-active {
+                            i {
+                                background-color: #d9d9d9;
+                                &::before {
+                                    content: "";
+                                    position: absolute;
+                                    inset: 0;
+                                    margin: auto;
+                                    width: 9px;
+                                    height: unset;
+                                    background-color: transparent;
+                                    @include svg-icon-check("403726");
+                                }
+                            }
+                        }
+                    }
+                    @for $i from 2 through 10 {
+                        &.list-count-#{$i} {
+                            .item-ban {
+                                grid-row: 1 / span #{$i};
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
+        }
+    }
+    .bottom-box-btn {
+        align-self: center;
+        position: relative;
+        font-size: inherit;
+        margin-top: 3rem;
+        .item-register {
+            @include main-button("confirm");
+            width: 20rem;
+            height: 48px;
+            span {
+                position: relative;
+                font-size: 1.6rem;
+                padding-left: 1.6em;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    translate: 0 -50%;
+                    width: 1.4rem;
+                    @include svg-icon-plus("fff");
+                }
+            }
+        }
+    }
+}
+/*=================================
+***事業者登録・修正・確認
+=================================*/
+.inner-03-01-01,
+.inner-03-01-02 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-vendor-register,
+    .container-vendor-check {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        flex: 1;
+        .block-form,
+        .block-check {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 5rem 9rem 5rem 3rem;
+            position: relative;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            dl {
+                width: 100%;
+                font-size: inherit;
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 0 2rem;
+                dt {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    position: relative;
+                    min-width: 13rem;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                dd {
+                    position: relative;
+                    font-size: inherit;
+                    display: flex;
+                    .wrap-toggle-button {
+                        font-size: inherit;
+                        display: flex;
+                        align-items: center;
+                        font-size: FZ(14);
+                        gap: 0 8px;
+                        .toggle-button {
+                            @include toggle-button("無し", "有り");
+                        }
+                    }
+                }
+            }
+            hr {
+                grid-column: span 2;
+                width: 100%;
+                border-top: 1px solid $border-gray;
+                margin-block: 2rem;
+            }
+            .inner-select-company,
+            .inner-ban-plan {
+                position: relative;
+                font-size: inherit;
+                grid-column: span 2;
+                margin-top: 4rem;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 24px 0;
+                .box-head {
+                    display: flex;
+                    font-size: inherit;
+                    border-bottom: 1px solid $border-gray;
+                    grid-column: span 2;
+                    padding-bottom: 2rem;
+                    margin-bottom: 1rem;
+                    h3 {
+                        font-size: FZ(18);
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        .bottom-box-btn {
+            align-self: center;
+            position: relative;
+            font-size: inherit;
+            margin-top: 3rem;
+            display: flex;
+            gap: 0 2.4rem;
+            .item-back {
+                @include main-button("cancel");
+                width: 16rem;
+                height: 48px;
+                font-size: FZ(14);
+            }
+            .item-check {
+                @include main-button("confirm");
+                width: 20rem;
+                height: 48px;
+                span {
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+// 事業所登録・ 修正
+.inner-03-01-01 {
+    .container-vendor-register {
+        h2 {
+            span {
+                font-size: 1.6rem;
+                &::before {
+                    content: "-";
+                    margin-inline: 1em;
+                }
+            }
+        }
+        .link-page-back {
+            @include link-page-back;
+        }
+        .block-form {
+            gap: 2.4rem 0;
+            dl {
+                dt {
+                    padding-top: 1.4rem;
+                    &.is-required {
+                        &::after {
+                            content: "※";
+                            font-size: 1rem;
+                        }
+                    }
+                }
+                dd {
+                    flex-direction: column;
+                    gap: 8px 0;
+                    .select-job-category {
+                        --boxHeight: 4.4rem;
+                        flex: 1;
+                        @include list-select-left;
+                        .select_label {
+                            padding-left: 1.4em;
+                        }
+                        ul {
+                            overflow-y: scroll;
+                            max-height: 20em;
+                        }
+                    }
+                    textarea {
+                        min-height: 8lh;
+                    }
+                    .input-date {
+                        width: 19rem;
+                        @include item-period;
+                    }
+                    .wrap-toggle-button {
+                        padding-top: 1.2rem;
+                    }
+                }
+            }
+        }
+        // 特別バナープラン
+        .inner-ban-plan {
+            .box-head {
+                justify-content: space-between;
+                .wrap-toggle-button {
+                    padding-right: 3rem;
+                    .toggle-button {
+                        @include toggle-button("無効", "有効");
+                    }
+                }
+            }
+            dl {
+                dd {
+                    p {
+                        font-size: FZ(12);
+                        color: #696969;
+                    }
+                    .select-image {
+                        @include item-select-image;
+                    }
+                    .wrap-notice {
+                        font-size: inherit;
+                        display: flex;
+                        flex-direction: column;
+                        margin-top: 1rem;
+                        span {
+                            font-size: FZ(12);
+                            color: #696969;
+                        }
+                    }
+                }
+            }
+        }
+        // 法人名を選択
+        .inner-select-company {
+            .select-company {
+                --boxHeight: 4.4rem;
+                flex: 1;
+                @include list-select-left;
+                .select_label {
+                    padding-left: 1.4em;
+                }
+                ul {
+                    overflow-y: scroll;
+                    max-height: 16em;
+                }
+            }
+        }
+        // 修正ページ用
+        .btn-delate-item {
+            @include btn-delate-item;
+        }
+    }
+}
+// 事業者情報確認
+.inner-03-01-02 {
+    .container-vendor-check {
+        .block-check {
+            gap: 4.8rem 0;
+            dl {
+                dt,
+                dd {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    .wrap-toggle-button {
+                        pointer-events: none;
+                    }
+                }
+                .item-add {
+                    gap: 0 1em;
+                }
+            }
+        }
+    }
+}

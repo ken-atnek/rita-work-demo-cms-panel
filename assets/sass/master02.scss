@@ -11,14 +11,13 @@
 /*=================================
 ***法人一覧
 =================================*/
-.inner-02 {
+.inner-02-01 {
     @include layout-inner-main;
     gap: 1em 0;
     // 現在の応募状況
     .container-company-list {
         @include layout-container-section;
         padding-bottom: 8rem;
-
         // 条件で検索
         .block-search {
             @include layout-block-search;
@@ -66,7 +65,6 @@
                 .item-name {
                     flex: 1;
                     padding-inline: 1.5em;
-                    border-right: 1px solid $border-gray;
                 }
                 .item-application-date {
                     padding-inline: 2em;
@@ -265,6 +263,7 @@
     .container-company-check {
         .block-check {
             gap: 4.8rem 0;
+            padding-bottom: 8rem;
             dl {
                 dt,
                 dd {
