@@ -489,6 +489,7 @@
     height: 24px;
     border-radius: 100vmax;
     background-color: #ababab;
+    transition: 0.3s ease-out;
     cursor: pointer;
     input[type="checkbox"] {
         display: none;
@@ -523,8 +524,12 @@
             content: "#{$on-text}";
         }
     }
+    &:hover {
+        outline: 1px solid $hover-blue;
+    }
     &:active {
         background-color: $hover-bg-blue;
+        outline: 1px solid $hover-blue;
     }
 }
 
@@ -666,6 +671,72 @@
         p {
             font-size: FZ(14);
             color: #df3d3d;
+        }
+    }
+    &.is-active {
+        pointer-events: none;
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(34, 34, 34, 0.3);
+            z-index: +1;
+            border-radius: 8px;
+        }
+    }
+}
+/*=========================================
+画像セレクト時の表示リスト
+-----------------------------------------*/
+@mixin selected-image-list($count: 3) {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat($count, 1fr);
+    gap: 1rem;
+    li {
+        position: relative;
+        border: 1px solid #e2e0db;
+        .warp-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0 4px;
+            button {
+                position: relative;
+                width: 22px;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                background-color: #d9d9d9;
+                transition: 0.3s ease-out;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    margin: auto;
+                }
+                &.btn-change {
+                    &::after {
+                        width: 10px;
+                        @include svg-icon-reload("403726");
+                        rotate: 45deg;
+                    }
+                }
+                &.btn-delate {
+                    &::after {
+                        width: 8px;
+                        @include svg-icon-plus("403726");
+                        rotate: 45deg;
+                    }
+                }
+                &:hover {
+                    background-color: $hover-bg-blue;
+                }
+                &:active {
+                    background-color: #d9d9d9;
+                }
+            }
         }
     }
 }

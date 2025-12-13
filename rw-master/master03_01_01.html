@@ -182,6 +182,7 @@
             <dl>
               <dt class="is-required">事務所ロゴ画像</dt>
               <dd>
+                <!-- NOTE 画像登録時は [is-active]付与 -->
                 <div class="select-image">
                   <h4>ここにファイルをドロップ</h4>
                   <span>または</span>
@@ -193,6 +194,18 @@
                     <p>画像の容量を圧縮してしてから再度アップロードしてください。</p>
                   </div> -->
                 </div>
+                <ul class="selected-image-list">
+                  <li>
+                    <div class="warp-btn">
+                      <button type="button" class="btn-change"></button>
+                      <button type="button" class="btn-delate"></button>
+                    </div>
+                    <picture>
+                      <source src="../assets/images/_dummy/fac01.png" />
+                      <img src="../assets/images/_dummy/fac01.png" alt="" />
+                    </picture>
+                  </li>
+                </ul>
                 <div class="wrap-notice">
                   <p>※画像は1枚登録してください</p>
                   <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>

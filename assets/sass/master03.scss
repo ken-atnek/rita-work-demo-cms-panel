@@ -449,6 +449,10 @@
                     .select-image {
                         @include item-select-image;
                     }
+                    .selected-image-list {
+                        margin-top: 1rem;
+                        @include selected-image-list($count: 3);
+                    }
                     .wrap-notice {
                         font-size: inherit;
                         display: flex;
