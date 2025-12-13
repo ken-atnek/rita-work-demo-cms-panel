@@ -358,7 +358,7 @@
             display: flex;
             gap: 0 2.4rem;
             .item-back {
-                @include main-button("cancel");
+                @include main-button("back");
                 width: 16rem;
                 height: 48px;
                 font-size: FZ(14);
