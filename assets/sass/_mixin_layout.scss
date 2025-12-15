@@ -66,8 +66,8 @@
     @include drop-shadow;
     .btn-switch {
         position: absolute;
-        right: 3.2rem;
-        top: 2.4rem;
+        right: 3rem;
+        top: 1.3rem;
         @include btn-toggle;
     }
     h3 {
@@ -120,7 +120,6 @@
                 }
             }
         }
-
         &.is-active {
             pointer-events: auto;
             grid-template-rows: 1fr;
@@ -255,6 +254,7 @@
         transition: 0.3s ease-out;
         z-index: +1;
         &:not(:first-of-type) {
+            cursor: pointer;
             &::before {
                 content: "";
                 position: absolute;
@@ -266,6 +266,11 @@
             &:hover {
                 &::before {
                     opacity: 1;
+                }
+            }
+            &:active {
+                &::before {
+                    background-color: #fff;
                 }
             }
         }
@@ -343,6 +348,7 @@
             }
         }
         &:not(:first-of-type) {
+            transition: 0.3s ease-out;
             &:nth-of-type(2n - 1) {
                 background-color: #f7f7f7;
             }
@@ -364,6 +370,35 @@
         display: flex;
         gap: 0 0.5em;
         align-items: center;
+        nav {
+            position: relative;
+            font-size: 1em;
+            display: flex;
+            gap: 0 0.8em;
+            align-items: center;
+            counter-reset: number 0;
+            a {
+                font-size: FZ(14);
+                width: 1em;
+                aspect-ratio: 1;
+                display: grid;
+                place-items: center;
+                color: #ababab;
+                transition: 0.3s ease-out;
+                &::before {
+                    content: counter(number);
+                    counter-increment: number 1;
+                }
+                &.is-active {
+                    color: $font-black;
+                    font-weight: 600;
+                }
+                &:not(.is-active):hover {
+                    color: $hover-blue;
+                    font-weight: 600;
+                }
+            }
+        }
         button {
             position: relative;
             width: 3.6rem;
@@ -379,6 +414,7 @@
             &::after {
                 @include svg-icon-arrow-bottom("403726");
                 width: 1rem;
+                translate: 2px -1px;
             }
             &::before {
                 background-color: #e6edf7;
@@ -409,34 +445,6 @@
                 }
                 &::after {
                     @include svg-icon-arrow-bottom("ffffff");
-                }
-            }
-        }
-        nav {
-            position: relative;
-            font-size: 1em;
-            display: flex;
-            gap: 0 0.8em;
-            align-items: center;
-            counter-reset: number 0;
-            a {
-                font-size: FZ(14);
-                width: 1em;
-                aspect-ratio: 1;
-                display: grid;
-                place-items: center;
-                color: #ababab;
-                transition: 0.3s ease-out;
-                &::before {
-                    content: counter(number);
-                    counter-increment: number 1;
-                }
-                &.is-active {
-                    color: $font-black;
-                    font-weight: 600;
-                }
-                &:not(.is-active):hover {
-                    color: $hover-blue;
                 }
             }
         }

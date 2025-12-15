@@ -82,22 +82,30 @@
 -----------------------------------------*/
 @mixin btn-toggle {
     display: block;
-    width: 1.4rem;
+    width: 3.6rem;
     aspect-ratio: 1;
     align-self: center;
+    border-radius: 50%;
+    transition: 0.3s ease-out;
     &::before,
     &::after {
         content: "";
         position: absolute;
         inset: 0;
         margin: auto;
-        width: 100%;
+        width: 1.4rem;
         height: 2px;
         background-color: $font-black;
         transition: 0.2s ease-out;
     }
     &::before {
         rotate: -90deg;
+    }
+    &:hover {
+        background-color: $hover-bg-blue;
+    }
+    &:active {
+        background-color: #fff;
     }
     &.is-active {
         &::before {
@@ -116,6 +124,7 @@
     @include flex-center;
     border-radius: 8px;
     transition: 0.3s ease-out;
+    color: $font-black;
     @if $type == "confirm" {
         background-color: $confirm-blue;
         color: #fff;
@@ -134,8 +143,16 @@
         &:active {
             background-color: #696969;
         }
+    } @else if $type == "back" {
+        border: 1px solid $font-black;
+        &:hover {
+            background-color: $hover-bg-blue;
+        }
+        &:active {
+            background-color: #fff;
+        }
     } @else if $type == "cancel" {
-        // background-color: #fff;
+        background-color: #fff;
         border: 1px solid $font-black;
         &:hover {
             background-color: $hover-bg-blue;
@@ -472,6 +489,200 @@
 }
 
 /*================================
+ 求人カード用セレクトステータス(マスター)
+--------------------------------*/
+@mixin select-status-master {
+    // --boxHeight: 6rem;
+    // width: 8.2em;
+    height: var(--boxHeight);
+    background-color: #fff;
+    font-size: 1em;
+    position: relative;
+    transition: 0.3s ease-out;
+    z-index: +1;
+    // &:hover {
+    //     .select_label-placeholder {
+    //         border: 1px solid $hover-blue;
+    //     }
+    // }
+    .select_label {
+        display: block;
+        width: 100%;
+        transition: all 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
+        height: 0;
+        font-size: FZ(14);
+        line-height: var(--boxHeight);
+        overflow: hidden;
+        // background-color: #fff;
+        cursor: pointer;
+        @include sp {
+            font-size: 3.6vw;
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            translate: 0 -50%;
+            right: 16px;
+            width: 12px;
+            @include svg-icon-arrow-bottom("403726");
+            transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
+        }
+        &.select_label-placeholder {
+            height: var(--boxHeight);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: transparent;
+            border: 1px solid #e2e0db;
+            border-radius: 8px;
+            transition: 0.3s ease-out;
+        }
+    }
+    & > li {
+        position: relative;
+        font-size: 1em;
+        &.select_items {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 2px;
+            padding-top: var(--boxHeight);
+            & > ul {
+                position: relative;
+                font-size: 1em;
+                margin: 0;
+                border-radius: 8px;
+                &:has(input[type="radio"]:checked) {
+                    overflow: unset;
+                    max-height: unset;
+                }
+                & > li {
+                    position: relative;
+                    font-size: 1em;
+                    & > label {
+                        z-index: -1;
+                        &::after {
+                            display: none;
+                        }
+                    }
+                    &:nth-of-type(1) {
+                        label {
+                            color: #fff;
+                            background-color: #ababab;
+                        }
+                    }
+                    &:nth-of-type(2) {
+                        label {
+                            color: #fff;
+                            background-color: #395bbe;
+                        }
+                    }
+                }
+            }
+            input[type="radio"] {
+                width: 0;
+                height: var(--boxHeight);
+                position: absolute;
+                top: 0;
+                right: 0;
+                &:hover::after {
+                    opacity: 1;
+                }
+                &:checked::after {
+                    transform: scaleY(-1);
+                }
+                &:checked {
+                    + .select_label {
+                        width: 100%;
+                        height: var(--boxHeight);
+                        margin-top: calc(var(--boxHeight) * -1);
+                        border-radius: 8px;
+                        // background-color: $hover-bg-blue;
+                        display: flex;
+                        align-items: center;
+                        // border: 1px solid $hover-blue;
+                        &::after {
+                            display: inline-block;
+                            @include svg-icon-arrow-bottom("ffffff");
+
+                            rotate: 90deg;
+                        }
+                    }
+                    + .select_closeLabel {
+                        display: block;
+                        + ul {
+                            box-shadow: 2px 2px 3px 0 rgba(53, 45, 32, 0.15);
+                            .select_label {
+                                height: var(--boxHeight);
+                                // &:hover {
+                                //     background-color: $hover-bg-blue;
+                                // }
+                            }
+                        }
+                        & > .select_expandLabel {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+        .select_closeLabel {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        .select_expandLabel {
+            display: block;
+            width: 100%;
+            font-size: 1em;
+            height: var(--boxHeight);
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+    }
+    // &:hover {
+    //     outline-color: $hover-blue;
+    //     transition: 0.3s ease-out;
+    // }
+}
+
+/*================================
+ 求人カード用セレクトステータス
+--------------------------------*/
+@mixin list-select-status {
+    @include select-status-master;
+    // --boxHeight: 6rem;
+    // width: 8.2em;
+    // --itemPaddingRight: 1.4em;
+    .select_label {
+        padding-right: var(--itemPaddingRight);
+        text-align: center;
+    }
+    & > li {
+        &.select_items {
+            input[type="radio"] {
+                &:checked {
+                    + .select_label {
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+    }
+    &:hover {
+        outline-color: $hover-blue;
+        transition: 0.3s ease-out;
+    }
+}
+
+/*================================
  トグルスイッチ
 --------------------------------*/
 @mixin toggle-button($off-text: "無し", $on-text: "有り") {
@@ -481,6 +692,7 @@
     height: 24px;
     border-radius: 100vmax;
     background-color: #ababab;
+    transition: 0.3s ease-out;
     cursor: pointer;
     input[type="checkbox"] {
         display: none;
@@ -515,8 +727,12 @@
             content: "#{$on-text}";
         }
     }
+    &:hover {
+        outline: 1px solid $hover-blue;
+    }
     &:active {
         background-color: $hover-bg-blue;
+        outline: 1px solid $hover-blue;
     }
 }
 
@@ -658,6 +874,72 @@
         p {
             font-size: FZ(14);
             color: #df3d3d;
+        }
+    }
+    &.is-active {
+        pointer-events: none;
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(34, 34, 34, 0.3);
+            z-index: +1;
+            border-radius: 8px;
+        }
+    }
+}
+/*=========================================
+画像セレクト時の表示リスト
+-----------------------------------------*/
+@mixin selected-image-list($count: 3) {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat($count, 1fr);
+    gap: 1rem;
+    li {
+        position: relative;
+        border: 1px solid #e2e0db;
+        .warp-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0 4px;
+            button {
+                position: relative;
+                width: 22px;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                background-color: #d9d9d9;
+                transition: 0.3s ease-out;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    margin: auto;
+                }
+                &.btn-change {
+                    &::after {
+                        width: 10px;
+                        @include svg-icon-reload("403726");
+                        rotate: 45deg;
+                    }
+                }
+                &.btn-delate {
+                    &::after {
+                        width: 8px;
+                        @include svg-icon-plus("403726");
+                        rotate: 45deg;
+                    }
+                }
+                &:hover {
+                    background-color: $hover-bg-blue;
+                }
+                &:active {
+                    background-color: #d9d9d9;
+                }
+            }
         }
     }
 }

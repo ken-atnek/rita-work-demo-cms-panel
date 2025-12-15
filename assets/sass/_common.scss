@@ -276,9 +276,12 @@ header {
             font-size: inherit;
             @include flex-center;
             height: 8rem;
+            transition: 0.3s ease-out;
             span {
                 font-size: FZ(16);
                 font-weight: 600;
+                display: inline-block;
+                translate: 0 2px;
             }
             &::before {
                 content: "";
@@ -302,7 +305,7 @@ header {
             &:not(.is-active) {
                 &:hover {
                     &::before {
-                        background-color: #fffbf5;
+                        background-color: #fffae6;
                     }
                 }
                 &:active {

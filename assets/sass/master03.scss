@@ -358,7 +358,7 @@
             display: flex;
             gap: 0 2.4rem;
             .item-back {
-                @include main-button("cancel");
+                @include main-button("back");
                 width: 16rem;
                 height: 48px;
                 font-size: FZ(14);
@@ -448,6 +448,10 @@
                     }
                     .select-image {
                         @include item-select-image;
+                    }
+                    .selected-image-list {
+                        margin-top: 1rem;
+                        @include selected-image-list($count: 3);
                     }
                     .wrap-notice {
                         font-size: inherit;
