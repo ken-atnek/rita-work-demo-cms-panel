@@ -38,6 +38,9 @@
     &:hover {
         background-color: $hover-bg-blue;
     }
+    &:active {
+        background-color: transparent;
+    }
 }
 /*=========================================
 下部「削除する」ボタン
