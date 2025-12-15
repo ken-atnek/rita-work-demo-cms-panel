@@ -345,5 +345,590 @@
     }
 }
 /*=================================
-***事業者登録・修正・確認
+***求人カード登録・修正
 =================================*/
+.inner-03-02-01 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-job-card-register {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        flex: 1;
+        h2 {
+            span {
+                font-size: 1.6rem;
+                &::before {
+                    content: "-";
+                    margin-inline: 1em;
+                }
+            }
+        }
+        .link-page-back {
+            @include link-page-back;
+        }
+        .block-form {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 3rem 3rem 5rem 3rem;
+            position: relative;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2.4rem 0;
+            article {
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 3rem 0;
+                .box-head {
+                    grid-column: span 2;
+                    position: relative;
+                    width: 100%;
+                    display: flex;
+                    font-size: inherit;
+                    align-items: center;
+                    h3 {
+                        font-size: FZ(16);
+                        font-weight: 600;
+                    }
+                    p {
+                        font-size: FZ(14);
+                        font-weight: 600;
+                        margin-left: 1em;
+                    }
+                    .item-status {
+                        position: relative;
+                        @include flex-center;
+                        margin-left: auto;
+                        width: 12rem;
+                        height: 4rem;
+                        font-size: FZ(14);
+                        font-weight: 300;
+                        border-radius: 100vmax;
+                        color: #fff;
+                        &.status-active {
+                            background-color: #395bbe;
+                        }
+                        &.status-draft {
+                            background-color: #ababab;
+                        }
+                    }
+                }
+                dt {
+                    &.position-top {
+                        min-height: unset;
+                        padding-top: 1.4rem;
+                        align-self: flex-start;
+                    }
+                }
+                & > dl {
+                    width: 100%;
+                    font-size: inherit;
+                    grid-column: span 2;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    gap: 0 2rem;
+                    & > dt {
+                        font-size: FZ(16);
+                        font-weight: 300;
+                        position: relative;
+                        min-width: 13rem;
+                        min-height: 44px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                    & > dd {
+                        position: relative;
+                        font-size: inherit;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px 0;
+                        .wrap-notice {
+                            font-size: inherit;
+                            display: flex;
+                            flex-direction: column;
+                            margin-top: 1rem;
+                            p {
+                                font-size: FZ(12);
+                                color: #696969;
+                            }
+                        }
+                        textarea {
+                            min-height: 8lh;
+                        }
+                        .input-date {
+                            width: 19rem;
+                            @include item-period;
+                        }
+                    }
+                }
+            }
+
+            // 基本情報
+            .block-basic-info {
+                dl {
+                    &.dl-job-category {
+                        z-index: 5;
+                        display: none;
+                    }
+                    dd {
+                        .select-job-type {
+                            --boxHeight: 4.4rem;
+                            flex: 1;
+                            @include list-select-left;
+                            .select_label {
+                                padding-left: 1.4em;
+                            }
+                            ul {
+                                overflow-y: scroll;
+                                max-height: 20em;
+                            }
+                        }
+                        .select-job-category {
+                            --boxHeight: 4.4rem;
+                            flex: 1;
+                            z-index: 4;
+                            @include list-select-left;
+                            .select_label {
+                                padding-left: 1.4em;
+                            }
+                            ul {
+                                overflow-y: scroll;
+                                max-height: 20em;
+                            }
+                        }
+                        .select-plan {
+                            --boxHeight: 4.4rem;
+                            flex: 1;
+                            max-width: 36rem;
+                            z-index: 4;
+                            @include list-select-left;
+                            .select_label {
+                                padding-left: 1.4em;
+                            }
+                            ul {
+                                overflow-y: scroll;
+                                max-height: 20em;
+                            }
+                        }
+                    }
+                    .dd-top {
+                        align-items: center;
+                        flex-direction: row;
+                        .title {
+                            font-size: FZ(16);
+                            font-weight: 300;
+                            margin-inline: 2.4rem;
+                        }
+                        .wrap-period {
+                            width: 37rem;
+                            @include item-period;
+                        }
+                    }
+                    .dd-select-image {
+                        p {
+                            font-size: FZ(12);
+                            color: #696969;
+                        }
+                        .select-image {
+                            @include item-select-image;
+                        }
+                        .selected-image-list {
+                            margin-top: 1rem;
+                            @include selected-image-list($count: 5);
+                            li {
+                                img {
+                                    object-fit: cover;
+                                    aspect-ratio: 1156/600;
+                                }
+                            }
+                        }
+                    }
+                    // 給与
+                    .dd-salary {
+                        z-index: 2;
+                        input[type="text"] {
+                            width: 144px;
+                            flex: 1;
+                            &.item-price {
+                                text-align: right;
+                            }
+                        }
+                        .wrap-head {
+                            position: relative;
+                            font-size: inherit;
+                            width: 100%;
+                            display: flex;
+                            flex-wrap: wrap;
+                            align-items: center;
+                            gap: 1rem 0;
+                            .item-salary,
+                            .item-bonus {
+                                position: relative;
+                                display: flex;
+                                align-items: center;
+                                font-size: inherit;
+                                gap: 0 1rem;
+                            }
+                            span {
+                                display: flex;
+                                flex: 1;
+                                align-items: center;
+                                font-size: inherit;
+                                i {
+                                    margin-inline: 1rem;
+                                }
+                            }
+                            .item-salary {
+                                margin-right: 2.4rem;
+                                .wrap-radio {
+                                    position: relative;
+                                    font-size: inherit;
+                                    display: flex;
+                                    gap: 0 0.4rem;
+                                    .item-check-box {
+                                        position: relative;
+                                        font-size: inherit;
+                                        input[type="radio"] {
+                                            position: absolute;
+                                            inset: 0;
+                                            z-index: +2;
+                                            &.read-only {
+                                                pointer-events: none;
+                                            }
+                                        }
+                                        label {
+                                            position: relative;
+                                            display: grid;
+                                            place-items: center;
+                                            position: relative;
+                                            font-size: FZ(14);
+                                            color: #696969;
+                                            padding: 0.5em 0.8em;
+                                            transition: 0.3s ease-out;
+                                            z-index: 1;
+                                            &::before {
+                                                content: "";
+                                                position: absolute;
+                                                inset: 0;
+                                                border-radius: 100vmax;
+                                                z-index: -1;
+                                                transition: 0.3s ease-out;
+                                                background-color: #ceccca;
+                                                // border: 1px solid #ceccca;
+                                            }
+                                        }
+                                        input[type="radio"]:checked + label {
+                                            color: #fff;
+                                            &::before {
+                                                background-color: $main-orange;
+                                            }
+                                        }
+                                        &:hover {
+                                            label {
+                                                &::before {
+                                                    border: 1px solid $main-orange;
+                                                }
+                                            }
+                                        }
+                                        &:active {
+                                            label {
+                                                &::before {
+                                                    background-color: $hover-bg-blue;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .item-bonus {
+                                font-size: inherit;
+                                display: flex;
+                                align-items: center;
+                                gap: 0 8px;
+                                .toggle-button {
+                                    margin-right: 4rem;
+                                    @include toggle-button("無し", "有り");
+                                }
+                                h4 {
+                                    font-size: FZ(14);
+                                    font-weight: 300;
+                                }
+                            }
+                        }
+                        .wrap-yearly-salary {
+                            position: relative;
+                            font-size: inherit;
+                            display: grid;
+                            margin-top: 1rem;
+                            grid-template-rows: 1fr;
+                            .inner-yearly-salary {
+                                position: relative;
+                                font-size: inherit;
+                                display: flex;
+                                align-items: center;
+                                gap: 0 1.8rem;
+                                h4 {
+                                    font-size: FZ(14);
+                                }
+                                .select-yearly-salary {
+                                    --boxHeight: 4.4rem;
+                                    max-width: 29rem;
+                                    flex: 1;
+                                    @include list-select-left;
+                                    .select_label {
+                                        padding-left: 1.4em;
+                                    }
+                                    ul {
+                                        overflow-y: scroll;
+                                        max-height: 20em;
+                                    }
+                                }
+                            }
+                            &.is-inactive {
+                                grid-template-rows: 0fr;
+                                .inner-yearly-salary {
+                                    overflow: hidden;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // 職場インタビュー
+            .block-interview {
+                & > dl {
+                    .dd-interviewer {
+                        .wrap-head {
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            i {
+                                font-size: FZ(14);
+                                margin-left: 1rem;
+                            }
+                        }
+                    }
+                }
+                .box-interview {
+                    position: relative;
+                    font-size: inherit;
+                    display: grid;
+                    grid-template-columns: auto 1fr;
+                    grid-column-start: 2;
+                    & > li {
+                        font-size: inherit;
+                        grid-column: span 2;
+                        display: grid;
+                        grid-template-columns: subgrid;
+                        .wrap-head {
+                            position: relative;
+                            font-size: inherit;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            grid-column: span 2;
+                            border-bottom: 1px solid $border-gray;
+                            padding-bottom: 2rem;
+                            h4 {
+                                font-size: FZ(16);
+                                font-weight: 600;
+                            }
+                            .btn-switch {
+                                position: relative;
+                                @include btn-toggle;
+                            }
+                        }
+                        .wrap-details {
+                            position: relative;
+                            display: grid;
+                            grid-template-rows: 0fr;
+                            grid-column: span 2;
+                            grid-template-columns: subgrid;
+                            font-size: inherit;
+                            margin-top: 4rem;
+                            transition: 0.3s ease-out;
+
+                            .inner-details {
+                                position: relative;
+                                display: grid;
+                                grid-column: span 2;
+                                grid-template-columns: subgrid;
+                                gap: 8px 0;
+                                overflow: hidden;
+                                font-size: inherit;
+
+                                dl {
+                                    position: relative;
+                                    display: grid;
+                                    grid-column: span 2;
+                                    grid-template-columns: subgrid;
+                                    font-size: inherit;
+                                    gap: 0 3.6rem;
+                                    dt {
+                                        display: flex;
+                                        align-items: center;
+                                        font-size: FZ(16);
+                                    }
+                                    dd {
+                                        display: flex;
+                                        flex-direction: column;
+                                        input[type="text"] {
+                                            flex: 1;
+                                        }
+                                        textarea {
+                                            min-height: 8lh;
+                                        }
+                                    }
+                                    .dd-select-image {
+                                        margin-top: 1.6rem;
+                                        p {
+                                            font-size: FZ(12);
+                                            color: #696969;
+                                        }
+                                        .select-image {
+                                            @include item-select-image;
+                                        }
+                                        .selected-image-list {
+                                            margin-top: 1rem;
+                                            @include selected-image-list($count: 2);
+                                            li {
+                                                img {
+                                                    object-fit: cover;
+                                                    aspect-ratio: 1030/480;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            &.is-active {
+                                grid-template-rows: 1fr;
+                                margin-bottom: 4.5rem;
+                            }
+                        }
+                    }
+                }
+            }
+            // 職場紹介動画
+            .block-movie {
+                .inner-blok-movie {
+                    grid-column-start: 2;
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns: auto 1fr;
+                    font-size: inherit;
+                    & > dl {
+                        width: 100%;
+                        display: grid;
+                        font-size: inherit;
+                        grid-template-columns: subgrid;
+                        gap: 0 3.6rem;
+                        grid-column: span 2;
+                        dt {
+                            display: flex;
+                            align-items: center;
+                            font-size: FZ(16);
+                        }
+                        dd {
+                            display: flex;
+                            flex-direction: column;
+                            input[type="text"] {
+                                flex: 1;
+                            }
+                            textarea {
+                                min-height: 8lh;
+                            }
+                            p {
+                                font-size: FZ(12);
+                                color: #696969;
+                                font-weight: 300;
+                                margin-top: 1rem;
+                            }
+                        }
+                    }
+                    hr {
+                        margin-block: 3rem;
+                    }
+                }
+            }
+            hr {
+                grid-column: span 2;
+                width: 100%;
+                border-top: 1px solid $border-gray;
+                margin-block: 2rem;
+            }
+            .inner-select-company,
+            .inner-ban-plan {
+                position: relative;
+                font-size: inherit;
+                grid-column: span 2;
+                margin-top: 4rem;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 24px 0;
+                .box-head {
+                    display: flex;
+                    font-size: inherit;
+                    border-bottom: 1px solid $border-gray;
+                    grid-column: span 2;
+                    padding-bottom: 2rem;
+                    margin-bottom: 1rem;
+                    h3 {
+                        font-size: FZ(18);
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        .bottom-box-btn {
+            align-self: center;
+            position: relative;
+            font-size: inherit;
+            margin-top: 3rem;
+            display: flex;
+            gap: 0 2.4rem;
+            .item-back {
+                @include main-button("back");
+                width: 16rem;
+                height: 48px;
+                font-size: FZ(14);
+            }
+            .item-check {
+                @include main-button("confirm");
+                width: 20rem;
+                height: 48px;
+                span {
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+// 事業所登録・ 修正
+.inner-03-01-01 {
+    .container-vendor-register {
+        // 法人名を選択
+        .inner-select-company {
+            .select-company {
+                --boxHeight: 4.4rem;
+                flex: 1;
+                @include list-select-left;
+                .select_label {
+                    padding-left: 1.4em;
+                }
+                ul {
+                    overflow-y: scroll;
+                    max-height: 16em;
+                }
+            }
+        }
+        // 修正ページ用
+        .btn-delate-item {
+            @include btn-delate-item;
+        }
+    }
+}

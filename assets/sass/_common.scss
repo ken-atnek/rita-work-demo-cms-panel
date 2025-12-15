@@ -257,14 +257,16 @@ header {
                     @include svg-icon-person("ffffff");
                 }
             }
-            button {
+            & > button {
                 background-color: #fff;
                 color: var(--key-color);
                 font-size: FZ(14);
                 font-weight: 300;
                 border-radius: 100vmax;
                 width: 106px;
+                padding-left: 2px;
                 transition: 0.3s ease-out;
+                // @include flex-center;
                 &:hover {
                     background-color: var(--hover-white);
                 }
