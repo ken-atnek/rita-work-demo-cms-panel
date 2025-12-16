@@ -257,13 +257,22 @@ header {
                     @include svg-icon-person("ffffff");
                 }
             }
-            button {
+            & > button {
                 background-color: #fff;
                 color: var(--key-color);
                 font-size: FZ(14);
                 font-weight: 300;
                 border-radius: 100vmax;
                 width: 106px;
+                padding-left: 2px;
+                transition: 0.3s ease-out;
+                // @include flex-center;
+                &:hover {
+                    background-color: var(--hover-white);
+                }
+                &:active {
+                    background-color: #fff;
+                }
             }
         }
     }
@@ -318,6 +327,7 @@ header {
     }
     &.area-master {
         --key-color: #ef5f6e;
+        --hover-white: #fcdfe2;
         nav {
             grid-template-columns: repeat(7, 1fr);
             gap: 0 3px;
@@ -385,7 +395,8 @@ header {
             border-radius: $radius20;
             @include drop-shadow;
             font-size: inherit;
-            overflow-y: scroll;
+            max-height: 90vh;
+            overflow-y: auto;
             .box-title {
                 padding: 2.7rem;
                 display: flex;
