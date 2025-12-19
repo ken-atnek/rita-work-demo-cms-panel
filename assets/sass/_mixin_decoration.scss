@@ -296,202 +296,6 @@
 }
 
 /*================================
- セレクトボックス(マスター)
---------------------------------*/
-@mixin select-list-master {
-    // --boxHeight: 6rem;
-    // width: 8.2em;
-    height: var(--boxHeight);
-    background-color: #fff;
-    font-size: 1em;
-    position: relative;
-    transition: 0.3s ease-out;
-    z-index: +1;
-    &:hover {
-        .select_label-placeholder {
-            border: 1px solid $hover-blue;
-        }
-    }
-    .select_label {
-        display: block;
-        width: 100%;
-        transition: all 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
-        height: 0;
-        font-size: FZ(14);
-        line-height: var(--boxHeight);
-        overflow: hidden;
-        background-color: #fff;
-        cursor: pointer;
-        @include sp {
-            font-size: 3.6vw;
-        }
-        &::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            translate: 0 -50%;
-            right: 0.8em;
-            width: 0.7em;
-            @include svg-icon-arrow-bottom("335D95");
-            transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
-        }
-        &-placeholder {
-            height: var(--boxHeight);
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: transparent;
-            border: 1px solid $border-gray;
-            border-radius: 8px;
-            transition: 0.3s ease-out;
-        }
-    }
-    & > li {
-        position: relative;
-        font-size: 1em;
-        &.select_items {
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 2px;
-            padding-top: var(--boxHeight);
-            & > ul {
-                position: relative;
-                font-size: 1em;
-                margin: 0;
-                border-radius: 8px;
-                &:has(input[type="radio"]:checked) {
-                    overflow: unset;
-                    max-height: unset;
-                }
-                & > li {
-                    position: relative;
-                    font-size: 1em;
-                    & > label {
-                        z-index: -1;
-                        &::after {
-                            display: none;
-                        }
-                    }
-                }
-            }
-            input[type="radio"] {
-                width: 0;
-                height: var(--boxHeight);
-                position: absolute;
-                top: 0;
-                right: 0;
-                &:hover::after {
-                    opacity: 1;
-                }
-                &:checked::after {
-                    transform: scaleY(-1);
-                }
-                &:checked {
-                    + .select_label {
-                        width: 100%;
-                        height: var(--boxHeight);
-                        margin-top: calc(var(--boxHeight) * -1);
-                        border-radius: 0.8rem;
-                        background-color: $hover-bg-blue;
-                        display: flex;
-                        align-items: center;
-                        border: 1px solid $hover-blue;
-                        &::after {
-                            display: inline-block;
-                            rotate: 90deg;
-                        }
-                    }
-                    + .select_closeLabel {
-                        display: block;
-                        + ul {
-                            box-shadow: 2px 2px 3px 0 rgba(53, 45, 32, 0.15);
-                            .select_label {
-                                height: var(--boxHeight);
-                                &:hover {
-                                    background-color: $hover-bg-blue;
-                                }
-                            }
-                        }
-                        & > .select_expandLabel {
-                            display: none;
-                        }
-                    }
-                }
-            }
-        }
-        .select_closeLabel {
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            display: none;
-        }
-        .select_expandLabel {
-            display: block;
-            width: 100%;
-            font-size: 1em;
-            height: var(--boxHeight);
-            position: absolute;
-            top: 0;
-            left: 0;
-            cursor: pointer;
-        }
-    }
-    &:hover {
-        outline-color: $hover-blue;
-        transition: 0.3s ease-out;
-    }
-}
-/*================================
- セレクトボックス(UL>LI版)左寄せ
---------------------------------*/
-@mixin list-select-left {
-    // --boxHeight: 6rem;
-    // width: 8.2em;
-    --itemPaddingLeft: 1.4em;
-    @include select-list-master;
-    .select_label {
-        padding-left: var(--itemPaddingLeft);
-    }
-    &:hover {
-        outline-color: $hover-blue;
-        transition: 0.3s ease-out;
-    }
-}
-
-/*================================
- セレクトボックス(UL>LI版 中央寄せ)
---------------------------------*/
-@mixin list-select-center {
-    @include select-list-master;
-    // --boxHeight: 6rem;
-    // width: 8.2em;
-    // --itemPaddingRight: 1.4em;
-    .select_label {
-        padding-right: var(--itemPaddingRight);
-        text-align: center;
-    }
-    & > li {
-        &.select_items {
-            input[type="radio"] {
-                &:checked {
-                    + .select_label {
-                        justify-content: center;
-                    }
-                }
-            }
-        }
-    }
-    &:hover {
-        outline-color: $hover-blue;
-        transition: 0.3s ease-out;
-    }
-}
-
-/*================================
  セレクトボックス(最新版)
 --------------------------------*/
 @mixin select-list-box($height: 4.4rem, $position: left, $list-height: 3rem) {
@@ -547,6 +351,8 @@
         grid-template-rows: 0fr;
         transition: grid-template-rows 0.2s ease-out;
         overflow: hidden;
+        border-radius: 8px;
+        @include drop-shadow;
         .selectbox__panel {
             font-size: inherit;
             position: relative;
@@ -615,223 +421,6 @@
                 border-color: $hover-blue;
             }
         }
-    }
-    // @if $position == "left" {
-    //     .selectbox__value {
-    //         text-align: left;
-    //         .list-wrapper {
-    //             .selectbox__panel {
-    //                 label {
-    //                     padding-left: 1.4em;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // } @else if$position == "center" {
-    //     .selectbox__value {
-    //         text-align: center;
-    //         .list-wrapper {
-    //             .selectbox__panel {
-    //                 label {
-    //                     padding-right: 1.4em;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-}
-
-/*================================
- 求人カード用セレクトステータス(マスター)
---------------------------------*/
-@mixin select-status-master {
-    // --boxHeight: 6rem;
-    // width: 8.2em;
-    height: var(--boxHeight);
-    background-color: #fff;
-    font-size: 1em;
-    position: relative;
-    transition: 0.3s ease-out;
-    z-index: +1;
-    // &:hover {
-    //     .select_label-placeholder {
-    //         border: 1px solid $hover-blue;
-    //     }
-    // }
-    .select_label {
-        display: block;
-        width: 100%;
-        transition: all 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
-        height: 0;
-        font-size: FZ(14);
-        line-height: var(--boxHeight);
-        overflow: hidden;
-        // background-color: #fff;
-        cursor: pointer;
-        @include sp {
-            font-size: 3.6vw;
-        }
-        &::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            translate: 0 -50%;
-            right: 16px;
-            width: 12px;
-            @include svg-icon-arrow-bottom("403726");
-            transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
-        }
-        &.select_label-placeholder {
-            height: var(--boxHeight);
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: transparent;
-            border: 1px solid #e2e0db;
-            border-radius: 8px;
-            transition: 0.3s ease-out;
-        }
-    }
-    & > li {
-        position: relative;
-        font-size: 1em;
-        &.select_items {
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 2px;
-            padding-top: var(--boxHeight);
-            & > ul {
-                position: relative;
-                font-size: 1em;
-                margin: 0;
-                border-radius: 8px;
-                &:has(input[type="radio"]:checked) {
-                    overflow: unset;
-                    max-height: unset;
-                }
-                & > li {
-                    position: relative;
-                    font-size: 1em;
-                    & > label {
-                        z-index: -1;
-                        &::after {
-                            display: none;
-                        }
-                    }
-                    &:nth-of-type(1) {
-                        label {
-                            color: #fff;
-                            background-color: #ababab;
-                        }
-                    }
-                    &:nth-of-type(2) {
-                        label {
-                            color: #fff;
-                            background-color: #395bbe;
-                        }
-                    }
-                }
-            }
-            input[type="radio"] {
-                width: 0;
-                height: var(--boxHeight);
-                position: absolute;
-                top: 0;
-                right: 0;
-                &:hover::after {
-                    opacity: 1;
-                }
-                &:checked::after {
-                    transform: scaleY(-1);
-                }
-                &:checked {
-                    + .select_label {
-                        width: 100%;
-                        height: var(--boxHeight);
-                        margin-top: calc(var(--boxHeight) * -1);
-                        border-radius: 8px;
-                        // background-color: $hover-bg-blue;
-                        display: flex;
-                        align-items: center;
-                        // border: 1px solid $hover-blue;
-                        &::after {
-                            display: inline-block;
-                            @include svg-icon-arrow-bottom("ffffff");
-
-                            rotate: 90deg;
-                        }
-                    }
-                    + .select_closeLabel {
-                        display: block;
-                        + ul {
-                            box-shadow: 2px 2px 3px 0 rgba(53, 45, 32, 0.15);
-                            .select_label {
-                                height: var(--boxHeight);
-                                // &:hover {
-                                //     background-color: $hover-bg-blue;
-                                // }
-                            }
-                        }
-                        & > .select_expandLabel {
-                            display: none;
-                        }
-                    }
-                }
-            }
-        }
-        .select_closeLabel {
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            display: none;
-        }
-        .select_expandLabel {
-            display: block;
-            width: 100%;
-            font-size: 1em;
-            height: var(--boxHeight);
-            position: absolute;
-            top: 0;
-            left: 0;
-            cursor: pointer;
-        }
-    }
-    // &:hover {
-    //     outline-color: $hover-blue;
-    //     transition: 0.3s ease-out;
-    // }
-}
-
-/*================================
- 求人カード用セレクトステータス
---------------------------------*/
-@mixin list-select-status {
-    @include select-status-master;
-    // --boxHeight: 6rem;
-    // width: 8.2em;
-    // --itemPaddingRight: 1.4em;
-    .select_label {
-        padding-right: var(--itemPaddingRight);
-        text-align: center;
-    }
-    & > li {
-        &.select_items {
-            input[type="radio"] {
-                &:checked {
-                    + .select_label {
-                        justify-content: center;
-                    }
-                }
-            }
-        }
-    }
-    &:hover {
-        outline-color: $hover-blue;
-        transition: 0.3s ease-out;
     }
 }
 
@@ -1092,6 +681,61 @@
                 &:active {
                     background-color: #d9d9d9;
                 }
+            }
+        }
+    }
+}
+/*=========================================
+チェックボックスリスト
+-----------------------------------------*/
+@mixin CheckBoxList($count: 3, $size: 1fr) {
+    display: grid;
+    grid-template-columns: repeat($count, $size);
+    gap: 1rem 0;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    li {
+        font-size: inherit;
+        label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0 1rem;
+            cursor: pointer;
+            color: #333;
+            font-size: inherit;
+            input {
+                appearance: none;
+                width: 18px;
+                aspect-ratio: 1;
+                border-radius: 4px;
+                border: 1px solid #ceccca;
+                position: relative;
+                cursor: pointer;
+                background-color: #f7f7f7;
+                flex-shrink: 0;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    margin: auto;
+                    width: 12px;
+                    aspect-ratio: 1;
+                    border: 1px solid #e2e0db;
+                    border-radius: 4px;
+                    background-color: #fff;
+                }
+                &:checked {
+                    border-color: $hover-blue;
+                    &::after {
+                        background-color: $hover-blue;
+                        border: unset;
+                    }
+                }
+            }
+            span {
+                user-select: none;
+                font-size: FZ(14);
             }
         }
     }

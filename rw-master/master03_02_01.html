@@ -32,10 +32,18 @@
         </nav>
       </section>
       <section class="container-job-card-register">
+        <nav class="block-nav">
+          <a href="#blockBasicInfo" class="is-active"><i></i>基本情報</a>
+          <a href="#blockInterview" class="is-active"><i></i>機能拡張プラン</a>
+          <a href="#blockWorkSpace"><i></i>職場環境の特徴</a>
+          <a href="#blockFreeText"><i></i>フリーテキスト枠</a>
+          <a href="#blockSchedule"><i></i>1日の流れ</a>
+          <a href="#blockDetailInfo"><i></i>詳細情報</a>
+        </nav>
         <a href="#" class="link-page-back">戻る</a>
         <h2>求人カード情報<span>機能回復を支える理学療法士</span></h2>
         <form class="block-form">
-          <article class="block-basic-info">
+          <article class="block-basic-info" id="blockBasicInfo">
             <div class="box-head">
               <h3>基本情報</h3>
               <p>求人カードの基本情報を入力ください</p>
@@ -45,59 +53,45 @@
             <dl>
               <dt>事業所名</dt>
               <dd class="dd-top">
-                <input type="text" style="max-width: 34rem" />
+                <input type="text" />
                 <div class="title">掲載日</div>
-                <div class="wrap-period">
-                  <input type="date" name="searchStartDay" />
-                  <span>〜</span>
-                  <input type="date" name="searchEndDay" />
-                </div>
+                <div class="input-date"><input type="date" /></div>
               </dd>
             </dl>
             <dl>
               <dt>募集職種</dt>
               <dd>
-                <ul class="select-job-type">
-                  <li>
-                    <input
-                      class="select_close"
-                      type="radio"
-                      name="referJobMethod"
-                      id="job-close"
-                      value=""
-                    />
-                    <label class="select_label select_label-placeholder" for="job-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="referJobMethod" id="job-opener" />
-                    <label class="select_closeLabel" for="job-close"></label>
-                    <ul>
+                <div class="select-job-type" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
+                    <input type="hidden" name="referJobMethod" value="" data-selectbox-hidden />
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input type="radio" name="referJobMethod" value="1" id="job01" />
-                        <label class="select_label" for="job01">看護師</label>
+                        <label for="job01">看護師</label>
                       </li>
                       <li>
                         <input type="radio" name="referJobMethod" value="2" id="job02" />
-                        <label class="select_label" for="job02">介護士</label>
+                        <label for="job02">介護士</label>
                       </li>
                       <li>
                         <input type="radio" name="referJobMethod" value="3" id="job03" />
-                        <label class="select_label" for="job03">理学療法士</label>
+                        <label for="job03">理学療法士</label>
                       </li>
                       <li>
                         <input type="radio" name="referJobMethod" value="4" id="job04" />
-                        <label class="select_label" for="job04">作業療法士</label>
+                        <label for="job04">作業療法士</label>
                       </li>
                       <li>
                         <input type="radio" name="referJobMethod" value="5" id="job05" />
-                        <label class="select_label" for="job05">言語聴覚士</label>
+                        <label for="job05">言語聴覚士</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="job-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </dd>
             </dl>
             <dl>
@@ -167,26 +161,22 @@
                 </div>
               </dd>
             </dl>
-            <dl class="dl-job-category">
+            <dl>
               <dt>雇用形態</dt>
               <dd>
-                <ul class="select-job-category">
-                  <li>
+                <div class="select-job-category" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
-                      class="select_close"
-                      type="radio"
+                      type="hidden"
                       name="referEmploymentMethod"
-                      id="employment-close"
                       value=""
+                      data-selectbox-hidden
                     />
-                    <label class="select_label select_label-placeholder" for="employment-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="referEmploymentMethod" id="employment-opener" />
-                    <label class="select_closeLabel" for="employment-close"></label>
-                    <ul>
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input
                           type="radio"
@@ -194,7 +184,7 @@
                           value="1"
                           id="employment01"
                         />
-                        <label class="select_label" for="employment01">正社員</label>
+                        <label for="employment01">正社員</label>
                       </li>
                       <li>
                         <input
@@ -203,7 +193,7 @@
                           value="2"
                           id="employment02"
                         />
-                        <label class="select_label" for="employment02">アルバイト</label>
+                        <label for="employment02">アルバイト</label>
                       </li>
                       <li>
                         <input
@@ -212,12 +202,11 @@
                           value="3"
                           id="employment03"
                         />
-                        <label class="select_label" for="employment03">パートタイム</label>
+                        <label for="employment03">パートタイム</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="employment-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </dd>
             </dl>
             <dl>
@@ -259,25 +248,18 @@
                 <div class="wrap-yearly-salary">
                   <div class="inner-yearly-salary">
                     <h4>初年度年収</h4>
-                    <ul class="select-yearly-salary">
-                      <li>
+                    <div class="select-yearly-salary" data-selectbox>
+                      <button type="button" class="selectbox__head" aria-expanded="false">
                         <input
-                          class="select_close"
-                          type="radio"
+                          type="hidden"
                           name="referYearlySalary"
-                          id="yearly-salary-close"
                           value=""
+                          data-selectbox-hidden
                         />
-                        <label
-                          class="select_label select_label-placeholder"
-                          for="yearly-salary-close"
-                          >選択してください</label
-                        >
-                      </li>
-                      <li class="select_items">
-                        <input type="radio" name="referYearlySalary" id="yearly-salary-opener" />
-                        <label class="select_closeLabel" for="yearly-salary-close"></label>
-                        <ul>
+                        <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                      </button>
+                      <div class="list-wrapper">
+                        <ul class="selectbox__panel">
                           <li>
                             <input
                               type="radio"
@@ -285,9 +267,7 @@
                               value="1"
                               id="yearly-salary01"
                             />
-                            <label class="select_label" for="yearly-salary01"
-                              >100万円〜150万円</label
-                            >
+                            <label for="yearly-salary01">100万円〜150万円</label>
                           </li>
                           <li>
                             <input
@@ -296,9 +276,7 @@
                               value="2"
                               id="yearly-salary02"
                             />
-                            <label class="select_label" for="yearly-salary02"
-                              >150万円〜200万円</label
-                            >
+                            <label for="yearly-salary02">150万円〜200万円</label>
                           </li>
                           <li>
                             <input
@@ -307,9 +285,7 @@
                               value="3"
                               id="yearly-salary03"
                             />
-                            <label class="select_label" for="yearly-salary03"
-                              >200万円〜250万円</label
-                            >
+                            <label for="yearly-salary03">200万円〜250万円</label>
                           </li>
                           <li>
                             <input
@@ -318,9 +294,7 @@
                               value="4"
                               id="yearly-salary04"
                             />
-                            <label class="select_label" for="yearly-salary04"
-                              >250万円〜300万円</label
-                            >
+                            <label for="yearly-salary04">250万円〜300万円</label>
                           </li>
                           <li>
                             <input
@@ -329,9 +303,7 @@
                               value="5"
                               id="yearly-salary05"
                             />
-                            <label class="select_label" for="yearly-salary05"
-                              >300万円〜350万円</label
-                            >
+                            <label for="yearly-salary05">300万円〜350万円</label>
                           </li>
                           <li>
                             <input
@@ -340,9 +312,7 @@
                               value="6"
                               id="yearly-salary06"
                             />
-                            <label class="select_label" for="yearly-salary06"
-                              >350万円〜400万円</label
-                            >
+                            <label for="yearly-salary06">350万円〜400万円</label>
                           </li>
                           <li>
                             <input
@@ -351,9 +321,7 @@
                               value="7"
                               id="yearly-salary07"
                             />
-                            <label class="select_label" for="yearly-salary07"
-                              >400万円〜450万円</label
-                            >
+                            <label for="yearly-salary07">400万円〜450万円</label>
                           </li>
                           <li>
                             <input
@@ -362,9 +330,7 @@
                               value="8"
                               id="yearly-salary08"
                             />
-                            <label class="select_label" for="yearly-salary08"
-                              >450万円〜500万円</label
-                            >
+                            <label for="yearly-salary08">450万円〜500万円</label>
                           </li>
                           <li>
                             <input
@@ -373,9 +339,7 @@
                               value="9"
                               id="yearly-salary09"
                             />
-                            <label class="select_label" for="yearly-salary09"
-                              >500万円〜550万円</label
-                            >
+                            <label for="yearly-salary09">500万円〜550万円</label>
                           </li>
                           <li>
                             <input
@@ -384,9 +348,7 @@
                               value="10"
                               id="yearly-salary10"
                             />
-                            <label class="select_label" for="yearly-salary10"
-                              >550万円〜600万円</label
-                            >
+                            <label for="yearly-salary10">550万円〜600万円</label>
                           </li>
                           <li>
                             <input
@@ -395,14 +357,11 @@
                               value="11"
                               id="yearly-salary11"
                             />
-                            <label class="select_label" for="yearly-salary11"
-                              >600万円〜650万円</label
-                            >
+                            <label for="yearly-salary11">600万円〜650万円</label>
                           </li>
                         </ul>
-                        <label class="select_expandLabel" for="yearly-salary-opener"></label>
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </dd>
@@ -414,44 +373,34 @@
             <dl>
               <dt>契約プラン</dt>
               <dd>
-                <ul class="select-plan">
-                  <li>
-                    <input
-                      class="select_close"
-                      type="radio"
-                      name="referPlanMethod"
-                      id="plan-close"
-                      value=""
-                    />
-                    <label class="select_label select_label-placeholder" for="plan-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="referPlanMethod" id="plan-opener" />
-                    <label class="select_closeLabel" for="plan-close"></label>
-                    <ul>
+                <div class="select-plan" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
+                    <input type="hidden" name="referPlanMethod" value="" data-selectbox-hidden />
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input type="radio" name="referPlanMethod" value="1" id="plan01" />
-                        <label class="select_label" for="plan01">ライトプラン</label>
+                        <label for="plan01">ライトプラン</label>
                       </li>
                       <li>
                         <input type="radio" name="referPlanMethod" value="2" id="plan02" />
-                        <label class="select_label" for="plan02">スタンダードプラン</label>
+                        <label for="plan02">スタンダードプラン</label>
                       </li>
                       <li>
                         <input type="radio" name="referPlanMethod" value="3" id="plan03" />
-                        <label class="select_label" for="plan03">プレミアムプラン</label>
+                        <label for="plan03">プレミアムプラン</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="plan-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </dd>
             </dl>
           </article>
           <hr />
-          <article class="block-interview">
+          <article class="block-interview" id="blockInterview">
             <div class="box-head">
               <h3>職場インタビュー</h3>
               <p>インタビュー記事の内容を入力ください</p>
@@ -961,7 +910,7 @@
             </div>
           </article>
           <hr />
-          <article class="block-workplace">
+          <article class="block-workplace" id="blockWorkSpace">
             <div class="box-head">
               <h3>職場環境の特徴</h3>
               <p>求人カードの基本情報を入力ください</p>
@@ -969,25 +918,21 @@
             <div class="box-details">
               <span>項目</span>
               <span>数字</span>
-              <dl style="z-index: 3">
+              <dl>
                 <dt>
-                  <ul class="select-workplace">
-                    <li>
+                  <div class="select-workplace" data-selectbox>
+                    <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
-                        class="select_close"
-                        type="radio"
+                        type="hidden"
                         name="referWorkplaceMethod01"
-                        id="workplace01-close"
                         value=""
+                        data-selectbox-hidden
                       />
-                      <label class="select_label select_label-placeholder" for="workplace01-close"
-                        >選択してください</label
-                      >
-                    </li>
-                    <li class="select_items">
-                      <input type="radio" name="referWorkplaceMethod01" id="workplace01-opener" />
-                      <label class="select_closeLabel" for="workplace01-close"></label>
-                      <ul>
+                      <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    </button>
+
+                    <div class="list-wrapper">
+                      <ul class="selectbox__panel">
                         <li>
                           <input
                             type="radio"
@@ -995,7 +940,7 @@
                             value="1"
                             id="workplace01-01"
                           />
-                          <label class="select_label" for="workplace01-01">月平均残業時間</label>
+                          <label for="workplace01-01">月平均残業時間</label>
                         </li>
                         <li>
                           <input
@@ -1004,7 +949,7 @@
                             value="2"
                             id="workplace01-02"
                           />
-                          <label class="select_label" for="workplace01-02">有休取得率</label>
+                          <label for="workplace01-02">有休取得率</label>
                         </li>
                         <li>
                           <input
@@ -1013,7 +958,7 @@
                             value="3"
                             id="workplace01-03"
                           />
-                          <label class="select_label" for="workplace01-03">年間休日数</label>
+                          <label for="workplace01-03">年間休日数</label>
                         </li>
                         <li>
                           <input
@@ -1022,7 +967,7 @@
                             value="4"
                             id="workplace01-04"
                           />
-                          <label class="select_label" for="workplace01-04">昇給月額平均</label>
+                          <label for="workplace01-04">昇給月額平均</label>
                         </li>
                         <li>
                           <input
@@ -1031,35 +976,30 @@
                             value="5"
                             id="workplace01-05"
                           />
-                          <label class="select_label" for="workplace01-05">平均勤続年数</label>
+                          <label for="workplace01-05">平均勤続年数</label>
                         </li>
                       </ul>
-                      <label class="select_expandLabel" for="workplace01-opener"></label>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </dt>
                 <!--NOTE セレクト項目に応じて単位を変更 -->
                 <dd><input type="text" style="max-width: 144px" /><span>％</span></dd>
               </dl>
-              <dl style="z-index: 2">
+              <dl>
                 <dt>
-                  <ul class="select-workplace">
-                    <li>
+                  <div class="select-workplace" data-selectbox>
+                    <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
-                        class="select_close"
-                        type="radio"
+                        type="hidden"
                         name="referWorkplaceMethod02"
-                        id="workplace02-close"
                         value=""
+                        data-selectbox-hidden
                       />
-                      <label class="select_label select_label-placeholder" for="workplace02-close"
-                        >選択してください</label
-                      >
-                    </li>
-                    <li class="select_items">
-                      <input type="radio" name="referWorkplaceMethod02" id="workplace02-opener" />
-                      <label class="select_closeLabel" for="workplace02-close"></label>
-                      <ul>
+                      <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    </button>
+
+                    <div class="list-wrapper">
+                      <ul class="selectbox__panel">
                         <li>
                           <input
                             type="radio"
@@ -1067,7 +1007,7 @@
                             value="1"
                             id="workplace02-01"
                           />
-                          <label class="select_label" for="workplace02-01">月平均残業時間</label>
+                          <label for="workplace02-01">月平均残業時間</label>
                         </li>
                         <li>
                           <input
@@ -1076,7 +1016,7 @@
                             value="2"
                             id="workplace02-02"
                           />
-                          <label class="select_label" for="workplace02-02">有休取得率</label>
+                          <label for="workplace02-02">有休取得率</label>
                         </li>
                         <li>
                           <input
@@ -1085,7 +1025,7 @@
                             value="3"
                             id="workplace02-03"
                           />
-                          <label class="select_label" for="workplace02-03">年間休日数</label>
+                          <label for="workplace02-03">年間休日数</label>
                         </li>
                         <li>
                           <input
@@ -1094,7 +1034,7 @@
                             value="4"
                             id="workplace02-04"
                           />
-                          <label class="select_label" for="workplace02-04">昇給月額平均</label>
+                          <label for="workplace02-04">昇給月額平均</label>
                         </li>
                         <li>
                           <input
@@ -1103,35 +1043,30 @@
                             value="5"
                             id="workplace02-05"
                           />
-                          <label class="select_label" for="workplace02-05">平均勤続年数</label>
+                          <label for="workplace02-05">平均勤続年数</label>
                         </li>
                       </ul>
-                      <label class="select_expandLabel" for="workplace02-opener"></label>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </dt>
                 <!--NOTE セレクト項目に応じて単位を変更 -->
                 <dd><input type="text" style="max-width: 144px" /><span>ｈ</span></dd>
               </dl>
-              <dl style="z-index: 1">
+              <dl>
                 <dt>
-                  <ul class="select-workplace">
-                    <li>
+                  <div class="select-workplace" data-selectbox>
+                    <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
-                        class="select_close"
-                        type="radio"
+                        type="hidden"
                         name="referWorkplaceMethod03"
-                        id="workplace03-close"
                         value=""
+                        data-selectbox-hidden
                       />
-                      <label class="select_label select_label-placeholder" for="workplace03-close"
-                        >選択してください</label
-                      >
-                    </li>
-                    <li class="select_items">
-                      <input type="radio" name="referWorkplaceMethod03" id="workplace03-opener" />
-                      <label class="select_closeLabel" for="workplace03-close"></label>
-                      <ul>
+                      <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    </button>
+
+                    <div class="list-wrapper">
+                      <ul class="selectbox__panel">
                         <li>
                           <input
                             type="radio"
@@ -1139,7 +1074,7 @@
                             value="1"
                             id="workplace03-01"
                           />
-                          <label class="select_label" for="workplace03-01">月平均残業時間</label>
+                          <label for="workplace03-01">月平均残業時間</label>
                         </li>
                         <li>
                           <input
@@ -1148,7 +1083,7 @@
                             value="2"
                             id="workplace03-02"
                           />
-                          <label class="select_label" for="workplace03-02">有休取得率</label>
+                          <label for="workplace03-02">有休取得率</label>
                         </li>
                         <li>
                           <input
@@ -1157,7 +1092,7 @@
                             value="3"
                             id="workplace03-03"
                           />
-                          <label class="select_label" for="workplace03-03">年間休日数</label>
+                          <label for="workplace03-03">年間休日数</label>
                         </li>
                         <li>
                           <input
@@ -1166,7 +1101,7 @@
                             value="4"
                             id="workplace03-04"
                           />
-                          <label class="select_label" for="workplace03-04">昇給月額平均</label>
+                          <label for="workplace03-04">昇給月額平均</label>
                         </li>
                         <li>
                           <input
@@ -1175,12 +1110,11 @@
                             value="5"
                             id="workplace03-05"
                           />
-                          <label class="select_label" for="workplace03-05">平均勤続年数</label>
+                          <label for="workplace03-05">平均勤続年数</label>
                         </li>
                       </ul>
-                      <label class="select_expandLabel" for="workplace03-opener"></label>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </dt>
                 <!--NOTE セレクト項目に応じて単位を変更 -->
                 <dd><input type="text" style="max-width: 144px" /><span>年</span></dd>
@@ -1189,7 +1123,7 @@
             </div>
           </article>
           <hr />
-          <article class="block-free-text">
+          <article class="block-free-text" id="blockFreeText">
             <div class="box-head">
               <h3>フリーテキストスペース</h3>
               <p>業務内容の紹介や伝えたいメッセージなど自由に入力ください</p>
@@ -1234,7 +1168,7 @@
             </div>
           </article>
           <hr />
-          <article class="block-schedule">
+          <article class="block-schedule" id="blockSchedule">
             <div class="box-head">
               <h3 style="min-width: 5em">1日の流れ</h3>
               <p>
@@ -1243,12 +1177,12 @@
             </div>
           </article>
           <hr />
-          <article class="block-detail-info">
+          <article class="block-detail-info" id="blockDetailInfo">
             <div class="box-head">
               <h3>詳細情報</h3>
             </div>
             <dl>
-              <dt class="position-top">仕事内容</dt>
+              <dt>仕事内容<i>※</i></dt>
               <dd>
                 <ul class="worktype-list">
                   <li>
@@ -1293,7 +1227,7 @@
                       <span>人工透析</span>
                     </label>
                   </li>
-                  <li>
+                  <li style="grid-column: span 2">
                     <label class="worktype-item">
                       <input type="checkbox" name="workType[]" value="head" />
                       <span>師長・管理職</span>
@@ -1305,7 +1239,7 @@
                       <span>終末期医療・ターミナルケア</span>
                     </label>
                   </li>
-                  <li>
+                  <li style="grid-column: span 2">
                     <label class="worktype-item">
                       <input type="checkbox" name="workType[]" value="emergency" />
                       <span>救急外来</span>
@@ -1334,9 +1268,758 @@
                 </div>
               </dd>
             </dl>
-          </article>
+            <dl>
+              <dt>診療科目</dt>
+              <dd>
+                <ul class="department-list">
+                  <li>
+                    <label class="department-item">
+                      <input
+                        type="checkbox"
+                        name="department[]"
+                        value="general_internal_medicine"
+                      />
+                      <span>一般内科</span>
+                    </label>
+                  </li>
 
-          <br /><br /><br /><br /><br />
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="general_surgery" />
+                      <span>一般外科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="ophthalmology" />
+                      <span>眼科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="anesthesiology" />
+                      <span>麻酔科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input
+                        type="checkbox"
+                        name="department[]"
+                        value="gastroenterology_internal_medicine"
+                      />
+                      <span>消化器内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="gastroenterology_surgery" />
+                      <span>消化器外科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="otolaryngology" />
+                      <span>耳鼻咽喉科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="rheumatology" />
+                      <span>リウマチ科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input
+                        type="checkbox"
+                        name="department[]"
+                        value="cardiovascular_internal_medicine"
+                      />
+                      <span>循環器内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="cardiovascular_surgery" />
+                      <span>心臓血管外科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="dermatology" />
+                      <span>皮膚科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="palliative_care" />
+                      <span>緩和ケア科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input
+                        type="checkbox"
+                        name="department[]"
+                        value="respiratory_internal_medicine"
+                      />
+                      <span>呼吸器内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="respiratory_surgery" />
+                      <span>呼吸器外科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="urology" />
+                      <span>泌尿器科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="general_practice" />
+                      <span>総合診療科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="nephrology" />
+                      <span>腎臓内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="neurosurgery" />
+                      <span>脳神経外科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="radiology" />
+                      <span>放射線科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="allergy" />
+                      <span>アレルギー科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="hematology" />
+                      <span>血液内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="orthopedic_surgery" />
+                      <span>整形外科</span>
+                    </label>
+                  </li>
+
+                  <li style="grid-column: span 2">
+                    <label class="department-item">
+                      <input
+                        type="checkbox"
+                        name="department[]"
+                        value="cosmetic_surgery_dermatology"
+                      />
+                      <span>美容外科・美容皮膚科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="neurology" />
+                      <span>神経内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="plastic_surgery" />
+                      <span>形成外科</span>
+                    </label>
+                  </li>
+                  <li style="grid-column: span 2">
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="pediatrics" />
+                      <span>小児科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="endocrinology_metabolism" />
+                      <span>代謝・内分泌内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="psychiatry_psychosomatic" />
+                      <span>精神科・心療内科</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="department-item">
+                      <input type="checkbox" name="department[]" value="obstetrics_gynecology" />
+                      <span>産婦人科</span>
+                    </label>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+            <dl>
+              <dt>待遇</dt>
+              <dd>
+                <ul class="benefits-list">
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="dormitory" />
+                      <span>寮あり・社宅あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="return_support" />
+                      <span>復職支援</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="emergency_allowance" />
+                      <span>緊急訪問時の手当・代休あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="childcare_support" />
+                      <span>託児所・保育支援あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="housing_allowance" />
+                      <span>住宅手当</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="device_rental" />
+                      <span>スマホ・タブレット貸与あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="social_insurance" />
+                      <span>社会保険完備</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="salary_500up" />
+                      <span>年収500万円以上可能</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="vehicle_rental" />
+                      <span>電動アシスト自転車・バイク・車貸与</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="transportation" />
+                      <span>交通費支給</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="salary_600up" />
+                      <span>年収600万円以上可能</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="employee_discount" />
+                      <span>社割あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="dependent_deduction" />
+                      <span>扶養控除内考慮</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="side_job" />
+                      <span>副業OK</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="harassment_desk" />
+                      <span>ハラスメント相談窓口あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="retirement_allowance" />
+                      <span>退職金あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="holiday_salary_up" />
+                      <span>日・祝日給与UP</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="benefits-item">
+                      <input type="checkbox" name="benefits[]" value="moving_allowance" />
+                      <span>引越し手当</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>勤務時間<i>※</i></dt>
+              <dd>
+                <ul class="worktime-list">
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="daytime_only" />
+                      <span>日勤のみ可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="morning_only" />
+                      <span>午前のみ勤務</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="staggered_hours" />
+                      <span>時差出勤導入</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="night_shift_only" />
+                      <span>夜勤専従あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="afternoon_only" />
+                      <span>午後のみ勤務</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="flex_time" />
+                      <span>フレックスタイム制度あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="two_shift" />
+                      <span>2交替制</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="little_overtime" />
+                      <span>残業ほぼなし</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="overtime_20h" />
+                      <span>残業月20時間以内</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="three_shift" />
+                      <span>3交替制</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="no_oncall" />
+                      <span>オンコールなし・免除可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="gap_time_work" />
+                      <span>スキマ時間勤務</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="short_time_consultation" />
+                      <span>時短勤務相談可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktime-item">
+                      <input type="checkbox" name="worktime[]" value="no_emergency_visit" />
+                      <span>緊急訪問なし</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>休日<i>※</i></dt>
+              <dd>
+                <ul class="holiday-list">
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="four_weeks_8off" />
+                      <span>4週8休以上</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="long_vacation" />
+                      <span>長期休暇あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="family_ok" />
+                      <span>家庭都合休OK</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="weekends_holidays_off" />
+                      <span>土日祝休み</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="paid_leave_100" />
+                      <span>有給消化率ほぼ100%</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="submit_schedule_monthly" />
+                      <span>月1シフト提出</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="childcare_support" />
+                      <span>育児支援あり</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="work_from_1day_week" />
+                      <span>週1日からOK</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input
+                        type="checkbox"
+                        name="holiday[]"
+                        value="submit_schedule_weekly_biweekly"
+                      />
+                      <span>毎週〜隔週シフト提出</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="annual_holidays_120" />
+                      <span>年間休日120日以上</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="holiday-item">
+                      <input type="checkbox" name="holiday[]" value="work_from_2days_week" />
+                      <span>週2日からOK</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>
+                長期休暇<br />
+                特別休暇
+              </dt>
+              <dd>
+                <textarea style="margin-top: 0"></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>応募要件<i>※</i></dt>
+              <dd>
+                <ul class="welcome-list">
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="no_experience_ok" />
+                      <span>未経験可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="education_not_required" />
+                      <span>学歴不問</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="active_50s" />
+                      <span>50代活躍</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input
+                        type="checkbox"
+                        name="welcome[]"
+                        value="international_students_welcome"
+                      />
+                      <span>外国人材・留学生活躍中</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="blank_ok" />
+                      <span>ブランク可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="work_immediately" />
+                      <span>即日勤務OK</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="active_60s" />
+                      <span>60代活躍</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="lgbtq_friendly" />
+                      <span>LGBTQ+フレンドリー</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="assistant_nurse_ok" />
+                      <span>准看護師可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="regular_employee_available" />
+                      <span>正職員登用あり</span>
+                    </label>
+                  </li>
+
+                  <li style="grid-column: span 2">
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="web_interview_ok" />
+                      <span>WEB面接可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="age_not_required" />
+                      <span>年齢不問</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="nail_ok" />
+                      <span>ネイルOK</span>
+                    </label>
+                  </li>
+                  <li style="grid-column: span 2">
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="drivers_license" />
+                      <span>自動車運転免許</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="new_graduate_ok" />
+                      <span>新卒可</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="active_40s" />
+                      <span>40代活躍</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="welcome-item">
+                      <input type="checkbox" name="welcome[]" value="househusband_housewife_ok" />
+                      <span>主夫・主婦OK</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>歓迎要件</dt>
+              <dd>
+                <textarea style="margin-top: 0"></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>
+                教育体制<br />
+                研修
+              </dt>
+              <dd>
+                <ul class="support-list">
+                  <li>
+                    <label class="support-item">
+                      <input type="checkbox" name="support[]" value="qualification_support" />
+                      <span>資格取得支援</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="support-item">
+                      <input type="checkbox" name="support[]" value="training_program" />
+                      <span>研修制度あり</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>アクセス</dt>
+              <dd>
+                <ul class="access-list">
+                  <li>
+                    <label class="access-item">
+                      <input type="checkbox" name="access[]" value="near_station_5min" />
+                      <span>駅近（5分以内）</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="access-item">
+                      <input type="checkbox" name="access[]" value="car_commute_ok" />
+                      <span>車通勤可</span>
+                    </label>
+                  </li>
+                </ul>
+                <textarea></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>
+                選考<br />
+                プロセス
+              </dt>
+              <dd>
+                <textarea style="margin-top: 0"></textarea>
+              </dd>
+            </dl>
+          </article>
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back">戻る</button>
@@ -1363,6 +2046,8 @@
         </div>
       </div>
     </article>
+    <script src="../assets/js/common.js" defer></script>
+
     <script>
       // ----------------------------
       // 共通：パネルの開閉（is-active）をトグル
