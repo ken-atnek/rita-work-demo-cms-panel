@@ -123,6 +123,9 @@
         &.is-active {
             pointer-events: auto;
             grid-template-rows: 1fr;
+            .blockGrid {
+                overflow: unset;
+            }
         }
     }
 }
@@ -155,12 +158,22 @@
             }
         }
         .list-display {
-            --boxHeight: 4rem;
-            --itemPaddingRight: 1em;
-            width: 74px;
             margin-left: 6em;
-            @include list-select-center;
             z-index: 10;
+            width: 7.4rem;
+            @include select-list-box($height: 4.4rem, $position: "left", $list-height: 3rem);
+            .selectbox__head {
+                padding-inline: 1em;
+            }
+            .list-wrapper {
+                .selectbox__panel {
+                    li {
+                        label {
+                            padding-left: 1.2em;
+                        }
+                    }
+                }
+            }
             &::before,
             &::after {
                 position: absolute;
@@ -331,10 +344,12 @@
                                 background-color: #fff;
                             }
                         }
-                        &:hover {
-                            background-color: $hover-bg-blue;
-                            &::before {
-                                background-color: $font-black;
+                        &:not(.is-active) {
+                            &:hover {
+                                background-color: $hover-bg-blue;
+                                &::before {
+                                    background-color: $font-black;
+                                }
                             }
                         }
                         &:active {

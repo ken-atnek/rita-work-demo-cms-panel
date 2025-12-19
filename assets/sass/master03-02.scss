@@ -89,6 +89,8 @@
                         display: flex;
                         flex-direction: column;
                         padding: 3.4rem 2.4rem;
+                        justify-content: space-between;
+                        align-self: self-start;
                         .wrap-title {
                             position: relative;
                             font-size: inherit;
@@ -111,15 +113,72 @@
                         }
                         .select-status {
                             margin-top: 1.6rem;
-                            --boxHeight: 4.8rem;
                             flex: 1;
-                            @include list-select-status;
-                            .select_label {
-                                padding-right: 1.4em;
+                            width: 225px;
+                            @include select-list-box(
+                                $height: 4.8rem,
+                                $position: "center",
+                                $list-height: 3.6rem
+                            );
+                            .selectbox__head {
+                                color: #fff;
+                                border-color: $border-gray;
+                                padding-right: 3em;
+                                &.status-published {
+                                    background-color: #395bbe;
+                                }
+                                &.status-draft {
+                                    background-color: #ababab;
+                                }
+                                &::before {
+                                    content: "";
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    height: 100%;
+                                    width: 38px;
+                                    background-color: #fff;
+                                    border-radius: 0 8px 8px 0;
+                                }
                             }
-                            ul {
-                                overflow-y: scroll;
-                                max-height: 20em;
+                            .list-wrapper {
+                                width: 225px;
+                                justify-content: center;
+                                .selectbox__panel {
+                                    width: 100%;
+                                    width: 225px;
+                                    li {
+                                        width: 100%;
+                                        background-color: #395bbe;
+                                        label {
+                                            display: flex;
+                                            justify-content: center;
+                                            width: 100%;
+                                            color: #fff;
+                                            &:hover {
+                                                background-color: transparent;
+                                            }
+                                            &.status-published {
+                                                background-color: #395bbe;
+                                            }
+                                            &.status-draft {
+                                                background-color: #ababab;
+                                            }
+                                        }
+                                        &:first-of-type {
+                                            margin-top: unset;
+                                        }
+                                        &:last-of-type {
+                                            margin-bottom: unset;
+                                        }
+                                    }
+                                }
+                            }
+                            &.is-selected {
+                                .selectbox__head {
+                                    // background-color: transparent;
+                                    border-color: $border-gray;
+                                }
                             }
                         }
                     }
@@ -738,7 +797,6 @@
                         font-size: inherit;
                         margin-top: 4rem;
                         transition: 0.3s ease-out;
-
                         .inner-details {
                             position: relative;
                             display: grid;
@@ -747,7 +805,6 @@
                             gap: 8px 0;
                             overflow: hidden;
                             font-size: inherit;
-
                             dl {
                                 position: relative;
                                 display: grid;
@@ -1021,7 +1078,6 @@
                                         border-color: #4a76f0;
                                         background-color: #4a76f0;
                                     }
-
                                     &:checked::after {
                                         content: "";
                                         position: absolute;
@@ -1034,14 +1090,12 @@
                                         transform: rotate(-45deg);
                                     }
                                 }
-
                                 span {
                                     user-select: none;
                                     font-size: FZ(14);
                                 }
                             }
                         }
-
                         textarea {
                             min-height: 8lh;
                         }

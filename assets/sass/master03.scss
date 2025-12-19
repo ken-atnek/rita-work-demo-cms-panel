@@ -405,16 +405,12 @@
                     flex-direction: column;
                     gap: 8px 0;
                     .select-job-category {
-                        --boxHeight: 4.4rem;
                         flex: 1;
-                        @include list-select-left;
-                        .select_label {
-                            padding-left: 1.4em;
-                        }
-                        ul {
-                            overflow-y: scroll;
-                            max-height: 20em;
-                        }
+                        @include select-list-box(
+                            $height: 4.4rem,
+                            $position: "left",
+                            $list-height: 3.4rem
+                        );
                     }
                     textarea {
                         min-height: 8lh;
@@ -469,16 +465,8 @@
         // 法人名を選択
         .inner-select-company {
             .select-company {
-                --boxHeight: 4.4rem;
                 flex: 1;
-                @include list-select-left;
-                .select_label {
-                    padding-left: 1.4em;
-                }
-                ul {
-                    overflow-y: scroll;
-                    max-height: 16em;
-                }
+                @include select-list-box();
             }
         }
         // 修正ページ用

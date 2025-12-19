@@ -48,31 +48,27 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <ul class="select-status">
-                  <li>
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
-                      class="select_close"
-                      type="radio"
+                      type="hidden"
                       name="list01statusMethod"
-                      id="list01-status-close"
-                      value=""
+                      value="1"
+                      data-selectbox-hidden
                     />
-                    <label class="select_label select_label-placeholder" for="list01-status-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="list01statusMethod" id="list01-status-opener" />
-                    <label class="select_closeLabel" for="list01-status-close"></label>
-                    <ul>
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input
                           type="radio"
                           name="list01statusMethod"
                           value="1"
                           id="list01-status01"
+                          checked
                         />
-                        <label class="select_label" for="list01-status01">下書き中</label>
+                        <label for="list01-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
                         <input
@@ -81,12 +77,11 @@
                           value="2"
                           id="list01-status02"
                         />
-                        <label class="select_label" for="list01-status02">公開中</label>
+                        <label for="list01-status02" class="status-published">公開中</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="list01-status-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
               <div class="box-details">
                 <a href="#"></a>
@@ -128,31 +123,27 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <ul class="select-status">
-                  <li>
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
-                      class="select_close"
-                      type="radio"
+                      type="hidden"
                       name="list02statusMethod"
-                      id="list02-status-close"
-                      value=""
+                      value="1"
+                      data-selectbox-hidden
                     />
-                    <label class="select_label select_label-placeholder" for="list02-status-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="list02statusMethod" id="list02-status-opener" />
-                    <label class="select_closeLabel" for="list02-status-close"></label>
-                    <ul>
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input
                           type="radio"
                           name="list02statusMethod"
                           value="1"
                           id="list02-status01"
+                          checked
                         />
-                        <label class="select_label" for="list02-status01">下書き中</label>
+                        <label for="list02-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
                         <input
@@ -161,12 +152,11 @@
                           value="2"
                           id="list02-status02"
                         />
-                        <label class="select_label" for="list02-status02">公開中</label>
+                        <label for="list02-status02" class="status-published">公開中</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="list02-status-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
               <div class="box-details">
                 <a href="#"></a>
@@ -208,31 +198,27 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <ul class="select-status">
-                  <li>
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
-                      class="select_close"
-                      type="radio"
+                      type="hidden"
                       name="list03statusMethod"
-                      id="list03-status-close"
-                      value=""
+                      value="1"
+                      data-selectbox-hidden
                     />
-                    <label class="select_label select_label-placeholder" for="list03-status-close"
-                      >選択してください</label
-                    >
-                  </li>
-                  <li class="select_items">
-                    <input type="radio" name="list03statusMethod" id="list03-status-opener" />
-                    <label class="select_closeLabel" for="list03-status-close"></label>
-                    <ul>
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
                       <li>
                         <input
                           type="radio"
                           name="list03statusMethod"
                           value="1"
                           id="list03-status01"
+                          checked
                         />
-                        <label class="select_label" for="list03-status01">下書き中</label>
+                        <label for="list03-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
                         <input
@@ -241,12 +227,11 @@
                           value="2"
                           id="list03-status02"
                         />
-                        <label class="select_label" for="list03-status02">公開中</label>
+                        <label for="list03-status02" class="status-published">公開中</label>
                       </li>
                     </ul>
-                    <label class="select_expandLabel" for="list03-status-opener"></label>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
               <div class="box-details">
                 <a href="#"></a>
@@ -311,5 +296,6 @@
         </div>
       </div>
     </article>
+    <script src="../assets/js/common.js" defer></script>
   </body>
 </html>
