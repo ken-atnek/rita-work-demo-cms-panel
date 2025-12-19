@@ -489,8 +489,8 @@
                       <dt>タイトル</dt>
                       <dd><input type="text" /></dd>
                     </dl>
-                    <dl>
-                      <dt>画像</dt>
+                    <dl style="margin-top: 1.6rem">
+                      <dt class="position-top">画像</dt>
                       <dd class="dd-select-image">
                         <!-- NOTE 画像登録時は [is-active]付与 -->
                         <div class="select-image">
@@ -560,8 +560,8 @@
                       <dt>タイトル</dt>
                       <dd><input type="text" /></dd>
                     </dl>
-                    <dl>
-                      <dt>画像</dt>
+                    <dl style="margin-top: 1.6rem">
+                      <dt class="position-top">画像</dt>
                       <dd class="dd-select-image">
                         <!-- NOTE 画像登録時は [is-active]付与 -->
                         <div class="select-image">
@@ -631,8 +631,8 @@
                       <dt>タイトル</dt>
                       <dd><input type="text" /></dd>
                     </dl>
-                    <dl>
-                      <dt>画像</dt>
+                    <dl style="margin-top: 1.6rem">
+                      <dt class="position-top">画像</dt>
                       <dd class="dd-select-image">
                         <!-- NOTE 画像登録時は [is-active]付与 -->
                         <div class="select-image">
@@ -715,201 +715,628 @@
             <div class="box-head">
               <h3>福利厚生</h3>
             </div>
-          </article>
-          <br /><br /><br /><br /><br />
-
-          <dl>
-            <dt class="position-top">部署名</dt>
-            <dd><input type="text" style="max-width: 60rem" /></dd>
-          </dl>
-          <dl>
-            <dt>担当者名</dt>
-            <dd><input type="text" style="max-width: 34rem" /></dd>
-          </dl>
-          <dl>
-            <dt>住所</dt>
-            <dd>
-              <input type="text" style="max-width: 14rem" /><input type="text" /><input
-                type="text"
-              />
-            </dd>
-          </dl>
-          <dl>
-            <dt>地図表示<br />URL</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>地図リンク用<br />URL</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>電話番号</dt>
-            <dd><input type="text" style="max-width: 34rem" /></dd>
-          </dl>
-          <dl>
-            <dt>E-mail</dt>
-            <dd><input type="text" style="max-width: 60rem" /></dd>
-          </dl>
-          <hr />
-          <dl>
-            <dt>設立年月日</dt>
-            <dd>
-              <div class="input-date"><input type="date" /></div>
-            </dd>
-          </dl>
-          <dl>
-            <dt>施設規模</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>緊急指定</dt>
-            <dd>
-              <div class="wrap-toggle-button">
-                <label class="toggle-button">
-                  <input type="checkbox" />
-                </label>
-              </div>
-            </dd>
-          </dl>
-          <dl>
-            <dt>営業時間</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>休業日</dt>
-            <dd><input type="text" style="max-width: 42rem" /></dd>
-          </dl>
-          <dl>
-            <dt>利用者定員数</dt>
-            <dd><input type="text" style="max-width: 42rem" /></dd>
-          </dl>
-          <dl>
-            <dt>平均患者数</dt>
-            <dd><input type="text" style="max-width: 42rem" /></dd>
-          </dl>
-          <dl>
-            <dt>スタッフ構成</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>訪問エリア</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <dl>
-            <dt>備考</dt>
-            <dd><textarea></textarea></dd>
-          </dl>
-          <div class="inner-ban-plan">
-            <div class="box-head">
-              <h3>特別バナープラン</h3>
-              <div class="wrap-toggle-button">
-                <label class="toggle-button">
-                  <input type="checkbox" />
-                </label>
-              </div>
-            </div>
-            <dl>
-              <dt>事務所ロゴ画像</dt>
-              <dd>
-                <!-- NOTE 画像登録時は [is-active]付与 -->
-                <div class="select-image">
-                  <h4>ここにファイルをドロップ</h4>
-                  <span>または</span>
-                  <button>ファイルを選択</button>
-                  <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
-                  <!-- NOTE 警告用表示 -->
-                  <!-- <div class="wrap-caution">
+            <ul class="list-benefits">
+              <li>
+                <div class="wrap-head">
+                  <h4>福利厚生その１</h4>
+                  <button
+                    type="button"
+                    id="btnSwitchBenefits01"
+                    class="btn-switch"
+                    aria-controls="interviewBenefits01"
+                    aria-expanded="true"
+                  ></button>
+                </div>
+                <div class="wrap-details is-active" id="interviewBenefits01">
+                  <div class="inner-details">
+                    <dl>
+                      <dt class="position-top">画像</dt>
+                      <dd class="dd-select-image">
+                        <!-- NOTE 画像登録時は [is-active]付与 -->
+                        <div class="select-image">
+                          <h4>ここにファイルをドロップ</h4>
+                          <span>または</span>
+                          <button>ファイルを選択</button>
+                          <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
+                          <!-- NOTE 警告用表示 -->
+                          <!-- <div class="wrap-caution">
                     <h5>ファイルサイズが大きすぎます</h5>
                     <p>画像の容量を圧縮してしてから再度アップロードしてください。</p>
                   </div> -->
+                        </div>
+                        <ul class="selected-image-list">
+                          <li>
+                            <div class="warp-btn">
+                              <button type="button" class="btn-change"></button>
+                              <button type="button" class="btn-delate"></button>
+                            </div>
+                            <picture>
+                              <source src="../assets/images/_dummy/hero01.jpg" />
+                              <img src="../assets/images/_dummy/hero01.jpg" alt="" />
+                            </picture>
+                          </li>
+                        </ul>
+                        <div class="wrap-notice">
+                          <p>※画像は1枚登録可能です</p>
+                          <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>
+                          <p>※1ファイルあたり最大10MBのファイルが登録できます</p>
+                          <p>※横1200px、縦675px以上の画像の登録を推奨しています</p>
+                        </div>
+                      </dd>
+                    </dl>
+                    <dl style="margin-top: 1.6rem">
+                      <dt>見出し</dt>
+                      <dd><input type="text" /></dd>
+                    </dl>
+                    <dl>
+                      <dt>本文</dt>
+                      <dd><textarea></textarea></dd>
+                    </dl>
+                  </div>
                 </div>
-                <ul class="selected-image-list">
-                  <li>
-                    <div class="warp-btn">
-                      <button type="button" class="btn-change"></button>
-                      <button type="button" class="btn-delate"></button>
-                    </div>
-                    <picture>
-                      <source src="../assets/images/_dummy/fac01.png" />
-                      <img src="../assets/images/_dummy/fac01.png" alt="" />
-                    </picture>
-                  </li>
-                </ul>
-                <div class="wrap-notice">
-                  <p>※画像は1枚登録してください</p>
-                  <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>
-                  <p>※1ファイルあたり最大10MBのファイルが登録できます</p>
-                  <p>※横1200px、縦675px以上の画像の登録を推奨しています</p>
+              </li>
+              <li>
+                <div class="wrap-head">
+                  <h4>福利厚生その２</h4>
+                  <button
+                    type="button"
+                    id="btnSwitchBenefits02"
+                    class="btn-switch"
+                    aria-controls="interviewBenefits02"
+                    aria-expanded="true"
+                  ></button>
                 </div>
-              </dd>
-            </dl>
-            <dl>
-              <dt>事業所紹介動画</dt>
-              <dd>
-                <input type="text" />
-                <p>※YouTubeの動画リンクを設定してください</p>
-              </dd>
-            </dl>
-          </div>
-          <div class="inner-select-company">
+                <div class="wrap-details is-active" id="interviewBenefits02">
+                  <div class="inner-details">
+                    <dl>
+                      <dt class="position-top">画像</dt>
+                      <dd class="dd-select-image">
+                        <!-- NOTE 画像登録時は [is-active]付与 -->
+                        <div class="select-image">
+                          <h4>ここにファイルをドロップ</h4>
+                          <span>または</span>
+                          <button>ファイルを選択</button>
+                          <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
+                          <!-- NOTE 警告用表示 -->
+                          <!-- <div class="wrap-caution">
+                    <h5>ファイルサイズが大きすぎます</h5>
+                    <p>画像の容量を圧縮してしてから再度アップロードしてください。</p>
+                  </div> -->
+                        </div>
+                        <ul class="selected-image-list">
+                          <li>
+                            <div class="warp-btn">
+                              <button type="button" class="btn-change"></button>
+                              <button type="button" class="btn-delate"></button>
+                            </div>
+                            <picture>
+                              <source src="../assets/images/_dummy/hero01.jpg" />
+                              <img src="../assets/images/_dummy/hero01.jpg" alt="" />
+                            </picture>
+                          </li>
+                        </ul>
+                        <div class="wrap-notice">
+                          <p>※画像は1枚登録可能です</p>
+                          <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>
+                          <p>※1ファイルあたり最大10MBのファイルが登録できます</p>
+                          <p>※横1200px、縦675px以上の画像の登録を推奨しています</p>
+                        </div>
+                      </dd>
+                    </dl>
+                    <dl style="margin-top: 1.6rem">
+                      <dt>見出し</dt>
+                      <dd><input type="text" /></dd>
+                    </dl>
+                    <dl>
+                      <dt>本文</dt>
+                      <dd><textarea></textarea></dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="wrap-head">
+                  <h4>福利厚生その３</h4>
+                  <button
+                    type="button"
+                    id="btnSwitchBenefits03"
+                    class="btn-switch"
+                    aria-controls="interviewBenefits03"
+                    aria-expanded="true"
+                  ></button>
+                </div>
+                <div class="wrap-details is-active" id="interviewBenefits03">
+                  <div class="inner-details">
+                    <dl>
+                      <dt class="position-top">画像</dt>
+                      <dd class="dd-select-image">
+                        <!-- NOTE 画像登録時は [is-active]付与 -->
+                        <div class="select-image">
+                          <h4>ここにファイルをドロップ</h4>
+                          <span>または</span>
+                          <button>ファイルを選択</button>
+                          <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
+                          <!-- NOTE 警告用表示 -->
+                          <!-- <div class="wrap-caution">
+                    <h5>ファイルサイズが大きすぎます</h5>
+                    <p>画像の容量を圧縮してしてから再度アップロードしてください。</p>
+                  </div> -->
+                        </div>
+                        <ul class="selected-image-list">
+                          <li>
+                            <div class="warp-btn">
+                              <button type="button" class="btn-change"></button>
+                              <button type="button" class="btn-delate"></button>
+                            </div>
+                            <picture>
+                              <source src="../assets/images/_dummy/hero01.jpg" />
+                              <img src="../assets/images/_dummy/hero01.jpg" alt="" />
+                            </picture>
+                          </li>
+                        </ul>
+                        <div class="wrap-notice">
+                          <p>※画像は1枚登録可能です</p>
+                          <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>
+                          <p>※1ファイルあたり最大10MBのファイルが登録できます</p>
+                          <p>※横1200px、縦675px以上の画像の登録を推奨しています</p>
+                        </div>
+                      </dd>
+                    </dl>
+                    <dl style="margin-top: 1.6rem">
+                      <dt>見出し</dt>
+                      <dd><input type="text" /></dd>
+                    </dl>
+                    <dl>
+                      <dt>本文</dt>
+                      <dd><textarea></textarea></dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="wrap-head">
+                  <h4>福利厚生その４</h4>
+                  <button
+                    type="button"
+                    id="btnSwitchBenefits04"
+                    class="btn-switch"
+                    aria-controls="interviewBenefits04"
+                    aria-expanded="true"
+                  ></button>
+                </div>
+                <div class="wrap-details is-active" id="interviewBenefits04">
+                  <div class="inner-details">
+                    <dl>
+                      <dt class="position-top">画像</dt>
+                      <dd class="dd-select-image">
+                        <!-- NOTE 画像登録時は [is-active]付与 -->
+                        <div class="select-image">
+                          <h4>ここにファイルをドロップ</h4>
+                          <span>または</span>
+                          <button>ファイルを選択</button>
+                          <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
+                          <!-- NOTE 警告用表示 -->
+                          <!-- <div class="wrap-caution">
+                    <h5>ファイルサイズが大きすぎます</h5>
+                    <p>画像の容量を圧縮してしてから再度アップロードしてください。</p>
+                  </div> -->
+                        </div>
+                        <ul class="selected-image-list">
+                          <li>
+                            <div class="warp-btn">
+                              <button type="button" class="btn-change"></button>
+                              <button type="button" class="btn-delate"></button>
+                            </div>
+                            <picture>
+                              <source src="../assets/images/_dummy/hero01.jpg" />
+                              <img src="../assets/images/_dummy/hero01.jpg" alt="" />
+                            </picture>
+                          </li>
+                        </ul>
+                        <div class="wrap-notice">
+                          <p>※画像は1枚登録可能です</p>
+                          <p>※JPG、PNG、GIF形式の画像ファイルが登録できます</p>
+                          <p>※1ファイルあたり最大10MBのファイルが登録できます</p>
+                          <p>※横1200px、縦675px以上の画像の登録を推奨しています</p>
+                        </div>
+                      </dd>
+                    </dl>
+                    <dl style="margin-top: 1.6rem">
+                      <dt>見出し</dt>
+                      <dd><input type="text" /></dd>
+                    </dl>
+                    <dl>
+                      <dt>本文</dt>
+                      <dd><textarea></textarea></dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="box-premium-ban">
+              <h3>特別バナープランの設定について</h3>
+              <p>
+                特別バナープランはこちらのページでは設定できません。｢事業所管理］→｢事業所情報｣にて設定が行えます。
+              </p>
+            </div>
+          </article>
+          <hr />
+          <article class="block-workplace">
             <div class="box-head">
-              <h3>法人名を選択</h3>
+              <h3>職場環境の特徴</h3>
+              <p>求人カードの基本情報を入力ください</p>
+            </div>
+            <div class="box-details">
+              <span>項目</span>
+              <span>数字</span>
+              <dl style="z-index: 3">
+                <dt>
+                  <ul class="select-workplace">
+                    <li>
+                      <input
+                        class="select_close"
+                        type="radio"
+                        name="referWorkplaceMethod01"
+                        id="workplace01-close"
+                        value=""
+                      />
+                      <label class="select_label select_label-placeholder" for="workplace01-close"
+                        >選択してください</label
+                      >
+                    </li>
+                    <li class="select_items">
+                      <input type="radio" name="referWorkplaceMethod01" id="workplace01-opener" />
+                      <label class="select_closeLabel" for="workplace01-close"></label>
+                      <ul>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod01"
+                            value="1"
+                            id="workplace01-01"
+                          />
+                          <label class="select_label" for="workplace01-01">月平均残業時間</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod01"
+                            value="2"
+                            id="workplace01-02"
+                          />
+                          <label class="select_label" for="workplace01-02">有休取得率</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod01"
+                            value="3"
+                            id="workplace01-03"
+                          />
+                          <label class="select_label" for="workplace01-03">年間休日数</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod01"
+                            value="4"
+                            id="workplace01-04"
+                          />
+                          <label class="select_label" for="workplace01-04">昇給月額平均</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod01"
+                            value="5"
+                            id="workplace01-05"
+                          />
+                          <label class="select_label" for="workplace01-05">平均勤続年数</label>
+                        </li>
+                      </ul>
+                      <label class="select_expandLabel" for="workplace01-opener"></label>
+                    </li>
+                  </ul>
+                </dt>
+                <!--NOTE セレクト項目に応じて単位を変更 -->
+                <dd><input type="text" style="max-width: 144px" /><span>％</span></dd>
+              </dl>
+              <dl style="z-index: 2">
+                <dt>
+                  <ul class="select-workplace">
+                    <li>
+                      <input
+                        class="select_close"
+                        type="radio"
+                        name="referWorkplaceMethod02"
+                        id="workplace02-close"
+                        value=""
+                      />
+                      <label class="select_label select_label-placeholder" for="workplace02-close"
+                        >選択してください</label
+                      >
+                    </li>
+                    <li class="select_items">
+                      <input type="radio" name="referWorkplaceMethod02" id="workplace02-opener" />
+                      <label class="select_closeLabel" for="workplace02-close"></label>
+                      <ul>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod02"
+                            value="1"
+                            id="workplace02-01"
+                          />
+                          <label class="select_label" for="workplace02-01">月平均残業時間</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod02"
+                            value="2"
+                            id="workplace02-02"
+                          />
+                          <label class="select_label" for="workplace02-02">有休取得率</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod02"
+                            value="3"
+                            id="workplace02-03"
+                          />
+                          <label class="select_label" for="workplace02-03">年間休日数</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod02"
+                            value="4"
+                            id="workplace02-04"
+                          />
+                          <label class="select_label" for="workplace02-04">昇給月額平均</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod02"
+                            value="5"
+                            id="workplace02-05"
+                          />
+                          <label class="select_label" for="workplace02-05">平均勤続年数</label>
+                        </li>
+                      </ul>
+                      <label class="select_expandLabel" for="workplace02-opener"></label>
+                    </li>
+                  </ul>
+                </dt>
+                <!--NOTE セレクト項目に応じて単位を変更 -->
+                <dd><input type="text" style="max-width: 144px" /><span>ｈ</span></dd>
+              </dl>
+              <dl style="z-index: 1">
+                <dt>
+                  <ul class="select-workplace">
+                    <li>
+                      <input
+                        class="select_close"
+                        type="radio"
+                        name="referWorkplaceMethod03"
+                        id="workplace03-close"
+                        value=""
+                      />
+                      <label class="select_label select_label-placeholder" for="workplace03-close"
+                        >選択してください</label
+                      >
+                    </li>
+                    <li class="select_items">
+                      <input type="radio" name="referWorkplaceMethod03" id="workplace03-opener" />
+                      <label class="select_closeLabel" for="workplace03-close"></label>
+                      <ul>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod03"
+                            value="1"
+                            id="workplace03-01"
+                          />
+                          <label class="select_label" for="workplace03-01">月平均残業時間</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod03"
+                            value="2"
+                            id="workplace03-02"
+                          />
+                          <label class="select_label" for="workplace03-02">有休取得率</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod03"
+                            value="3"
+                            id="workplace03-03"
+                          />
+                          <label class="select_label" for="workplace03-03">年間休日数</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod03"
+                            value="4"
+                            id="workplace03-04"
+                          />
+                          <label class="select_label" for="workplace03-04">昇給月額平均</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="referWorkplaceMethod03"
+                            value="5"
+                            id="workplace03-05"
+                          />
+                          <label class="select_label" for="workplace03-05">平均勤続年数</label>
+                        </li>
+                      </ul>
+                      <label class="select_expandLabel" for="workplace03-opener"></label>
+                    </li>
+                  </ul>
+                </dt>
+                <!--NOTE セレクト項目に応じて単位を変更 -->
+                <dd><input type="text" style="max-width: 144px" /><span>年</span></dd>
+              </dl>
+              <p class="notice">※入力例：月平均残業、15.3、h</p>
+            </div>
+          </article>
+          <hr />
+          <article class="block-free-text">
+            <div class="box-head">
+              <h3>フリーテキストスペース</h3>
+              <p>業務内容の紹介や伝えたいメッセージなど自由に入力ください</p>
+            </div>
+            <div class="box-details">
+              <dl>
+                <dt>タイトル</dt>
+                <dd><input type="text" /></dd>
+              </dl>
+              <dl style="margin-top: 1.6rem">
+                <dt>見出し１</dt>
+                <dd><input type="text" /></dd>
+              </dl>
+              <dl>
+                <dt class="position-top">本文</dt>
+                <dd><textarea></textarea></dd>
+              </dl>
+              <dl style="margin-top: 1.6rem">
+                <dt>見出し２</dt>
+                <dd><input type="text" /></dd>
+              </dl>
+              <dl>
+                <dt class="position-top">本文</dt>
+                <dd><textarea></textarea></dd>
+              </dl>
+              <dl style="margin-top: 1.6rem">
+                <dt>見出し３</dt>
+                <dd><input type="text" /></dd>
+              </dl>
+              <dl>
+                <dt class="position-top">本文</dt>
+                <dd><textarea></textarea></dd>
+              </dl>
+              <dl style="margin-top: 1.6rem">
+                <dt>見出し４</dt>
+                <dd><input type="text" /></dd>
+              </dl>
+              <dl>
+                <dt class="position-top">本文</dt>
+                <dd><textarea></textarea></dd>
+              </dl>
+            </div>
+          </article>
+          <hr />
+          <article class="block-schedule">
+            <div class="box-head">
+              <h3 style="min-width: 5em">1日の流れ</h3>
+              <p>
+                出勤から退勤までの業務スケジュールを入力してください。（｢日勤｣または｢夜勤｣のいずれかを必ず入力してください。）
+              </p>
+            </div>
+          </article>
+          <hr />
+          <article class="block-detail-info">
+            <div class="box-head">
+              <h3>詳細情報</h3>
             </div>
             <dl>
-              <dt>法人名</dt>
+              <dt class="position-top">仕事内容</dt>
               <dd>
-                <ul class="select-company">
+                <ul class="worktype-list">
                   <li>
-                    <input
-                      class="select_close"
-                      type="radio"
-                      name="referCompanyMethod"
-                      id="company-close"
-                      value=""
-                    />
-                    <label class="select_label select_label-placeholder" for="company-close"
-                      >選択してください</label
-                    >
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="outpatient" />
+                      <span>外来</span>
+                    </label>
                   </li>
-                  <li class="select_items">
-                    <input type="radio" name="referCompanyMethod" id="company-opener" />
-                    <label class="select_closeLabel" for="company-close"></label>
-                    <ul>
-                      <li>
-                        <input type="radio" name="referCompanyMethod" value="1" id="company01" />
-                        <label class="select_label" for="company01"
-                          >株式会社ツナーズピクニック</label
-                        >
-                      </li>
-                      <li>
-                        <input type="radio" name="referCompanyMethod" value="2" id="company02" />
-                        <label class="select_label" for="company02">有限会社ART-FACTORY</label>
-                      </li>
-                      <li>
-                        <input type="radio" name="referCompanyMethod" value="3" id="company03" />
-                        <label class="select_label" for="company03"
-                          >株式会社ツナーズピクニック2</label
-                        >
-                      </li>
-                      <li>
-                        <input type="radio" name="referCompanyMethod" value="4" id="company04" />
-                        <label class="select_label" for="company04"
-                          >株式会社ツナーズピクニック3</label
-                        >
-                      </li>
-                      <li>
-                        <input type="radio" name="referCompanyMethod" value="5" id="company05" />
-                        <label class="select_label" for="company05"
-                          >株式会社ツナーズピクニック4</label
-                        >
-                      </li>
-                    </ul>
-                    <label class="select_expandLabel" for="company-opener"></label>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="icu" />
+                      <span>集中治療室（ICU勤務）</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="oncall" />
+                      <span>オンコール待機2名以上</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="operation" />
+                      <span>オペ室勤務</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="endoscopy" />
+                      <span>内視鏡室</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="pediatric" />
+                      <span>小児対応なし</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="dialysis" />
+                      <span>人工透析</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="head" />
+                      <span>師長・管理職</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="terminal" />
+                      <span>終末期医療・ターミナルケア</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="emergency" />
+                      <span>救急外来</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="checkup" />
+                      <span>健診・検診・人間ドック</span>
+                    </label>
+                  </li>
+
+                  <li>
+                    <label class="worktype-item">
+                      <input type="checkbox" name="workType[]" value="ward" />
+                      <span>病棟</span>
+                    </label>
                   </li>
                 </ul>
+                <textarea></textarea>
+                <div class="wrap-notice">
+                  <p>※パート・契約職員の募集の場合は以下を明記ください。</p>
+                  <p>・雇用期間の定めの有無および期間</p>
+                  <p>・更新および更新上限の有無</p>
+                  <p>・更新条件</p>
+                </div>
               </dd>
             </dl>
-          </div>
+          </article>
+
+          <br /><br /><br /><br /><br />
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back">戻る</button>
@@ -990,11 +1417,18 @@
         // initClosed('interviewDetails01', 'btnSwitchDetails01');
         initClosed('interviewDetails02', 'btnSwitchDetails02');
         initClosed('interviewDetails03', 'btnSwitchDetails03');
+        initClosed('btnSwitchBenefits02', 'interviewBenefits02');
+        initClosed('btnSwitchBenefits03', 'interviewBenefits03');
+        initClosed('btnSwitchBenefits04', 'interviewBenefits04');
 
         // トグル動作
         bindToggle('btnSwitchDetails01', 'interviewDetails01');
         bindToggle('btnSwitchDetails02', 'interviewDetails02');
         bindToggle('btnSwitchDetails03', 'interviewDetails03');
+        bindToggle('btnSwitchBenefits01', 'interviewBenefits01');
+        bindToggle('btnSwitchBenefits02', 'interviewBenefits02');
+        bindToggle('btnSwitchBenefits03', 'interviewBenefits03');
+        bindToggle('btnSwitchBenefits04', 'interviewBenefits04');
       });
     </script>
   </body>

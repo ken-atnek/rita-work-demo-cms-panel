@@ -492,6 +492,156 @@
 }
 
 /*================================
+ セレクトボックス(最新版)
+--------------------------------*/
+@mixin select-list-box($height: 4.4rem, $position: left, $list-height: 3rem) {
+    position: relative;
+    font-size: inherit;
+    .selectbox__head {
+        transition: 0.3s ease-out;
+        position: relative;
+        width: 100%;
+        height: $height;
+        display: flex;
+        align-items: center;
+        padding-inline: 1.4em;
+        background: #fff;
+        border: 1px solid $border-gray;
+        border-radius: 8px;
+        cursor: pointer;
+        user-select: none;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            translate: 0 -50%;
+            right: 0.8em;
+            width: 0.7em;
+            @include svg-icon-arrow-bottom("335D95");
+            transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
+        }
+        &:hover {
+            border-color: $hover-blue;
+        }
+        &:active {
+            background-color: $hover-bg-blue;
+        }
+    }
+    .selectbox__value {
+        flex: 1;
+        font-size: FZ(14);
+        @if $position == "center" {
+            text-align: center;
+        } @else {
+            text-align: left;
+        }
+    }
+    .list-wrapper {
+        position: absolute;
+        left: 0;
+        right: 0;
+        font-size: inherit;
+        top: calc(100% + 0.4rem);
+        z-index: 10;
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.2s ease-out;
+        overflow: hidden;
+        .selectbox__panel {
+            font-size: inherit;
+            position: relative;
+            margin: 0;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            min-height: 0;
+            li {
+                position: relative;
+                font-size: inherit;
+                input[type="radio"] {
+                    position: absolute;
+                    inset: 0;
+                    pointer-events: none;
+                }
+                label {
+                    height: $list-height;
+                    cursor: pointer;
+                    font-size: FZ(14);
+                    padding-left: 1.4em;
+                    display: flex;
+                    align-items: center;
+                    @if $position == "center" {
+                        padding-right: 1.4em;
+                    } @else {
+                        padding-left: 1.4em;
+                    }
+                    &:hover {
+                        background-color: $hover-bg-blue;
+                    }
+                }
+                &:first-of-type {
+                    margin-top: 1rem;
+                }
+                &:last-of-type {
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+    }
+    &.is-selected {
+        .selectbox__head {
+            background-color: $hover-bg-blue;
+            border-color: $hover-blue;
+            &::after {
+                rotate: 90deg;
+            }
+        }
+        &.is-open {
+            .selectbox__head {
+                &::after {
+                    rotate: unset;
+                }
+            }
+        }
+    }
+    &.is-open {
+        .selectbox__head {
+            border-color: $hover-blue;
+        }
+        .list-wrapper {
+            grid-template-rows: 1fr;
+            .selectbox__panel {
+                overflow: auto;
+                border-color: $hover-blue;
+            }
+        }
+    }
+    // @if $position == "left" {
+    //     .selectbox__value {
+    //         text-align: left;
+    //         .list-wrapper {
+    //             .selectbox__panel {
+    //                 label {
+    //                     padding-left: 1.4em;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // } @else if$position == "center" {
+    //     .selectbox__value {
+    //         text-align: center;
+    //         .list-wrapper {
+    //             .selectbox__panel {
+    //                 label {
+    //                     padding-right: 1.4em;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+}
+
+/*================================
  求人カード用セレクトステータス(マスター)
 --------------------------------*/
 @mixin select-status-master {
