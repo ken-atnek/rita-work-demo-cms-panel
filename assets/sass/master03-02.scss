@@ -415,6 +415,53 @@
         @include layout-container-section;
         padding-bottom: 8rem;
         flex: 1;
+        // 再度ブロックアンカーリンク
+        .block-nav {
+            position: fixed;
+            top: 45rem;
+            left: 6rem;
+            font-size: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 2.4rem 0;
+            &::before {
+                content: "";
+                position: absolute;
+                left: 9px;
+                height: 100%;
+                width: 1px;
+                background-color: $border-gray;
+            }
+            a {
+                font-size: FZ(14);
+                display: flex;
+                align-items: center;
+                gap: 0 1.6rem;
+                i {
+                    position: relative;
+                    display: block;
+                    width: 1.8rem;
+                    aspect-ratio: 1;
+                    border-radius: 50%;
+                    border: 1px solid $border-gray;
+                    background-color: #fffbf5;
+                }
+                &.is-active {
+                    i {
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            margin: auto;
+                            width: 1rem;
+                            aspect-ratio: 1;
+                            border-radius: 50%;
+                            background-color: #403726;
+                        }
+                    }
+                }
+            }
+        }
         h2 {
             span {
                 font-size: 1.6rem;
@@ -430,17 +477,18 @@
         .block-form {
             background-color: #fff;
             border-radius: $radius20;
-            padding: 3rem 3rem 5rem 3rem;
+            padding: 1rem 3rem 5rem 3rem;
             position: relative;
             font-size: inherit;
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 2.4rem 0;
+            // gap: 2.4rem 0;
             article {
                 grid-column: span 2;
                 display: grid;
                 grid-template-columns: subgrid;
                 gap: 3rem 0;
+                padding-top: 2.4rem;
                 .box-head {
                     grid-column: span 2;
                     position: relative;
@@ -525,53 +573,45 @@
                     }
                 }
             }
-
+            hr {
+                grid-column: span 2;
+                width: 100%;
+                border-top: 1px solid $border-gray;
+                margin: 4rem 0 1.6rem;
+            }
             // 基本情報
             .block-basic-info {
                 dl {
-                    &.dl-job-category {
-                        z-index: 5;
-                        display: none;
-                    }
                     dd {
+                        // 募集職種
                         .select-job-type {
-                            --boxHeight: 4.4rem;
                             flex: 1;
-                            @include list-select-left;
-                            .select_label {
-                                padding-left: 1.4em;
-                            }
-                            ul {
-                                overflow-y: scroll;
-                                max-height: 20em;
-                            }
+                            @include select-list-box(
+                                $height: 4.8rem,
+                                $position: "left",
+                                $list-height: 3.4rem
+                            );
                         }
+                        // 雇用形態
                         .select-job-category {
                             --boxHeight: 4.4rem;
                             flex: 1;
-                            z-index: 4;
-                            @include list-select-left;
-                            .select_label {
-                                padding-left: 1.4em;
-                            }
-                            ul {
-                                overflow-y: scroll;
-                                max-height: 20em;
-                            }
+                            // z-index: 4;
+                            @include select-list-box(
+                                $height: 4.8rem,
+                                $position: "left",
+                                $list-height: 3.4rem
+                            );
                         }
                         .select-plan {
-                            --boxHeight: 4.4rem;
                             flex: 1;
                             max-width: 36rem;
-                            z-index: 4;
-                            @include list-select-left;
-                            .select_label {
-                                padding-left: 1.4em;
-                            }
-                            ul {
-                                overflow-y: scroll;
-                                max-height: 20em;
-                            }
+                            // z-index: 4;
+                            @include select-list-box(
+                                $height: 4.8rem,
+                                $position: "left",
+                                $list-height: 3.4rem
+                            );
                         }
                     }
                     .dd-top {
@@ -608,7 +648,7 @@
                     }
                     // 給与
                     .dd-salary {
-                        z-index: 2;
+                        // z-index: 2;
                         input[type="text"] {
                             width: 144px;
                             flex: 1;
@@ -718,6 +758,7 @@
                                 }
                             }
                         }
+                        // 初年度年収
                         .wrap-yearly-salary {
                             position: relative;
                             font-size: inherit;
@@ -734,17 +775,13 @@
                                     font-size: FZ(14);
                                 }
                                 .select-yearly-salary {
-                                    --boxHeight: 4.4rem;
                                     max-width: 29rem;
                                     flex: 1;
-                                    @include list-select-left;
-                                    .select_label {
-                                        padding-left: 1.4em;
-                                    }
-                                    ul {
-                                        overflow-y: scroll;
-                                        max-height: 20em;
-                                    }
+                                    @include select-list-box(
+                                        $height: 4.8rem,
+                                        $position: "left",
+                                        $list-height: 3.2rem
+                                    );
                                 }
                             }
                             &.is-inactive {
@@ -872,6 +909,7 @@
                 }
                 .box-interview {
                     @include accordion-contents;
+                    margin-bottom: 2.4rem;
                 }
             }
             // 職場紹介動画
@@ -975,17 +1013,13 @@
                             position: relative;
                             font-size: inherit;
                             .select-workplace {
-                                --boxHeight: 4.4rem;
                                 width: 48rem;
                                 flex: 1;
-                                @include list-select-left;
-                                .select_label {
-                                    padding-left: 1.4em;
-                                }
-                                ul {
-                                    overflow-y: scroll;
-                                    max-height: 20em;
-                                }
+                                @include select-list-box(
+                                    $height: 4.8rem,
+                                    $position: "left",
+                                    $list-height: 3.4rem
+                                );
                             }
                         }
                         dd {
@@ -1034,7 +1068,7 @@
                     }
                 }
             }
-            // フリーテキスト
+            // 詳細情報
             .block-detail-info {
                 dl {
                     position: relative;
@@ -1042,71 +1076,56 @@
                     display: grid;
                     grid-column: span 2;
                     grid-template-columns: subgrid;
+                    &:not(:first-of-type) {
+                        margin-top: 1rem;
+                    }
+                    &:not(:last-of-type) {
+                        dd {
+                            border-bottom: 1px solid $border-gray;
+                            padding-bottom: 4rem;
+                        }
+                    }
                     dt {
                         display: flex;
-                        align-items: center;
+                        align-items: flex-start;
                         font-size: FZ(16);
+                        justify-content: flex-start;
+                        i {
+                            font-size: 1rem;
+                            margin-left: 1rem;
+                            padding-top: 0.3rem;
+                        }
                     }
                     dd {
                         font-size: inherit;
                         display: flex;
                         flex-direction: column;
                         .worktype-list {
-                            display: grid;
-                            grid-template-columns: repeat(3, 1fr);
-                            gap: 1rem 4rem;
-                            padding: 0;
-                            margin: 0;
-                            font-size: inherit;
-                            .worktype-item {
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 0 1rem;
-                                cursor: pointer;
-                                color: #333;
-                                font-size: inherit;
-                                input {
-                                    appearance: none;
-                                    width: 18px;
-                                    aspect-ratio: 1;
-                                    border-radius: 4px;
-                                    border: 1px solid #ceccca;
-                                    position: relative;
-                                    cursor: pointer;
-                                    flex-shrink: 0;
-                                    &:checked {
-                                        border-color: #4a76f0;
-                                        background-color: #4a76f0;
-                                    }
-                                    &:checked::after {
-                                        content: "";
-                                        position: absolute;
-                                        inset: 0;
-                                        margin: auto;
-                                        width: 8px;
-                                        height: 4px;
-                                        border-left: 2px solid #fff;
-                                        border-bottom: 2px solid #fff;
-                                        transform: rotate(-45deg);
-                                    }
-                                }
-                                span {
-                                    user-select: none;
-                                    font-size: FZ(14);
-                                }
-                            }
+                            @include CheckBoxList($count: 3);
+                        }
+                        .department-list {
+                            @include CheckBoxList($count: 4);
+                        }
+                        .benefits-list {
+                            @include CheckBoxList($count: 3, $size: auto);
+                        }
+                        .worktime-list,
+                        .holiday-list {
+                            @include CheckBoxList($count: 3, $size: auto);
+                        }
+                        .welcome-list {
+                            @include CheckBoxList($count: 4, $size: auto);
+                        }
+                        .support-list,
+                        .access-list {
+                            @include CheckBoxList($count: 1, $size: auto);
                         }
                         textarea {
+                            margin-top: 1rem;
                             min-height: 8lh;
                         }
                     }
                 }
-            }
-            hr {
-                grid-column: span 2;
-                width: 100%;
-                border-top: 1px solid $border-gray;
-                margin-block: 2rem;
             }
         }
         .bottom-box-btn {
