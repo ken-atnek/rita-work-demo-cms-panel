@@ -8,6 +8,47 @@
 @use "./_common" as *;
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
+@mixin bottom-box-btn {
+    align-self: center;
+    position: relative;
+    font-size: inherit;
+    margin-top: 3rem;
+    display: flex;
+    gap: 0 2.4rem;
+    .item-register {
+        @include main-button("confirm");
+        width: 23rem;
+        height: 48px;
+        span {
+            position: relative;
+            font-size: 1.6rem;
+            padding-left: 1.6em;
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 50%;
+                translate: 0 -50%;
+                width: 1.4rem;
+                @include svg-icon-plus("fff");
+            }
+        }
+    }
+    .item-back {
+        @include main-button("back");
+        width: 16rem;
+        height: 48px;
+        font-size: FZ(14);
+    }
+    .item-check {
+        @include main-button("confirm");
+        width: 20rem;
+        height: 48px;
+        span {
+            font-size: 1.6rem;
+        }
+    }
+}
 /*=================================
 ***求人カード
 =================================*/
@@ -344,29 +385,7 @@
         }
     }
     .bottom-box-btn {
-        align-self: center;
-        position: relative;
-        font-size: inherit;
-        margin-top: 3rem;
-        .item-register {
-            @include main-button("confirm");
-            width: 23rem;
-            height: 48px;
-            span {
-                position: relative;
-                font-size: 1.6rem;
-                padding-left: 1.6em;
-                &::before {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    top: 50%;
-                    translate: 0 -50%;
-                    width: 1.4rem;
-                    @include svg-icon-plus("fff");
-                }
-            }
-        }
+        @include bottom-box-btn();
     }
 }
 /*=================================
@@ -1095,26 +1114,99 @@
             }
         }
         .bottom-box-btn {
-            align-self: center;
-            position: relative;
-            font-size: inherit;
-            margin-top: 3rem;
-            display: flex;
-            gap: 0 2.4rem;
-            .item-back {
-                @include main-button("back");
-                width: 16rem;
-                height: 48px;
-                font-size: FZ(14);
-            }
-            .item-check {
-                @include main-button("confirm");
-                width: 20rem;
-                height: 48px;
-                span {
-                    font-size: 1.6rem;
+            @include bottom-box-btn();
+        }
+        // 修正ページ用
+        .btn-delate-item {
+            @include btn-delate-item;
+        }
+    }
+}
+/*=================================
+***パスワード設定
+=================================*/
+.inner-03-03 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-job-card-register {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        flex: 1;
+        h2 {
+            span {
+                font-size: 1.6rem;
+                &::before {
+                    content: "-";
+                    margin-inline: 1em;
                 }
             }
+        }
+        .link-page-back {
+            @include link-page-back;
+        }
+        .block-form {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 4.8rem 7rem 4.8rem 3rem;
+            position: relative;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2.4rem 0;
+            dl {
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: subgrid;
+                font-size: inherit;
+                gap: 0 1.6rem;
+                dt {
+                    align-self: center;
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    display: flex;
+                    justify-content: space-between;
+                    &::after {
+                        content: "※";
+                        font-size: 1rem;
+                        display: inline-block;
+                        margin-left: 1rem;
+                        translate: 0 -2px;
+                    }
+                }
+                dd {
+                    position: relative;
+                    input {
+                        width: 100%;
+                    }
+                    button {
+                        position: absolute;
+                        top: 50%;
+                        translate: 0 -50%;
+                        right: 1rem;
+                        width: 2.4rem;
+                        aspect-ratio: 1;
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            margin: auto;
+                            @include svg-icon-open-eye("403726");
+                            width: 2.1rem;
+                        }
+                        &.is-close {
+                            &::before {
+                                @include svg-icon-close-eye("696969");
+                                width: 2.1rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .bottom-box-btn {
+            @include bottom-box-btn();
         }
         // 修正ページ用
         .btn-delate-item {
