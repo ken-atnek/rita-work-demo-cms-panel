@@ -115,49 +115,27 @@
                             margin-top: 1.6rem;
                             flex: 1;
                             width: 225px;
-                            @include select-list-box(
+                            @include select-status-box(
                                 $height: 4.8rem,
                                 $position: "center",
                                 $list-height: 3.6rem
                             );
                             .selectbox__head {
-                                color: #fff;
-                                border-color: $border-gray;
-                                padding-right: 3em;
                                 &.status-published {
-                                    background-color: #395bbe;
+                                    .selectbox__value {
+                                        background-color: #395bbe;
+                                    }
                                 }
                                 &.status-draft {
-                                    background-color: #ababab;
-                                }
-                                &::before {
-                                    content: "";
-                                    position: absolute;
-                                    top: 0;
-                                    right: 0;
-                                    height: 100%;
-                                    width: 38px;
-                                    background-color: #fff;
-                                    border-radius: 0 8px 8px 0;
+                                    .selectbox__value {
+                                        background-color: #ababab;
+                                    }
                                 }
                             }
                             .list-wrapper {
-                                width: 225px;
-                                justify-content: center;
                                 .selectbox__panel {
-                                    width: 100%;
-                                    width: 225px;
                                     li {
-                                        width: 100%;
-                                        background-color: #395bbe;
                                         label {
-                                            display: flex;
-                                            justify-content: center;
-                                            width: 100%;
-                                            color: #fff;
-                                            &:hover {
-                                                background-color: transparent;
-                                            }
                                             &.status-published {
                                                 background-color: #395bbe;
                                             }
@@ -165,19 +143,7 @@
                                                 background-color: #ababab;
                                             }
                                         }
-                                        &:first-of-type {
-                                            margin-top: unset;
-                                        }
-                                        &:last-of-type {
-                                            margin-bottom: unset;
-                                        }
                                     }
-                                }
-                            }
-                            &.is-selected {
-                                .selectbox__head {
-                                    // background-color: transparent;
-                                    border-color: $border-gray;
                                 }
                             }
                         }
