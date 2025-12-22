@@ -1,0 +1,146 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/master03-02.css" />
+  </head>
+
+  <body>
+    <!--#include virtual="./inc_header.html"-->
+    <main class="inner-03-03">
+      <section class="page-nav">
+        <h2>事業所管理</h2>
+        <nav>
+          <a href="#">事業所情報</a>
+          <a href="#">求人カード</a>
+          <a href="#" class="is-active">パスワード設定</a>
+        </nav>
+      </section>
+      <section class="container-job-card-register">
+        <h2>パスワード設定<span>宅型有料老人ホーム メディケア癒やしDX花園</span></h2>
+        <form class="block-form">
+          <dl>
+            <dt>現在のパスワード</dt>
+            <dd><input type="text" /><button type="button"></button></dd>
+          </dl>
+          <dl>
+            <dt>新しいパスワード</dt>
+            <!-- NOTE [is-close]でアイコンチェンジ -->
+            <dd><input type="text" /><button type="button" class="is-close"></button></dd>
+          </dl>
+          <dl>
+            <dt>新しいパスワード(確認用)</dt>
+            <dd><input type="text" /><button type="button" class="is-close"></button></dd>
+          </dl>
+        </form>
+        <div class="bottom-box-btn">
+          <button type="button" class="item-back">戻る</button>
+          <button type="button" class="item-check">登録する</button>
+        </div>
+        <!--NOTE 修正画面のみ表示 -->
+      </section>
+      <!--#include virtual="./inc_page-top.html"-->
+    </main>
+    <!-- NOTE 修正画面用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
+    <article class="modal-alert" id="modalBlock">
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>新規事業所削除</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <p>新規法人情報を削除します。よろしいですか？</p>
+          <div class="box-btn">
+            <button type="button" class="btn-cancel">キャンセル</button>
+            <button type="button" class="btn-confirm">はい</button>
+          </div>
+        </div>
+      </div>
+    </article>
+    <script src="../assets/js/common.js" defer></script>
+
+    <script>
+      // ----------------------------
+      // 共通：パネルの開閉（is-active）をトグル
+      // ----------------------------
+      function togglePanel(panelId, btnSelector) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return false;
+
+        const isOpen = panel.classList.toggle('is-active');
+        panel.setAttribute('aria-hidden', String(!isOpen));
+
+        const btn = btnSelector ? document.querySelector(btnSelector) : null;
+        if (btn) {
+          btn.setAttribute('aria-expanded', String(isOpen));
+          btn.classList.toggle('is-active', isOpen);
+        }
+
+        return isOpen;
+      }
+
+      // ----------------------------
+      // 初期化：閉じた状態にする
+      // ----------------------------
+      function initClosed(panelId, btnId) {
+        const panel = document.getElementById(panelId);
+        if (panel) {
+          panel.classList.remove('is-active');
+          panel.setAttribute('aria-hidden', 'true');
+        }
+
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      // ----------------------------
+      // クリック紐付け
+      // ----------------------------
+      function bindToggle(btnId, panelId) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+          togglePanel(panelId, `#${btnId}`);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // 初期は閉
+        // initClosed('interviewDetails01', 'btnSwitchDetails01');
+        initClosed('interviewDetails02', 'btnSwitchDetails02');
+        initClosed('interviewDetails03', 'btnSwitchDetails03');
+        initClosed('btnSwitchBenefits02', 'interviewBenefits02');
+        initClosed('btnSwitchBenefits03', 'interviewBenefits03');
+        initClosed('btnSwitchBenefits04', 'interviewBenefits04');
+
+        // トグル動作
+        bindToggle('btnSwitchDetails01', 'interviewDetails01');
+        bindToggle('btnSwitchDetails02', 'interviewDetails02');
+        bindToggle('btnSwitchDetails03', 'interviewDetails03');
+        bindToggle('btnSwitchBenefits01', 'interviewBenefits01');
+        bindToggle('btnSwitchBenefits02', 'interviewBenefits02');
+        bindToggle('btnSwitchBenefits03', 'interviewBenefits03');
+        bindToggle('btnSwitchBenefits04', 'interviewBenefits04');
+      });
+    </script>
+  </body>
+</html>
