@@ -52,6 +52,8 @@
                     }
                 }
                 &.status-registered {
+                    --hover-color: #c8cfce;
+                    --active-color: #76a1c6;
                     .label {
                         &::before {
                             width: 1.8rem;
@@ -61,6 +63,8 @@
                     }
                 }
                 &.status-applied {
+                    --hover-color: #cddab1;
+                    --active-color: #81bb7c;
                     .label {
                         &::before {
                             width: 2.2rem;
@@ -70,6 +74,8 @@
                     }
                 }
                 &.status-interview {
+                    --hover-color: #e3c1b0;
+                    --active-color: #b87d7a;
                     .label {
                         &::before {
                             width: 3.9rem;
@@ -79,6 +85,8 @@
                     }
                 }
                 &.status-hired {
+                    --hover-color: #d8c4ca;
+                    --active-color: #9e84bb;
                     .label {
                         &::before {
                             width: 2.3rem;
@@ -88,6 +96,8 @@
                     }
                 }
                 &.status-unresponsive {
+                    --hover-color: #d9cdb5;
+                    --active-color: #9f9b87;
                     .label {
                         &::before {
                             width: 2.1rem;
@@ -97,7 +107,7 @@
                     }
                 }
                 &.is-active {
-                    background-color: $main-orange;
+                    background-color: var(--active-color);
                     color: #fff;
                     &.status-registered {
                         .label {
@@ -137,10 +147,10 @@
                 }
                 &:not(.is-active) {
                     &:hover {
-                        background-color: #fffae6;
+                        background-color: var(--hover-color);
                     }
                     &:active {
-                        background-color: #fff;
+                        background-color: var(--active-color);
                     }
                 }
             }
@@ -211,7 +221,7 @@
         .block-search-results {
             @include layout-block-article;
             .list-search-results {
-                @include layout-table-list(auto auto auto 1fr auto, 5);
+                @include layout-table-list(auto auto auto 1fr auto auto, 6);
                 margin-top: 1.4rem;
                 .item-id,
                 .item-name {
@@ -225,13 +235,13 @@
                     text-align: center;
                 }
                 .list-contact {
-                    grid-column: span 3;
+                    grid-column: span 4;
                     display: grid;
                     grid-template-columns: subgrid;
                     font-size: inherit;
                     & > li {
                         position: relative;
-                        grid-column: span 3;
+                        grid-column: span 4;
                         display: grid;
                         grid-template-columns: subgrid;
                         font-size: inherit;
@@ -244,6 +254,15 @@
                                 font-size: FZ(14);
                                 padding-block: 1.6rem;
                                 display: inline-block;
+                            }
+                        }
+                        .wrap-apply-status {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            @include flex-center;
+                            border-right: 1px solid $border-gray;
+                            .apply-status {
+                                @include apply-status-box;
                             }
                         }
                         .item-date {
