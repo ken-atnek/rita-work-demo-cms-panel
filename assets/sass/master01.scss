@@ -280,6 +280,22 @@
                         }
                     }
                 }
+                & > li {
+                    &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:not(:has(.wrap-apply-status:hover)) {
+                            &:hover {
+                                &::before {
+                                    opacity: 1;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         // ページャー
