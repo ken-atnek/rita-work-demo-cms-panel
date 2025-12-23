@@ -1093,6 +1093,113 @@
                     }
                 }
             }
+            // 一日の流れ
+            .block-schedule {
+                .box-schedule-list {
+                    position: relative;
+                    font-size: inherit;
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    grid-column: span 2;
+                    gap: 1.6rem 0;
+                    h4 {
+                        font-size: FZ(16);
+                        font-weight: 300;
+                    }
+                    .schedule-list {
+                        width: 100%;
+                        position: relative;
+                        display: grid;
+                        grid-template-columns: auto 1fr auto;
+                        font-size: inherit;
+                        padding-right: 5.5rem;
+                        gap: 8px 0;
+                        & > li {
+                            grid-column: span 3;
+                            display: grid;
+                            grid-template-columns: subgrid;
+                            gap: 0 1.6rem;
+                            font-size: inherit;
+                            .wrap-time {
+                                position: relative;
+                                font-size: inherit;
+                                display: flex;
+                                align-items: center;
+                                gap: 0 4px;
+                                padding-right: 4px;
+                                .select-hour,
+                                .select-min {
+                                    width: 56px;
+                                    @include select-list-box(
+                                        $height: 4.4rem,
+                                        $position: "left",
+                                        $list-height: 2.6rem
+                                    );
+                                    .selectbox__head {
+                                        padding-inline: 1.2rem;
+                                        &::after {
+                                            content: "";
+                                            position: absolute;
+                                            top: 50%;
+                                            translate: 0 -50%;
+                                            right: 8px;
+                                            width: 8px;
+                                            @include svg-icon-arrow-bottom("335D95");
+                                            transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
+                                        }
+                                    }
+                                }
+                                span {
+                                    font-size: FZ(14);
+                                }
+                            }
+                            .wrap-btn {
+                                display: flex;
+                                align-items: center;
+                                gap: 0 8px;
+                                button {
+                                    position: relative;
+                                    width: 22px;
+                                    aspect-ratio: 1;
+                                    border-radius: 50%;
+                                    background-color: #fff;
+                                    transition: 0.3s ease-out;
+                                    border: 1px solid $font-black;
+                                    &::before,
+                                    &::after {
+                                        content: "";
+                                        position: absolute;
+                                        inset: 0;
+                                        margin: auto;
+                                    }
+                                    &.item-increase {
+                                        &::before {
+                                            width: 1rem;
+                                            height: 1px;
+                                            background-color: $font-black;
+                                        }
+                                    }
+                                    &.item-decrease {
+                                        &::before,
+                                        &::after {
+                                            width: 1rem;
+                                            height: 1px;
+                                            background-color: $font-black;
+                                        }
+                                        &::after {
+                                            rotate: 90deg;
+                                        }
+                                    }
+                                    &:hover {
+                                        background-color: $hover-bg-blue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             // 詳細情報
             .block-detail-info {
                 dl {
