@@ -555,6 +555,9 @@
                         align-self: flex-start;
                     }
                 }
+                dd {
+                    min-width: 0;
+                }
                 & > dl {
                     width: 100%;
                     font-size: inherit;
@@ -577,7 +580,9 @@
                         font-size: inherit;
                         display: flex;
                         flex-direction: column;
+                        min-width: 0;
                         gap: 8px 0;
+
                         .wrap-notice {
                             font-size: inherit;
                             display: flex;
@@ -642,6 +647,10 @@
                     .dd-top {
                         align-items: center;
                         flex-direction: row;
+                        min-width: 0;
+                        input {
+                            min-width: 0;
+                        }
                         .title {
                             font-size: FZ(16);
                             font-weight: 300;
@@ -1078,6 +1087,7 @@
                         display: inherit;
                         grid-template-columns: inherit;
                         font-size: inherit;
+                        width: 100%;
                         dt {
                             display: flex;
                             align-items: center;
@@ -1086,6 +1096,10 @@
                         dd {
                             font-size: inherit;
                             display: flex;
+                            min-width: 0;
+                            input {
+                                min-width: 0;
+                            }
                             textarea {
                                 min-height: 8lh;
                             }
@@ -1153,6 +1167,9 @@
                                 span {
                                     font-size: FZ(14);
                                 }
+                            }
+                            input {
+                                min-width: 0;
                             }
                             .wrap-btn {
                                 display: flex;
