@@ -221,7 +221,7 @@
         .block-search-results {
             @include layout-block-article;
             .list-search-results {
-                @include layout-table-list(auto auto auto 1fr auto auto, 6);
+                @include layout-table-list(auto auto 1fr auto auto, 5);
                 margin-top: 1.4rem;
                 .item-id,
                 .item-name {
