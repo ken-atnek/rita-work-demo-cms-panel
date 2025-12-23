@@ -563,14 +563,82 @@
         }
     }
     &.is-open {
-        .selectbox__head {
-            // border-color: $hover-blue;
-        }
         .list-wrapper {
             grid-template-rows: 1fr;
             .selectbox__panel {
                 overflow: auto;
                 border-color: $hover-blue;
+            }
+        }
+    }
+}
+
+/*================================
+ 応募状況ステータス(JS併用版)
+--------------------------------*/
+@mixin apply-status-box {
+    width: 120px;
+    @include select-status-box($height: 3.6rem, $position: "center", $list-height: 3.6rem);
+    .selectbox__head {
+        i {
+            width: 36px;
+        }
+        // 登録中
+        &.status-registered {
+            .selectbox__value {
+                background-color: #9f9b87;
+            }
+        }
+        // 応募中
+        &.status-applied {
+            .selectbox__value {
+                background-color: #76a1c6;
+            }
+        }
+        // 面談中
+        &.status-interview {
+            .selectbox__value {
+                background-color: #81bb7c;
+            }
+        }
+        // 内定
+        &.status-hired {
+            .selectbox__value {
+                background-color: #b87d7a;
+            }
+        }
+        // 音信不通
+        &.status-unresponsive {
+            .selectbox__value {
+                background-color: #9e84bb;
+            }
+        }
+    }
+    .list-wrapper {
+        .selectbox__panel {
+            li {
+                label {
+                    // 登録中
+                    &.status-registered {
+                        background-color: #9f9b87;
+                    }
+                    // 応募中
+                    &.status-applied {
+                        background-color: #76a1c6;
+                    }
+                    // 面談中
+                    &.status-interview {
+                        background-color: #81bb7c;
+                    }
+                    // 内定
+                    &.status-hired {
+                        background-color: #b87d7a;
+                    }
+                    // 音信不通
+                    &.status-unresponsive {
+                        background-color: #9e84bb;
+                    }
+                }
             }
         }
     }
