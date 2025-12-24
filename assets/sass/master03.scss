@@ -309,6 +309,7 @@
                     position: relative;
                     font-size: inherit;
                     display: flex;
+                    min-width: 0;
                     .wrap-toggle-button {
                         font-size: inherit;
                         display: flex;

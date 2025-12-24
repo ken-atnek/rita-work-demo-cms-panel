@@ -1,5 +1,5 @@
 /*==========================================================
-法人管理
+求職者管理
 ==========================================================*/
 @use "./_reset_v2.5" as *;
 @use "./_variable" as *;
@@ -9,13 +9,14 @@
 @use "./mixin_decoration" as *;
 @use "./mixin_layout" as *;
 /*=================================
-***法人一覧
+***求職者一覧
 =================================*/
-.inner-02-01 {
-    @include layout-inner-main;
-    gap: 1em 0;
-    // 現在の応募状況
-    .container-company-list {
+.inner-04-01 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-applicant-list {
         @include layout-container-section;
         padding-bottom: 8rem;
         // 条件で検索
@@ -23,13 +24,55 @@
             @include layout-block-search;
             .box-search-items {
                 display: flex;
+                flex-wrap: wrap;
                 .item-name {
                     flex: 1;
                     padding-inline: 1.5em;
                     border-right: 1px solid $border-gray;
+                    border-bottom: 1px solid $border-gray;
                 }
-                .item-application-date {
-                    padding-inline: 2em;
+                .item-job {
+                    width: 30%;
+                    border-right: 1px solid $border-gray;
+                    border-bottom: 1px solid $border-gray;
+                    padding-inline: 1.5em;
+                    h4 {
+                        min-width: 2em;
+                    }
+                    .select-job-type {
+                        width: 28rem;
+                        @include select-list-box(
+                            $height: 4.8rem,
+                            $position: "left",
+                            $list-height: 3.4rem
+                        );
+                    }
+                }
+                .item-status {
+                    padding-inline: 1.5em;
+                    max-width: 33%;
+                    border-bottom: 1px solid $border-gray;
+                    h4 {
+                        min-width: 4em;
+                    }
+                    .apply-status {
+                        width: 241px;
+                        @include select-list-box(
+                            $height: 4.8rem,
+                            $position: "left",
+                            $list-height: 3.4rem
+                        );
+                    }
+                }
+                .item-destination {
+                    flex: 1;
+                    min-width: 40%;
+                    padding-inline: 1.5em;
+                    // max-width: 50%;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-last-update {
+                    padding-inline: 1.5em;
                     .wrap-period {
                         width: 37rem;
                         @include item-period;
@@ -92,61 +135,90 @@
                 }
             }
         }
-        // 法人一覧
-        .block-company-list {
+        // 状況一覧
+        .block-search-results {
             @include layout-block-article;
             .list-search-results {
-                @include layout-table-list(auto 1fr auto auto auto auto, 6);
+                @include layout-table-list(auto auto 1fr auto auto, 5);
                 margin-top: 1.4rem;
-                .item-number,
-                .item-name,
-                .item-tel,
-                .item-email,
-                .item-date,
-                .item-add {
+                .item-id,
+                .item-name {
                     padding-inline: 1em;
                     padding-block: 1.6rem;
                 }
-                .item-number {
-                    @include flex-center;
+                .item-name {
+                    border-right: 1px solid $border-gray;
                 }
-                .item-date {
+                .item-id {
                     text-align: center;
                 }
-                .item-add {
-                    display: flex;
-                    flex-direction: column;
+                .list-contact {
+                    grid-column: span 4;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    font-size: inherit;
+                    & > li {
+                        position: relative;
+                        grid-column: span 4;
+                        display: grid;
+                        grid-template-columns: subgrid;
+                        font-size: inherit;
+                        .item-job,
+                        .item-destination {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            border-right: 1px solid $border-gray;
+                            span {
+                                font-size: FZ(14);
+                                padding-block: 1.6rem;
+                                display: inline-block;
+                            }
+                        }
+                        .wrap-apply-status {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            @include flex-center;
+                            border-right: 1px solid $border-gray;
+                            .apply-status {
+                                @include apply-status-box;
+                            }
+                        }
+                        .item-date {
+                            font-size: FZ(14);
+                            padding-block: 1.6rem;
+                            padding-inline: 1em;
+                            text-align: center;
+                        }
+                    }
+                    &:has(> li:nth-child(2)) {
+                        li {
+                            &:not(:last-child) {
+                                border-bottom: 1px solid $border-gray;
+                            }
+                        }
+                    }
+                }
+                & > li {
+                    &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:not(:has(.wrap-apply-status:hover)) {
+                            &:hover {
+                                &::before {
+                                    opacity: 1;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
         // ページャー
         .box-pager {
             @include layout-pager;
-        }
-    }
-    .bottom-box-btn {
-        align-self: center;
-        position: relative;
-        font-size: inherit;
-        margin-top: 3rem;
-        .item-register {
-            @include main-button("confirm");
-            width: 20rem;
-            height: 48px;
-            span {
-                position: relative;
-                font-size: 1.6rem;
-                padding-left: 1.6em;
-                &::before {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    top: 50%;
-                    translate: 0 -50%;
-                    width: 1.4rem;
-                    @include svg-icon-plus("fff");
-                }
-            }
         }
     }
 }

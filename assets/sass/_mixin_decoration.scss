@@ -321,7 +321,7 @@
             translate: 0 -50%;
             right: 0.8em;
             width: 0.7em;
-            @include svg-icon-arrow-bottom("335D95");
+            @include svg-icon-arrow-bottom("403726");
             transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
         }
         &:hover {
@@ -448,7 +448,7 @@
             translate: 0 -50%;
             right: 0.8em;
             width: 0.7em;
-            @include svg-icon-arrow-bottom("335D95");
+            @include svg-icon-arrow-bottom("403726");
             transition: 0.2s cubic-bezier(0.4, 0.25, 0.3, 1);
         }
         &:hover {
@@ -523,7 +523,9 @@
                     pointer-events: none;
                 }
                 label {
+                    position: relative;
                     width: 100%;
+                    z-index: 1;
                     height: $list-height;
                     cursor: pointer;
                     font-size: FZ(14);
@@ -532,6 +534,7 @@
                     align-items: center;
                     justify-content: center;
                     color: #fff;
+                    transition: 0.3s ease-out;
                     @if $position == "center" {
                         padding-right: 1.4em;
                     } @else {
@@ -618,25 +621,39 @@
         .selectbox__panel {
             li {
                 label {
+                    transition: 0.3s ease-out;
                     // 登録中
                     &.status-registered {
-                        background-color: #9f9b87;
+                        --status-color: #9f9b87;
                     }
                     // 応募中
                     &.status-applied {
-                        background-color: #76a1c6;
+                        --status-color: #76a1c6;
                     }
                     // 面談中
                     &.status-interview {
-                        background-color: #81bb7c;
+                        --status-color: #81bb7c;
                     }
                     // 内定
                     &.status-hired {
-                        background-color: #b87d7a;
+                        --status-color: #b87d7a;
                     }
                     // 音信不通
                     &.status-unresponsive {
-                        background-color: #9e84bb;
+                        --status-color: #9e84bb;
+                    }
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        background-color: var(--status-color);
+                        z-index: -1;
+                        transition: 0.3s ease-out;
+                    }
+                    &:hover {
+                        &::before {
+                            filter: brightness(0.9);
+                        }
                     }
                 }
             }

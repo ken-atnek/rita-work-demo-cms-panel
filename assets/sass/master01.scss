@@ -221,7 +221,7 @@
         .block-search-results {
             @include layout-block-article;
             .list-search-results {
-                @include layout-table-list(auto auto auto 1fr auto auto, 6);
+                @include layout-table-list(auto auto 1fr auto auto, 5);
                 margin-top: 1.4rem;
                 .item-id,
                 .item-name {
@@ -276,6 +276,22 @@
                         li {
                             &:not(:last-child) {
                                 border-bottom: 1px solid $border-gray;
+                            }
+                        }
+                    }
+                }
+                & > li {
+                    &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:not(:has(.wrap-apply-status:hover)) {
+                            &:hover {
+                                &::before {
+                                    opacity: 1;
+                                }
                             }
                         }
                     }
