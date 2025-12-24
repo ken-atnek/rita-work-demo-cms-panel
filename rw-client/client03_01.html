@@ -24,15 +24,13 @@
     <!--#include virtual="./inc_header.html"-->
     <main class="inner-03-01-02">
       <section class="page-nav">
-        <h2>事業所管理</h2>
+        <h2>求人カード管理</h2>
         <nav>
-          <a href="#">事業所情報</a>
           <a href="#" class="is-active">求人カード一覧</a>
-          <a href="#">パスワード設定</a>
         </nav>
       </section>
       <section class="container-job-card">
-        <h2>求人カード一覧<span>住宅型有料老人ホーム メディケア癒やしDX花園</span></h2>
+        <h2>求人カード一覧</h2>
         <article class="block-card-list">
           <p class="announce-results"><span>4件</span>が登録中</p>
           <!--NOTE  特別バナー契約時のみ表示 -->
@@ -48,7 +46,7 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <div class="select-status" data-selectbox>
+                <div class="select-status is-client" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
                       type="hidden"
@@ -107,11 +105,11 @@
               <div class="box-btn">
                 <div class="box-btn-inner">
                   <button type="button" class="btn-preview">プレビュー</button>
-                  <button type="button" class="btn-change-plan">プラン変更</button>
+                  <button type="button" class="btn-contact">お問い合わせ</button>
                 </div>
-                <div class="box-btn-inner">
+                <!-- <div class="box-btn-inner">
                   <button type="button" class="btn-cancel">プランを解釈</button>
-                </div>
+                </div> -->
               </div>
             </li>
             <li>
@@ -124,7 +122,7 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <div class="select-status" data-selectbox>
+                <div class="select-status is-client" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
                       type="hidden"
@@ -143,7 +141,6 @@
                           name="list02statusMethod"
                           value="1"
                           id="list02-status01"
-                          checked
                         />
                         <label for="list02-status01" class="status-draft">下書き中</label>
                       </li>
@@ -153,6 +150,7 @@
                           name="list02statusMethod"
                           value="2"
                           id="list02-status02"
+                          checked
                         />
                         <label for="list02-status02" class="status-published">公開中</label>
                       </li>
@@ -183,10 +181,7 @@
               <div class="box-btn">
                 <div class="box-btn-inner">
                   <button type="button" class="btn-preview">プレビュー</button>
-                  <button type="button" class="btn-change-plan">プラン変更</button>
-                </div>
-                <div class="box-btn-inner">
-                  <button type="button" class="btn-cancel">プランを解釈</button>
+                  <button type="button" class="btn-contact">お問い合わせ</button>
                 </div>
               </div>
             </li>
@@ -200,7 +195,7 @@
                   </picture>
                 </div>
                 <!--NOTE  連番注意　list01-status- -->
-                <div class="select-status" data-selectbox>
+                <div class="select-status is-client" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input
                       type="hidden"
@@ -259,11 +254,7 @@
               <div class="box-btn">
                 <div class="box-btn-inner">
                   <button type="button" class="btn-preview">プレビュー</button>
-                  <button type="button" class="btn-change-plan">プラン変更</button>
-                </div>
-                <div class="box-btn-inner">
-                  <button type="button" class="btn-cancel">削除</button>
-                  <button type="button" class="btn-cancel">掲載再開</button>
+                  <button type="button" class="btn-contact">お問い合わせ</button>
                 </div>
               </div>
             </li>
@@ -278,7 +269,7 @@
           </div>
         </article>
         <div class="bottom-box-btn">
-          <button type="button" class="item-register"><span>新規求人カード登録</span></button>
+          <button type="button" class="item-back">戻る</button>
         </div>
       </section>
       <!--#include virtual="./inc_page-top.html"-->

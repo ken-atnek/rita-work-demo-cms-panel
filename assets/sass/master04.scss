@@ -233,6 +233,9 @@
     .container-applicant-details {
         @include layout-container-section;
         padding-bottom: 8rem;
+        .link-page-back {
+            @include link-page-back;
+        }
         h2 {
             span {
                 font-size: 1.6rem;
@@ -250,7 +253,7 @@
             border-radius: $radius20;
             padding-top: 34px;
             padding-inline: 2rem;
-            padding-bottom: 4rem;
+            padding-bottom: 2rem;
             display: flex;
             flex-direction: column;
             @include drop-shadow;
@@ -317,7 +320,7 @@
                     justify-content: center;
                     font-size: inherit;
                     grid-column: span 2;
-                    margin-top: 2.6rem;
+                    margin-top: 1.6rem;
                     button {
                         font-size: FZ(14);
                         height: 48px;
@@ -462,11 +465,11 @@
             align-self: center;
             position: relative;
             font-size: inherit;
-            margin-top: 4rem;
+            margin-top: 2.4rem;
             display: flex;
             gap: 0 2.4rem;
             .item-back {
-                @include main-button("back");
+                @include main-button("back-orange");
                 width: 16rem;
                 height: 48px;
                 font-size: FZ(14);

@@ -35,7 +35,7 @@
         }
     }
     .item-back {
-        @include main-button("back");
+        @include main-button("back-orange");
         width: 16rem;
         height: 48px;
         font-size: FZ(14);
@@ -210,6 +210,20 @@
                                     }
                                 }
                             }
+                            &.is-client {
+                                pointer-events: none;
+                                .selectbox__head {
+                                    &::after {
+                                        display: none;
+                                    }
+                                    i {
+                                        display: none;
+                                    }
+                                    .selectbox__value {
+                                        border-radius: 8px;
+                                    }
+                                }
+                            }
                         }
                     }
                     .box-details {
@@ -353,7 +367,8 @@
                                 font-size: 1.4rem;
                             }
                             .btn-preview,
-                            .btn-change-plan {
+                            .btn-change-plan,
+                            .btn-contact {
                                 @include main-button("confirm");
                             }
                             .btn-cancel {
@@ -379,7 +394,8 @@
                         }
                         .box-btn {
                             .box-btn-inner {
-                                .btn-preview {
+                                .btn-preview,
+                                .btn-contact {
                                     @include main-button("cancel");
                                 }
                                 .btn-change-plan {

@@ -42,19 +42,7 @@
         background-color: transparent;
     }
 }
-/*=========================================
-下部「削除する」ボタン
------------------------------------------*/
-@mixin btn-delate-item {
-    position: absolute;
-    right: 3rem;
-    top: 1.4rem;
-    font-size: FZ(14);
 
-    width: 8rem;
-    height: 36px;
-    @include main-button("");
-}
 /*=========================================
 ×ボタン
 -----------------------------------------*/
@@ -154,6 +142,14 @@
         &:active {
             background-color: #fff;
         }
+    } @else if $type == "back-orange" {
+        border: 1px solid $font-black;
+        &:hover {
+            background-color: #ededed;
+        }
+        &:active {
+            background-color: #fff;
+        }
     } @else if $type == "cancel" {
         background-color: #fff;
         border: 1px solid $font-black;
@@ -174,6 +170,21 @@
         }
     }
 }
+
+/*=========================================
+下部「削除する」ボタン
+-----------------------------------------*/
+@mixin btn-delate-item {
+    position: absolute;
+    right: 3rem;
+    top: 1.4rem;
+    font-size: FZ(14);
+
+    width: 8rem;
+    height: 36px;
+    @include main-button("");
+}
+
 /*=========================================
 下部「削除する」ボタン
 -----------------------------------------*/

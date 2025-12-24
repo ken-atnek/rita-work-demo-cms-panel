@@ -281,6 +281,15 @@
         @include layout-container-section;
         padding-bottom: 8rem;
         flex: 1;
+        h2 {
+            span {
+                font-size: 1.6rem;
+                &::before {
+                    content: "-";
+                    margin-inline: 1em;
+                }
+            }
+        }
         .block-form,
         .block-check {
             background-color: #fff;
@@ -290,6 +299,7 @@
             font-size: inherit;
             display: grid;
             grid-template-columns: auto 1fr;
+            @include drop-shadow;
             dl {
                 width: 100%;
                 font-size: inherit;
@@ -359,7 +369,7 @@
             display: flex;
             gap: 0 2.4rem;
             .item-back {
-                @include main-button("back");
+                @include main-button("back-orange");
                 width: 16rem;
                 height: 48px;
                 font-size: FZ(14);
@@ -378,15 +388,6 @@
 // 事業所登録・ 修正
 .inner-03-01-01 {
     .container-vendor-register {
-        h2 {
-            span {
-                font-size: 1.6rem;
-                &::before {
-                    content: "-";
-                    margin-inline: 1em;
-                }
-            }
-        }
         .link-page-back {
             @include link-page-back;
         }
