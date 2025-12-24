@@ -173,6 +173,7 @@
             font-size: inherit;
             display: grid;
             grid-template-columns: auto 1fr;
+            @include drop-shadow;
             dl {
                 width: 100%;
                 font-size: inherit;

@@ -223,48 +223,241 @@
     }
 }
 /*=================================
-***法人登録・修正・確認
+***求職者詳細
 =================================*/
-.inner-02-02,
-.inner-02-03 {
+.inner-04-01-01 {
     @include layout-inner-main-grid;
     .page-nav {
         @include container-left-menu;
     }
-    .container-company-register,
-    .container-company-check {
+    .container-applicant-details {
         @include layout-container-section;
         padding-bottom: 8rem;
-        flex: 1;
-        .block-form,
-        .block-check {
-            background-color: #fff;
-            border-radius: $radius20;
-            padding: 5rem 9rem 5rem 3rem;
+        .link-page-back {
+            @include link-page-back;
+        }
+        h2 {
+            span {
+                font-size: 1.6rem;
+                &::before {
+                    content: "-";
+                    margin-inline: 1em;
+                }
+            }
+        }
+        .inner-applicant-details {
             position: relative;
             font-size: inherit;
-            display: grid;
-            grid-template-columns: auto 1fr;
-            dl {
+            width: 100%;
+            background-color: #fff;
+            border-radius: $radius20;
+            padding-top: 34px;
+            padding-inline: 2rem;
+            padding-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            @include drop-shadow;
+            .block-applicant-details {
+                position: relative;
                 width: 100%;
-                font-size: inherit;
-                grid-column: span 2;
                 display: grid;
-                grid-template-columns: subgrid;
-                gap: 0 2rem;
-                dt {
-                    font-size: FZ(16);
-                    font-weight: 300;
-                    position: relative;
-                    min-width: 9rem;
-                    display: flex;
-                    justify-content: space-between;
-                }
-                dd {
-                    position: relative;
+                grid-template-columns: auto 1fr;
+                gap: 2.4rem 0;
+                font-size: inherit;
+                dl {
+                    grid-column: span 2;
                     font-size: inherit;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    gap: 0 3rem;
+                    dt {
+                        font-size: FZ(16);
+                        display: flex;
+                        align-items: center;
+                        &.position-top {
+                            min-height: unset;
+                            padding-top: 1.4rem;
+                            align-self: flex-start;
+                        }
+                    }
+                    dd {
+                        font-size: inherit;
+                        display: flex;
+                        font-size: inherit;
+                        width: 100%;
+                        & > div {
+                            flex: 1;
+                            font-size: 1.6rem;
+                            padding-inline: 0.8em;
+                            height: 4.4rem;
+                            display: flex;
+                            align-items: center;
+                            border-radius: 0.8rem;
+                            letter-spacing: 0.04em;
+                            border: 1px solid #e2e0db;
+                        }
+                        textarea {
+                            min-height: 14lh;
+                        }
+                    }
+                    .dd-top {
+                        align-items: center;
+                        min-width: 0;
+                        .title {
+                            font-size: FZ(16);
+                            font-weight: 300;
+                            margin: 0 34px 0 47px;
+                        }
+                        .wrap-period {
+                            width: 37rem;
+                            @include item-period;
+                        }
+                    }
+                }
+                .box-btn {
+                    position: relative;
                     display: flex;
-                    min-width: 0;
+                    justify-content: center;
+                    font-size: inherit;
+                    grid-column: span 2;
+                    margin-top: 1.6rem;
+                    button {
+                        font-size: FZ(14);
+                        height: 48px;
+                        width: 20rem;
+                    }
+                    .item-confirm {
+                        @include main-button("confirm");
+                    }
+                }
+            }
+            .block-applicant-list {
+                margin-top: 4.8rem;
+                @include layout-block-article;
+                box-shadow: unset;
+                border: 1px solid $border-gray;
+                .box-head {
+                    .item-register {
+                        @include main-button("confirm");
+                        width: 9.7rem;
+                        height: 36px;
+                        margin-left: auto;
+                        margin-right: 2.4rem;
+                        span {
+                            position: relative;
+                            font-size: 1.6rem;
+                            padding-left: 1.6em;
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                left: 0;
+                                top: 50%;
+                                translate: 0 -50%;
+                                width: 1.4rem;
+                                @include svg-icon-plus("fff");
+                            }
+                        }
+                    }
+                }
+                .list-search-results {
+                    @include layout-table-list(auto auto 1fr auto auto, 5);
+                    margin-top: 1.4rem;
+                    .item-last-update {
+                        padding-inline: 1em;
+                        @include flex-center;
+                    }
+                    .item-job-type {
+                        @include flex-center;
+                        padding-inline: 1.6rem;
+                        font-size: inherit;
+                        border-right: 1px solid $border-gray;
+                        padding-block: 5px;
+                        .select-job-type {
+                            width: 12rem;
+                            font-size: inherit;
+                            @include select-list-box(
+                                $height: 3.6rem,
+                                $position: "left",
+                                $list-height: 3.6rem
+                            );
+                            .selectbox__head {
+                                padding-inline: 1rem;
+                            }
+                        }
+                    }
+                    .item-destination {
+                        @include flex-center;
+                        padding-inline: 1.6rem;
+                        font-size: inherit;
+                        border-right: 1px solid $border-gray;
+                        .select-destination {
+                            width: 100%;
+                            font-size: inherit;
+                            @include select-list-box(
+                                $height: 3.6rem,
+                                $position: "left",
+                                $list-height: 3.6rem
+                            );
+                            .selectbox__head {
+                                padding-inline: 1rem;
+                            }
+                        }
+                    }
+                    .item-apply-status {
+                        @include flex-center;
+                        padding-inline: 1.6rem;
+                        font-size: inherit;
+                        border-right: 1px solid $border-gray;
+                        .apply-status {
+                            @include apply-status-box;
+                        }
+                    }
+                    .item-delate {
+                        position: relative;
+                        font-size: inherit;
+                        @include flex-center;
+                        button {
+                            position: relative;
+                            width: 3.2rem;
+                            aspect-ratio: 1;
+                            border-radius: 50%;
+                            transition: 0.3s ease-out;
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                inset: 0;
+                                margin: auto;
+                                width: 13px;
+                                @include svg-icon-trash("403726");
+                            }
+                            &:hover {
+                                background-color: $hover-bg-blue;
+                            }
+                            &:active {
+                                background-color: transparent;
+                            }
+                        }
+                    }
+                    & > li {
+                        &:not(:first-of-type) {
+                            &:hover {
+                                &::before {
+                                    opacity: 0;
+                                }
+                            }
+                            // &:not(:has(.wrap-apply-status:hover)) {
+                            //     &:hover {
+                            //         &::before {
+                            //             opacity: 1;
+                            //         }
+                            //     }
+                            // }
+                        }
+                    }
+                }
+                // ページャー
+                .box-pager {
+                    @include layout-pager;
                 }
             }
         }
@@ -272,81 +465,19 @@
             align-self: center;
             position: relative;
             font-size: inherit;
-            margin-top: 3rem;
+            margin-top: 2.4rem;
             display: flex;
             gap: 0 2.4rem;
             .item-back {
-                @include main-button("back");
+                @include main-button("back-orange");
                 width: 16rem;
                 height: 48px;
                 font-size: FZ(14);
-            }
-            .item-check {
-                @include main-button("confirm");
-                width: 20rem;
-                height: 48px;
-                span {
-                    font-size: 1.6rem;
-                }
-            }
-        }
-    }
-}
-// 法人登録・ 修正
-.inner-02-02 {
-    .container-company-register {
-        .link-page-back {
-            @include link-page-back;
-        }
-        .block-form {
-            gap: 2.4rem 0;
-            dl {
-                dt {
-                    padding-top: 1.4rem;
-                    &::after {
-                        content: "※";
-                        font-size: 1rem;
-                    }
-                }
-                dd {
-                    flex-direction: column;
-                    gap: 8px 0;
-                    .input-date {
-                        width: 19rem;
-                        @include item-period;
-                    }
-                }
-                .item-add {
-                    input {
-                        &:first-of-type {
-                            width: 14rem;
-                        }
-                    }
-                }
             }
         }
         // 修正ページ用
         .btn-delate-item {
             @include btn-delate-item;
-        }
-    }
-}
-// 法人情報確認
-.inner-02-03 {
-    .container-company-check {
-        .block-check {
-            gap: 4.8rem 0;
-            padding-bottom: 8rem;
-            dl {
-                dt,
-                dd {
-                    display: flex;
-                    align-items: center;
-                }
-                .item-add {
-                    gap: 0 1em;
-                }
-            }
         }
     }
 }
