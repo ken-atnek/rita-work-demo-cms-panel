@@ -1,0 +1,352 @@
+/*==========================================================
+求職者管理
+==========================================================*/
+@use "./_reset_v2.5" as *;
+@use "./_variable" as *;
+@use "./svg" as *;
+@use "./_font" as *;
+@use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
+/*=================================
+***求職者一覧
+=================================*/
+.inner-04-01 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-applicant-list {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        // 条件で検索
+        .block-search {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                flex-wrap: wrap;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-right: 1px solid $border-gray;
+                    border-bottom: 1px solid $border-gray;
+                }
+                .item-job {
+                    width: 30%;
+                    border-right: 1px solid $border-gray;
+                    border-bottom: 1px solid $border-gray;
+                    padding-inline: 1.5em;
+                    h4 {
+                        min-width: 2em;
+                    }
+                    .select-job-type {
+                        width: 28rem;
+                        @include select-list-box(
+                            $height: 4.8rem,
+                            $position: "left",
+                            $list-height: 3.4rem
+                        );
+                    }
+                }
+                .item-status {
+                    padding-inline: 1.5em;
+                    max-width: 33%;
+                    border-bottom: 1px solid $border-gray;
+                    h4 {
+                        min-width: 4em;
+                    }
+                    .apply-status {
+                        width: 241px;
+                        @include select-list-box(
+                            $height: 4.8rem,
+                            $position: "left",
+                            $list-height: 3.4rem
+                        );
+                    }
+                }
+                .item-destination {
+                    flex: 1;
+                    min-width: 40%;
+                    padding-inline: 1.5em;
+                    // max-width: 50%;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-last-update {
+                    padding-inline: 1.5em;
+                    .wrap-period {
+                        width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+                .item-search {
+                    @include main-button("confirm");
+                }
+            }
+        }
+        // 絞り込み
+        .block-filter {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                }
+                .item-application-date {
+                    padding-inline: 2em;
+                    .wrap-period {
+                        width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+            }
+        }
+        // 状況一覧
+        .block-search-results {
+            @include layout-block-article;
+            .list-search-results {
+                @include layout-table-list(auto auto 1fr auto auto, 5);
+                margin-top: 1.4rem;
+                .item-id,
+                .item-name {
+                    padding-inline: 1em;
+                    padding-block: 1.6rem;
+                }
+                .item-name {
+                    border-right: 1px solid $border-gray;
+                }
+                .item-id {
+                    text-align: center;
+                }
+                .list-contact {
+                    grid-column: span 4;
+                    display: grid;
+                    grid-template-columns: subgrid;
+                    font-size: inherit;
+                    & > li {
+                        position: relative;
+                        grid-column: span 4;
+                        display: grid;
+                        grid-template-columns: subgrid;
+                        font-size: inherit;
+                        .item-job,
+                        .item-destination {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            border-right: 1px solid $border-gray;
+                            span {
+                                font-size: FZ(14);
+                                padding-block: 1.6rem;
+                                display: inline-block;
+                            }
+                        }
+                        .wrap-apply-status {
+                            font-size: inherit;
+                            padding-inline: 1em;
+                            @include flex-center;
+                            border-right: 1px solid $border-gray;
+                            .apply-status {
+                                @include apply-status-box;
+                            }
+                        }
+                        .item-date {
+                            font-size: FZ(14);
+                            padding-block: 1.6rem;
+                            padding-inline: 1em;
+                            text-align: center;
+                        }
+                    }
+                    &:has(> li:nth-child(2)) {
+                        li {
+                            &:not(:last-child) {
+                                border-bottom: 1px solid $border-gray;
+                            }
+                        }
+                    }
+                }
+                & > li {
+                    &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:not(:has(.wrap-apply-status:hover)) {
+                            &:hover {
+                                &::before {
+                                    opacity: 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
+        }
+    }
+}
+/*=================================
+***法人登録・修正・確認
+=================================*/
+.inner-02-02,
+.inner-02-03 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-company-register,
+    .container-company-check {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        flex: 1;
+        .block-form,
+        .block-check {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 5rem 9rem 5rem 3rem;
+            position: relative;
+            font-size: inherit;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            dl {
+                width: 100%;
+                font-size: inherit;
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: subgrid;
+                gap: 0 2rem;
+                dt {
+                    font-size: FZ(16);
+                    font-weight: 300;
+                    position: relative;
+                    min-width: 9rem;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                dd {
+                    position: relative;
+                    font-size: inherit;
+                    display: flex;
+                    min-width: 0;
+                }
+            }
+        }
+        .bottom-box-btn {
+            align-self: center;
+            position: relative;
+            font-size: inherit;
+            margin-top: 3rem;
+            display: flex;
+            gap: 0 2.4rem;
+            .item-back {
+                @include main-button("back");
+                width: 16rem;
+                height: 48px;
+                font-size: FZ(14);
+            }
+            .item-check {
+                @include main-button("confirm");
+                width: 20rem;
+                height: 48px;
+                span {
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+// 法人登録・ 修正
+.inner-02-02 {
+    .container-company-register {
+        .link-page-back {
+            @include link-page-back;
+        }
+        .block-form {
+            gap: 2.4rem 0;
+            dl {
+                dt {
+                    padding-top: 1.4rem;
+                    &::after {
+                        content: "※";
+                        font-size: 1rem;
+                    }
+                }
+                dd {
+                    flex-direction: column;
+                    gap: 8px 0;
+                    .input-date {
+                        width: 19rem;
+                        @include item-period;
+                    }
+                }
+                .item-add {
+                    input {
+                        &:first-of-type {
+                            width: 14rem;
+                        }
+                    }
+                }
+            }
+        }
+        // 修正ページ用
+        .btn-delate-item {
+            @include btn-delate-item;
+        }
+    }
+}
+// 法人情報確認
+.inner-02-03 {
+    .container-company-check {
+        .block-check {
+            gap: 4.8rem 0;
+            padding-bottom: 8rem;
+            dl {
+                dt,
+                dd {
+                    display: flex;
+                    align-items: center;
+                }
+                .item-add {
+                    gap: 0 1em;
+                }
+            }
+        }
+    }
+}
