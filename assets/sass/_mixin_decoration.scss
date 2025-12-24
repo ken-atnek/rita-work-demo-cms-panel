@@ -589,31 +589,31 @@
         // 登録中
         &.status-registered {
             .selectbox__value {
-                background-color: #9f9b87;
+                background-color: #76a1c6;
             }
         }
         // 応募中
         &.status-applied {
             .selectbox__value {
-                background-color: #76a1c6;
+                background-color: #81bb7c;
             }
         }
         // 面談中
         &.status-interview {
             .selectbox__value {
-                background-color: #81bb7c;
+                background-color: #b87d7a;
             }
         }
         // 内定
         &.status-hired {
             .selectbox__value {
-                background-color: #b87d7a;
+                background-color: #9e84bb;
             }
         }
         // 音信不通
         &.status-unresponsive {
             .selectbox__value {
-                background-color: #9e84bb;
+                background-color: #9f9b87;
             }
         }
     }
@@ -624,23 +624,23 @@
                     transition: 0.3s ease-out;
                     // 登録中
                     &.status-registered {
-                        --status-color: #9f9b87;
+                        --status-color: #76a1c6;
                     }
                     // 応募中
                     &.status-applied {
-                        --status-color: #76a1c6;
+                        --status-color: #81bb7c;
                     }
                     // 面談中
                     &.status-interview {
-                        --status-color: #81bb7c;
+                        --status-color: #b87d7a;
                     }
                     // 内定
                     &.status-hired {
-                        --status-color: #b87d7a;
+                        --status-color: #9e84bb;
                     }
                     // 音信不通
                     &.status-unresponsive {
-                        --status-color: #9e84bb;
+                        --status-color: #9f9b87;
                     }
                     &::before {
                         content: "";
