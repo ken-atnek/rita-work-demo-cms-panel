@@ -30,7 +30,7 @@
         </nav>
       </section>
       <section class="container-job-card-register">
-        <nav class="block-nav">
+        <nav class="block-nav" id="blockNavMenu">
           <a href="#blockBasicInfo" class="is-active"><i></i>基本情報</a>
           <a href="#blockInterview" class="is-active"><i></i>機能拡張プラン</a>
           <a href="#blockWorkSpace"><i></i>職場環境の特徴</a>
@@ -3845,6 +3845,24 @@
         bindToggle('btnSwitchBenefits02', 'interviewBenefits02');
         bindToggle('btnSwitchBenefits03', 'interviewBenefits03');
         bindToggle('btnSwitchBenefits04', 'interviewBenefits04');
+      });
+
+      // ----------------------------
+      // サイドメニュー表示
+      // ----------------------------
+      document.addEventListener('DOMContentLoaded', () => {
+        const blockNav = document.getElementById('blockNavMenu');
+        if (!blockNav) return;
+
+        const ACTIVE_POINT = 400;
+
+        window.addEventListener('scroll', () => {
+          if (window.scrollY >= ACTIVE_POINT) {
+            blockNav.classList.add('is-active');
+          } else {
+            blockNav.classList.remove('is-active');
+          }
+        });
       });
     </script>
   </body>

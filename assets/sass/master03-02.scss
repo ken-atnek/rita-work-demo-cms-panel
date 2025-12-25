@@ -459,12 +459,14 @@
         // 再度ブロックアンカーリンク
         .block-nav {
             position: fixed;
-            top: 45rem;
+            top: 10rem;
             left: 6rem;
             font-size: inherit;
             display: flex;
             flex-direction: column;
             gap: 2.4rem 0;
+            opacity: 0;
+            transition: 0.3s ease-out;
             &::before {
                 content: "";
                 position: absolute;
@@ -486,21 +488,35 @@
                     border-radius: 50%;
                     border: 1px solid $border-gray;
                     background-color: #fffbf5;
+                    transition: 0.3s ease-out;
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        margin: auto;
+                        width: 1rem;
+                        aspect-ratio: 1;
+                        border-radius: 50%;
+                        background-color: #403726;
+                        opacity: 0;
+                    }
                 }
-                &.is-active {
+                &.is-active,
+                &:active {
                     i {
                         &::after {
-                            content: "";
-                            position: absolute;
-                            inset: 0;
-                            margin: auto;
-                            width: 1rem;
-                            aspect-ratio: 1;
-                            border-radius: 50%;
-                            background-color: #403726;
+                            opacity: 1;
                         }
                     }
                 }
+                &:hover {
+                    i {
+                        background-color: $hover-bg-blue;
+                    }
+                }
+            }
+            &.is-active {
+                opacity: 1;
             }
         }
         h2 {
