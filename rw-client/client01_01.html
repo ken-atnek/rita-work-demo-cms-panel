@@ -25,11 +25,7 @@
     <main class="inner-01-01">
       <section class="container-status">
         <h2>現在の応募状況</h2>
-        <nav class="block-status">
-          <button type="button" class="status-registered is-active">
-            <span class="label">登録中</span>
-            <span class="count">100</span>
-          </button>
+        <nav class="block-status is-client">
           <button type="button" class="status-applied">
             <span class="label">応募中</span>
             <span class="count">800</span>
@@ -42,12 +38,8 @@
             <span class="label">内定</span>
             <span class="count">1200</span>
           </button>
-          <button type="button" class="status-unresponsive">
-            <span class="label">音信不通</span>
-            <span class="count">1020</span>
-          </button>
         </nav>
-        <form class="block-search">
+        <!-- <form class="block-search">
           <button
             type="button"
             id="btnSwitchSearch"
@@ -119,7 +111,7 @@
               </div>
             </div>
           </article>
-        </form>
+        </form> -->
         <article class="block-search-results">
           <div class="box-head">
             <p class="announce-results">条件に<span>123件</span>が該当</p>
@@ -154,11 +146,10 @@
               </div>
             </div>
           </div>
-          <ul class="list-search-results">
+          <ul class="list-search-results is-client">
             <li>
               <div>名前</div>
               <div>職種</div>
-              <div>応募先</div>
               <div>応募状況</div>
               <div>応募日</div>
             </li>
@@ -168,9 +159,6 @@
               <ul class="list-contact">
                 <li>
                   <div class="item-job"><span>看護師</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div class="wrap-apply-status">
                     <!--NOTE  連番注意　list01-status- -->
                     <div class="apply-status" data-selectbox>
@@ -243,9 +231,6 @@
                 </li>
                 <li>
                   <div class="item-job"><span>言語聴覚士</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケアあああ</span>
-                  </div>
                   <div class="wrap-apply-status">
                     <!--NOTE  連番注意　list01-status- -->
                     <div class="apply-status" data-selectbox>
@@ -324,9 +309,6 @@
               <ul class="list-contact">
                 <li>
                   <div class="item-job"><span>看護師</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div class="wrap-apply-status">
                     <!--NOTE  連番注意　list01-status- -->
                     <div class="apply-status" data-selectbox>
@@ -359,6 +341,7 @@
                               name="ApplyStatus03Method"
                               value="2"
                               id="list03-status02"
+                              checked
                             />
                             <label for="list03-status02" class="status-applied">応募中</label>
                           </li>
@@ -405,9 +388,6 @@
               <ul class="list-contact">
                 <li>
                   <div class="item-job"><span>看護師</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div class="wrap-apply-status">
                     <!--NOTE  連番注意　list01-status- -->
                     <div class="apply-status" data-selectbox>
@@ -449,6 +429,7 @@
                               name="ApplyStatus04Method"
                               value="3"
                               id="list04-status03"
+                              checked
                             />
                             <label for="list04-status03" class="status-interview">面談中</label>
                           </li>
@@ -485,25 +466,16 @@
               <ul class="list-contact">
                 <li>
                   <div class="item-job"><span>看護師</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div></div>
                   <div class="item-date">2025/8/4</div>
                 </li>
                 <li>
                   <div class="item-job"><span>介護士</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div></div>
                   <div class="item-date">2025/8/4</div>
                 </li>
                 <li>
                   <div class="item-job"><span>言語聴覚士</span></div>
-                  <div class="item-destination">
-                    <span>住宅型有料老人ホーム メディケア癒やしDX花園</span>
-                  </div>
                   <div></div>
                   <div class="item-date">2025/12/11</div>
                 </li>
