@@ -1,7 +1,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
@@ -24,11 +24,9 @@
     <!--#include virtual="./inc_header.html"-->
     <main class="inner-03-02-01">
       <section class="page-nav">
-        <h2>事業所管理</h2>
+        <h2>求人カード管理</h2>
         <nav>
-          <a href="#">事業所情報</a>
           <a href="#" class="is-active">求人カード一覧</a>
-          <a href="#">パスワード設定</a>
         </nav>
       </section>
       <section class="container-job-card-register">
@@ -66,7 +64,6 @@
                     <input type="hidden" name="referJobMethod" value="" data-selectbox-hidden />
                     <span class="selectbox__value" data-selectbox-value>選択してください</span>
                   </button>
-
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
@@ -373,7 +370,7 @@
             <dl>
               <dt>契約プラン</dt>
               <dd>
-                <div class="select-plan" data-selectbox>
+                <div class="select-plan" data-selectbox style="pointer-events: none">
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input type="hidden" name="referPlanMethod" value="" data-selectbox-hidden />
                     <span class="selectbox__value" data-selectbox-value>選択してください</span>
@@ -382,7 +379,7 @@
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
-                        <input type="radio" name="referPlanMethod" value="1" id="plan01" />
+                        <input type="radio" name="referPlanMethod" value="1" id="plan01" checked />
                         <label for="plan01">ライトプラン</label>
                       </li>
                       <li>
