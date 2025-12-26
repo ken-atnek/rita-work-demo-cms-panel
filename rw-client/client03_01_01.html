@@ -213,24 +213,81 @@
                   <div class="item-salary">
                     <div class="wrap-radio">
                       <div class="item-check-box">
-                        <input
-                          type="radio"
-                          id="radio-salary01"
-                          name="select-salary"
-                          checked
-                        /><label for="radio-salary01">月給</label>
-                      </div>
-                      <div class="item-check-box">
-                        <input type="radio" id="radio-salary02" name="select-salary" /><label
-                          for="radio-salary02"
-                          >時給</label
+                        <input type="radio" id="radio-salary01" name="select-salary" /><label
+                          for="radio-salary01"
+                          >月給</label
                         >
                       </div>
+                      <div class="item-check-box">
+                        <input
+                          type="radio"
+                          id="radio-salary02"
+                          name="select-salary"
+                          checked
+                        /><label for="radio-salary02">時給</label>
+                      </div>
                     </div>
-                    <span
+                    <!-- NOTE 月給選択時 [is-block-active]付与 -->
+                    <span class="wrap-price"
                       ><input type="text" class="item-price" /><i>〜</i
                       ><input type="text" class="item-price" /><i>円</i></span
                     >
+                    <!-- NOTE 時給選択時 [is-block-active]付与 -->
+                    <div class="select-salary02 is-block-active" data-selectbox>
+                      <button type="button" class="selectbox__head" aria-expanded="false">
+                        <input type="hidden" name="referSalary02" value="" data-selectbox-hidden />
+                        <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                      </button>
+                      <div class="list-wrapper">
+                        <ul class="selectbox__panel">
+                          <li>
+                            <input
+                              type="radio"
+                              name="referSalary02"
+                              value="1"
+                              id="referSalary02-01"
+                            />
+                            <label for="referSalary02-01">1,000円〜1,500円</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="referSalary02"
+                              value="2"
+                              id="referSalary02-02"
+                            />
+                            <label for="referSalary02-02">1,500円〜2,000円</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="referSalary02"
+                              value="3"
+                              id="referSalary02-03"
+                            />
+                            <label for="referSalary02-03">2,000円〜2,500円</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="referSalary02"
+                              value="4"
+                              id="referSalary02-04"
+                            />
+                            <label for="referSalary02-04">2,500円〜3,000円</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="referSalary02"
+                              value="5"
+                              id="referSalary02-05"
+                            />
+                            <label for="referSalary02-05">3,000円以上</label>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                   <div class="item-bonus">
                     <h4>賞与</h4>
