@@ -414,6 +414,14 @@
                             $list-height: 3.4rem
                         );
                     }
+                    .select-area {
+                        @include select-list-box(
+                            $height: 4.4rem,
+                            $position: "left",
+                            $list-height: 2.8rem
+                        );
+                        max-width: 48rem;
+                    }
                     textarea {
                         min-height: 8lh;
                     }
