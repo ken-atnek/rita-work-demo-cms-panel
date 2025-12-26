@@ -738,13 +738,28 @@
                                 font-size: inherit;
                                 gap: 0 1rem;
                             }
-                            span {
-                                display: flex;
+                            .wrap-price {
+                                display: none;
                                 flex: 1;
                                 align-items: center;
                                 font-size: inherit;
                                 i {
                                     margin-inline: 1rem;
+                                }
+                                &.is-block-active {
+                                    display: flex;
+                                }
+                            }
+                            .select-salary02 {
+                                width: 32rem;
+                                display: none;
+                                @include select-list-box(
+                                    $height: 4.8rem,
+                                    $position: "left",
+                                    $list-height: 3.2rem
+                                );
+                                &.is-block-active {
+                                    display: flex;
                                 }
                             }
                             .item-salary {
