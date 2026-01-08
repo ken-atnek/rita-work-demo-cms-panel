@@ -22,10 +22,10 @@
             gap: 0 1rem;
             font-size: inherit;
             &.is-admin {
-                grid-template-columns: repeat(5, 1fr);
+                grid-template-columns: repeat(6, 1fr);
             }
             &.is-client {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
             button {
                 position: relative;
@@ -58,7 +58,7 @@
                     }
                 }
                 &.status-registered {
-                    --hover-color: #c8cfce;
+                    --hover-color: #c1cbce;
                     --active-color: #76a1c6;
                     .label {
                         &::before {
@@ -69,7 +69,7 @@
                     }
                 }
                 &.status-applied {
-                    --hover-color: #cddab1;
+                    --hover-color: #c6d7ac;
                     --active-color: #81bb7c;
                     .label {
                         &::before {
@@ -80,7 +80,7 @@
                     }
                 }
                 &.status-interview {
-                    --hover-color: #e3c1b0;
+                    --hover-color: #dfbbab;
                     --active-color: #b87d7a;
                     .label {
                         &::before {
@@ -91,7 +91,7 @@
                     }
                 }
                 &.status-hired {
-                    --hover-color: #d8c4ca;
+                    --hover-color: #d3bec9;
                     --active-color: #9e84bb;
                     .label {
                         &::before {
@@ -101,13 +101,24 @@
                         }
                     }
                 }
+                &.status-rejected {
+                    --hover-color: #dcceaa;
+                    --active-color: #b1a776;
+                    .label {
+                        &::before {
+                            width: 1.9rem;
+                            @include svg-icon-status05("403726");
+                            bottom: calc(100% + 0.3em);
+                        }
+                    }
+                }
                 &.status-unresponsive {
-                    --hover-color: #d9cdb5;
-                    --active-color: #9f9b87;
+                    --hover-color: #d2c9bb;
+                    --active-color: #9c9c9c;
                     .label {
                         &::before {
                             width: 2.1rem;
-                            @include svg-icon-status05("403726");
+                            @include svg-icon-status06("403726");
                             bottom: calc(100% + 0.3em);
                         }
                     }
@@ -143,10 +154,17 @@
                             }
                         }
                     }
-                    &.status-unresponsive {
+                    &.status-rejected {
                         .label {
                             &::before {
                                 @include svg-icon-status05("fff");
+                            }
+                        }
+                    }
+                    &.status-unresponsive {
+                        .label {
+                            &::before {
+                                @include svg-icon-status06("fff");
                             }
                         }
                     }
@@ -161,68 +179,6 @@
                 }
             }
         }
-        // 条件で検索
-        // .block-search {
-        //     @include layout-block-search;
-        //     .box-search-items {
-        //         display: flex;
-        //         flex-wrap: wrap;
-        //         .item-line-id,
-        //         .item-name,
-        //         .item-job {
-        //             width: calc(100% / 3);
-        //             padding-inline: 1.5em;
-        //             border-bottom: 1px solid $border-gray;
-        //         }
-        //         .item-line-id,
-        //         .item-name {
-        //             border-right: 1px solid $border-gray;
-        //         }
-        //         .item-job {
-        //             .select-items {
-        //                 flex: 1;
-        //                 @include select-list-box(
-        //                     $height: 4.4rem,
-        //                     $position: "left",
-        //                     $list-height: 3rem
-        //                 );
-        //             }
-        //         }
-        //         .item-application-destination {
-        //             width: 50%;
-        //             border-right: 1px solid $border-gray;
-        //             padding-inline: 2em;
-        //         }
-        //         .item-application-date {
-        //             flex: 1;
-        //             padding-inline: 2em;
-        //             .wrap-period {
-        //                 width: 37rem;
-        //                 @include item-period;
-        //             }
-        //         }
-        //     }
-        //     .box-btn {
-        //         position: relative;
-        //         display: flex;
-        //         gap: 0 1em;
-        //         font-size: inherit;
-        //         padding-block: 1rem;
-        //         align-self: flex-end;
-        //         padding-right: 2.4rem;
-        //         button {
-        //             font-size: FZ(14);
-        //             height: 36px;
-        //             width: 12rem;
-        //         }
-        //         .item-clear {
-        //             @include main-button("clear");
-        //         }
-        //         .item-search {
-        //             @include main-button("confirm");
-        //         }
-        //     }
-        // }
         // 状況一覧
         .block-search-results {
             @include layout-block-article;
@@ -240,13 +196,13 @@
                     text-align: center;
                 }
                 .list-contact {
-                    grid-column: span 4;
+                    grid-column: span 5;
                     display: grid;
                     grid-template-columns: subgrid;
                     font-size: inherit;
                     & > li {
                         position: relative;
-                        grid-column: span 4;
+                        grid-column: span 5;
                         display: grid;
                         grid-template-columns: subgrid;
                         font-size: inherit;
@@ -275,6 +231,9 @@
                             padding-block: 1.6rem;
                             padding-inline: 1em;
                             text-align: center;
+                            &.applied {
+                                border-right: 1px solid $border-gray;
+                            }
                         }
                     }
                     &:has(> li:nth-child(2)) {
@@ -286,7 +245,7 @@
                     }
                 }
                 &.is-admin {
-                    @include layout-table-list(auto auto 1fr auto auto, 5);
+                    @include layout-table-list(auto auto 1fr auto auto auto, 6);
                     & > li {
                         &:not(:first-of-type) {
                             &:hover {
@@ -313,12 +272,40 @@
                                 .apply-status {
                                     @include apply-status-box;
                                 }
+                                &:has(input:checked + .status-hired),
+                                &:has(input:checked + .status-rejected) {
+                                    .apply-status {
+                                        @include apply-status-box;
+                                        pointer-events: none;
+                                        .selectbox__head {
+                                            &::after {
+                                                display: none;
+                                            }
+                                            .selectbox__value {
+                                                border-radius: 8px;
+                                            }
+                                            i {
+                                                display: none;
+                                            }
+                                        }
+                                    }
+                                }
+                                .list-wrapper {
+                                    .selectbox__panel {
+                                        & > li {
+                                            &:has(.status-hired),
+                                            &:has(.status-rejected) {
+                                                display: none;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 &.is-client {
-                    @include layout-table-list(1fr 1.5fr 1fr auto, 4);
+                    @include layout-table-list(1fr 1.5fr auto auto auto, 5);
                     & > li {
                         &:not(:first-of-type) {
                             &:hover {
@@ -329,9 +316,9 @@
                         }
                     }
                     .list-contact {
-                        grid-column: span 3;
+                        grid-column: span 4;
                         & > li {
-                            grid-column: span 3;
+                            grid-column: span 4;
                             .wrap-apply-status {
                                 font-size: inherit;
                                 padding-inline: 1em;
@@ -339,16 +326,32 @@
                                 border-right: 1px solid $border-gray;
                                 .apply-status {
                                     @include apply-status-box;
-                                    pointer-events: none;
-                                    .selectbox__head {
-                                        &::after {
-                                            display: none;
+                                }
+                                &:has(input:checked + .status-applied) {
+                                    .apply-status {
+                                        @include apply-status-box;
+                                        pointer-events: none;
+                                        .selectbox__head {
+                                            &::after {
+                                                display: none;
+                                            }
+                                            .selectbox__value {
+                                                border-radius: 8px;
+                                            }
+                                            i {
+                                                display: none;
+                                            }
                                         }
-                                        .selectbox__value {
-                                            border-radius: 8px;
-                                        }
-                                        i {
-                                            display: none;
+                                    }
+                                }
+                                .list-wrapper {
+                                    .selectbox__panel {
+                                        & > li {
+                                            &:has(.status-applied),
+                                            &:has(.status-registered),
+                                            &:has(.status-unresponsive) {
+                                                display: none;
+                                            }
                                         }
                                     }
                                 }
