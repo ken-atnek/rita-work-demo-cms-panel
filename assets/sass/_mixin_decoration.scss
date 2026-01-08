@@ -609,22 +609,28 @@
                 background-color: #81bb7c;
             }
         }
-        // 面談中
+        // 面接中
         &.status-interview {
             .selectbox__value {
                 background-color: #b87d7a;
             }
         }
-        // 内定
+        // 採用
         &.status-hired {
             .selectbox__value {
                 background-color: #9e84bb;
             }
         }
-        // 音信不通
+        // 不採用
+        &.status-rejected {
+            .selectbox__value {
+                background-color: #b1a776;
+            }
+        }
+        // 連絡待ち
         &.status-unresponsive {
             .selectbox__value {
-                background-color: #9f9b87;
+                background-color: #9c9c9c;
             }
         }
     }
@@ -641,17 +647,21 @@
                     &.status-applied {
                         --status-color: #81bb7c;
                     }
-                    // 面談中
+                    // 面接中
                     &.status-interview {
                         --status-color: #b87d7a;
                     }
-                    // 内定
+                    // 採用
                     &.status-hired {
                         --status-color: #9e84bb;
                     }
-                    // 音信不通
+                    // 不採用
+                    &.status-rejected {
+                        --status-color: #b1a776;
+                    }
+                    // 連絡待ち
                     &.status-unresponsive {
-                        --status-color: #9f9b87;
+                        --status-color: #9c9c9c;
                     }
                     &::before {
                         content: "";
