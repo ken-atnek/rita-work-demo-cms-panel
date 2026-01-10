@@ -90,7 +90,13 @@
             <ul class="list-personal-results">
               <li>
                 <div>
-                  最終更新日<span class="wrap-sort-btn"
+                  応募日<span class="wrap-sort-btn"
+                    ><button type="button" class="arrow-top"></button
+                    ><button type="button" class="arrow-bottom is-active"></button
+                  ></span>
+                </div>
+                <div>
+                  面接日<span class="wrap-sort-btn"
                     ><button type="button" class="arrow-top"></button
                     ><button type="button" class="arrow-bottom is-active"></button
                   ></span>
@@ -102,7 +108,8 @@
               </li>
               <!-- NOTE  インラインでz-indexを付与 -->
               <li style="z-index: 10">
-                <div class="item-last-update">2025/12/20</div>
+                <div class="item-apply-date">2025/12/20</div>
+                <form class="item-interview-date"><input type="date" required /></form>
                 <form class="item-job-type">
                   <div class="select-job-type" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
@@ -205,11 +212,11 @@
                     <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
                         type="hidden"
-                        name="list01ApplyStatusMethod"
+                        name="ApplyStatus01Method"
                         value="1"
                         data-selectbox-hidden
                       />
-                      <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                      <span class="selectbox__value" data-selectbox-value>--</span>
                       <i></i>
                     </button>
                     <div class="list-wrapper">
@@ -218,7 +225,7 @@
                         <li style="z-index: 2">
                           <input
                             type="radio"
-                            name="list01ApplyStatusMethod"
+                            name="ApplyStatus01Method"
                             value="1"
                             id="list01-status01"
                             checked
@@ -228,7 +235,7 @@
                         <li>
                           <input
                             type="radio"
-                            name="list01ApplyStatusMethod"
+                            name="ApplyStatus01Method"
                             value="2"
                             id="list01-status02"
                           />
@@ -237,29 +244,38 @@
                         <li>
                           <input
                             type="radio"
-                            name="list01ApplyStatusMethod"
+                            name="ApplyStatus01Method"
                             value="3"
                             id="list01-status03"
                           />
-                          <label for="list01-status03" class="status-interview">面談中</label>
+                          <label for="list01-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list01ApplyStatusMethod"
+                            name="ApplyStatus01Method"
                             value="4"
                             id="list01-status04"
                           />
-                          <label for="list01-status04" class="status-hired">内定</label>
+                          <label for="list01-status04" class="status-hired">採用</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list01ApplyStatusMethod"
+                            name="ApplyStatus01Method"
                             value="5"
                             id="list01-status05"
                           />
-                          <label for="list01-status05" class="status-unresponsive">音信不通</label>
+                          <label for="list01-status05" class="status-rejected">不採用</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="ApplyStatus01Method"
+                            value="6"
+                            id="list01-status06"
+                          />
+                          <label for="list01-status06" class="status-unresponsive">連絡待ち</label>
                         </li>
                       </ul>
                     </div>
@@ -268,7 +284,9 @@
                 <div class="item-delate"><button type="button"></button></div>
               </li>
               <li style="z-index: 9">
-                <div class="item-last-update">2025/12/20</div>
+                <div class="item-apply-date">2025/11/20</div>
+                <form class="item-interview-date"><input type="date" value="2026-02-03" /></form>
+
                 <form class="item-job-type">
                   <div class="select-job-type" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
@@ -322,7 +340,7 @@
                             id="destination06"
                             checked
                           />
-                          <label for="destination06">訪問看護ステーション ラシクアーレ</label>
+                          <label for="destination06">あああ訪問看護ステーション ラシクアーレ</label>
                         </li>
                         <li>
                           <input
@@ -371,7 +389,7 @@
                     <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
                         type="hidden"
-                        name="list02ApplyStatusMethod"
+                        name="ApplyStatus02Method"
                         value="1"
                         data-selectbox-hidden
                       />
@@ -380,20 +398,20 @@
                     </button>
                     <div class="list-wrapper">
                       <ul class="selectbox__panel">
+                        <!-- NOTE  インラインでz-indexを付与 -->
                         <li style="z-index: 2">
                           <input
                             type="radio"
-                            name="list02ApplyStatusMethod"
+                            name="ApplyStatus02Method"
                             value="1"
                             id="list02-status01"
-                            checked
                           />
                           <label for="list02-status01" class="status-registered">登録中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list02ApplyStatusMethod"
+                            name="ApplyStatus02Method"
                             value="2"
                             id="list02-status02"
                           />
@@ -402,29 +420,39 @@
                         <li>
                           <input
                             type="radio"
-                            name="list02ApplyStatusMethod"
+                            name="ApplyStatus02Method"
                             value="3"
                             id="list02-status03"
+                            checked
                           />
-                          <label for="list02-status03" class="status-interview">面談中</label>
+                          <label for="list02-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list02ApplyStatusMethod"
+                            name="ApplyStatus02Method"
                             value="4"
                             id="list02-status04"
                           />
-                          <label for="list02-status04" class="status-hired">内定</label>
+                          <label for="list02-status04" class="status-hired">採用</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list02ApplyStatusMethod"
+                            name="ApplyStatus02Method"
                             value="5"
                             id="list02-status05"
                           />
-                          <label for="list02-status05" class="status-unresponsive">音信不通</label>
+                          <label for="list02-status05" class="status-rejected">不採用</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="ApplyStatus02Method"
+                            value="6"
+                            id="list02-status06"
+                          />
+                          <label for="list02-status06" class="status-unresponsive">連絡待ち</label>
                         </li>
                       </ul>
                     </div>
@@ -433,8 +461,10 @@
                 <div class="item-delate"><button type="button"></button></div>
               </li>
               <!--NOTE  職種・応募先コントロール不可→[is-inactive]付与 -->
-              <li style="z-index: 8" class="is-inactive">
-                <div class="item-last-update">2025/12/20</div>
+              <li style="z-index: 8">
+                <div class="item-apply-date">2025/12/31</div>
+                <form class="item-interview-date"><input type="date" value="2026-01-20" /></form>
+
                 <!-- NOTE 登録中以外で職種・応募先のコントロール不可 -->
                 <form class="item-job-type" style="pointer-events: none">
                   <div class="select-job-type" data-selectbox>
@@ -468,8 +498,7 @@
                     </div>
                   </div>
                 </form>
-                <!-- NOTE 登録中以外で職種・応募先のコントロール不可 -->
-                <form class="item-destination" style="pointer-events: none">
+                <form class="item-destination">
                   <div class="select-destination" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
@@ -539,7 +568,7 @@
                     <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
                         type="hidden"
-                        name="list03ApplyStatusMethod"
+                        name="ApplyStatus03Method"
                         value="1"
                         data-selectbox-hidden
                       />
@@ -548,20 +577,20 @@
                     </button>
                     <div class="list-wrapper">
                       <ul class="selectbox__panel">
+                        <!-- NOTE  インラインでz-indexを付与 -->
                         <li style="z-index: 2">
                           <input
                             type="radio"
-                            name="list03ApplyStatusMethod"
+                            name="ApplyStatus03Method"
                             value="1"
                             id="list03-status01"
-                            checked
                           />
                           <label for="list03-status01" class="status-registered">登録中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list03ApplyStatusMethod"
+                            name="ApplyStatus03Method"
                             value="2"
                             id="list03-status02"
                           />
@@ -570,30 +599,39 @@
                         <li>
                           <input
                             type="radio"
-                            name="list03ApplyStatusMethod"
+                            name="ApplyStatus03Method"
                             value="3"
                             id="list03-status03"
-                            checked
                           />
-                          <label for="list03-status03" class="status-interview">面談中</label>
+                          <label for="list03-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list03ApplyStatusMethod"
+                            name="ApplyStatus03Method"
                             value="4"
                             id="list03-status04"
                           />
-                          <label for="list03-status04" class="status-hired">内定</label>
+                          <label for="list03-status04" class="status-hired">採用</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="list03ApplyStatusMethod"
+                            name="ApplyStatus03Method"
                             value="5"
                             id="list03-status05"
+                            checked
                           />
-                          <label for="list03-status05" class="status-unresponsive">音信不通</label>
+                          <label for="list03-status05" class="status-rejected">不採用</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="ApplyStatus03Method"
+                            value="6"
+                            id="list03-status06"
+                          />
+                          <label for="list03-status06" class="status-unresponsive">連絡待ち</label>
                         </li>
                       </ul>
                     </div>
@@ -602,7 +640,9 @@
                 <div class="item-delate"><button type="button"></button></div>
               </li>
               <li style="z-index: 7">
-                <div class="item-last-update">2025/12/20</div>
+                <div class="item-apply-date">2025/12/10</div>
+                <form class="item-interview-date"><input type="date" value="2025-12-15" /></form>
+
                 <form class="item-job-type">
                   <div class="select-job-type" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
@@ -739,7 +779,7 @@
                             value="3"
                             id="list04-status03"
                           />
-                          <label for="list04-status03" class="status-interview">面談中</label>
+                          <label for="list04-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
@@ -766,7 +806,9 @@
                 <div class="item-delate"><button type="button"></button></div>
               </li>
               <li style="z-index: 6">
-                <div class="item-last-update">2025/12/20</div>
+                <div class="item-apply-date">2025/12/20</div>
+                <form class="item-interview-date"><input type="date" value="2025-12-15" /></form>
+
                 <form class="item-job-type">
                   <div class="select-job-type" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
@@ -903,7 +945,7 @@
                             value="3"
                             id="list05-status03"
                           />
-                          <label for="list05-status03" class="status-interview">面談中</label>
+                          <label for="list05-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
@@ -930,7 +972,9 @@
                 <div class="item-delate"><button type="button"></button></div>
               </li>
               <li style="z-index: 5">
-                <div class="item-last-update">2025/12/20</div>
+                <div class="item-apply-date">2025/12/20</div>
+                <form class="item-interview-date"><input type="date" value="2025-12-15" /></form>
+
                 <form class="item-job-type">
                   <div class="select-job-type" data-selectbox>
                     <button type="button" class="selectbox__head" aria-expanded="false">
@@ -1067,7 +1111,7 @@
                             value="3"
                             id="list06-status03"
                           />
-                          <label for="list06-status03" class="status-interview">面談中</label>
+                          <label for="list06-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
