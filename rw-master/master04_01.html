@@ -86,7 +86,7 @@
                     <button type="button" class="selectbox__head" aria-expanded="false">
                       <input
                         type="hidden"
-                        name="ApplyStatus04Method"
+                        name="ApplyStatus01Search"
                         value="1"
                         data-selectbox-hidden
                       />
@@ -99,48 +99,56 @@
                         <li style="z-index: 2">
                           <input
                             type="radio"
-                            name="ApplyStatus04Method"
+                            name="ApplyStatus01Search"
                             value="1"
-                            id="search-status01"
-                            checked
+                            id="list01-status01"
                           />
-                          <label for="search-status01" class="status-registered">登録中</label>
+                          <label for="list01-status01" class="status-registered">登録中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="ApplyStatus04Method"
+                            name="ApplyStatus01Search"
                             value="2"
-                            id="search-status02"
+                            id="list01-status02"
                           />
-                          <label for="search-status02" class="status-applied">応募中</label>
+                          <label for="list01-status02" class="status-applied">応募中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="ApplyStatus04Method"
+                            name="ApplyStatus01Search"
                             value="3"
-                            id="search-status03"
+                            id="list01-status03"
                           />
-                          <label for="search-status03" class="status-interview">面談中</label>
+                          <label for="list01-status03" class="status-interview">面接中</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="ApplyStatus04Method"
+                            name="ApplyStatus01Search"
                             value="4"
-                            id="search-status04"
+                            id="list01-status04"
                           />
-                          <label for="search-status04" class="status-hired">内定</label>
+                          <label for="list01-status04" class="status-hired">採用</label>
                         </li>
                         <li>
                           <input
                             type="radio"
-                            name="ApplyStatus04Method"
+                            name="ApplyStatus01Search"
                             value="5"
-                            id="search-status05"
+                            id="list01-status05"
                           />
-                          <label for="search-status05" class="status-unresponsive">音信不通</label>
+                          <label for="list01-status05" class="status-rejected">不採用</label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="ApplyStatus01Search"
+                            value="6"
+                            id="list01-status06"
+                          />
+                          <label for="list01-status06" class="status-unresponsive">連絡待ち</label>
                         </li>
                       </ul>
                     </div>
@@ -280,7 +288,18 @@
               <div>職種</div>
               <div>応募先</div>
               <div>応募状況</div>
-              <div>応募日</div>
+              <div>
+                応募日<span class="wrap-sort-btn"
+                  ><button type="button" class="arrow-top"></button
+                  ><button type="button" class="arrow-bottom is-active"></button
+                ></span>
+              </div>
+              <div>
+                面接日<span class="wrap-sort-btn"
+                  ><button type="button" class="arrow-top"></button
+                  ><button type="button" class="arrow-bottom is-active"></button
+                ></span>
+              </div>
             </li>
             <!-- NOTE  インラインでz-indexを付与 -->
             <li style="z-index: 5">
@@ -313,7 +332,6 @@
                               name="ApplyStatus01Method"
                               value="1"
                               id="list01-status01"
-                              checked
                             />
                             <label for="list01-status01" class="status-registered">登録中</label>
                           </li>
@@ -333,7 +351,7 @@
                               value="3"
                               id="list01-status03"
                             />
-                            <label for="list01-status03" class="status-interview">面談中</label>
+                            <label for="list01-status03" class="status-interview">面接中</label>
                           </li>
                           <li>
                             <input
@@ -341,8 +359,9 @@
                               name="ApplyStatus01Method"
                               value="4"
                               id="list01-status04"
+                              checked
                             />
-                            <label for="list01-status04" class="status-hired">内定</label>
+                            <label for="list01-status04" class="status-hired">採用</label>
                           </li>
                           <li>
                             <input
@@ -351,15 +370,25 @@
                               value="5"
                               id="list01-status05"
                             />
-                            <label for="list01-status05" class="status-unresponsive"
-                              >音信不通</label
+                            <label for="list01-status05" class="status-rejected">不採用</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="ApplyStatus01Method"
+                              value="6"
+                              id="list01-status06"
+                            />
+                            <label for="list01-status06" class="status-unresponsive"
+                              >連絡待ち</label
                             >
                           </li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                  <div class="item-date">2025/10/24</div>
+                  <div class="item-date date-apply">2025/9/22</div>
+                  <div class="item-date">2025/10/05</div>
                 </li>
                 <li>
                   <div class="item-job"><span>言語聴覚士</span></div>
@@ -408,7 +437,7 @@
                               value="3"
                               id="list02-status03"
                             />
-                            <label for="list02-status03" class="status-interview">面談中</label>
+                            <label for="list02-status03" class="status-interview">面接中</label>
                           </li>
                           <li>
                             <input
@@ -417,7 +446,7 @@
                               value="4"
                               id="list02-status04"
                             />
-                            <label for="list02-status04" class="status-hired">内定</label>
+                            <label for="list02-status04" class="status-hired">採用</label>
                           </li>
                           <li>
                             <input
@@ -426,15 +455,25 @@
                               value="5"
                               id="list02-status05"
                             />
-                            <label for="list02-status05" class="status-unresponsive"
-                              >音信不通</label
+                            <label for="list02-status05" class="status-rejected">不採用</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="ApplyStatus02Method"
+                              value="6"
+                              id="list02-status06"
+                            />
+                            <label for="list02-status06" class="status-unresponsive"
+                              >連絡待ち</label
                             >
                           </li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                  <div class="item-date">2025/9/22</div>
+                  <div class="item-date date-apply">2025/9/22</div>
+                  <div class="item-date">2025/10/05</div>
                 </li>
               </ul>
             </li>
@@ -469,7 +508,6 @@
                               name="ApplyStatus03Method"
                               value="1"
                               id="list03-status01"
-                              checked
                             />
                             <label for="list03-status01" class="status-registered">登録中</label>
                           </li>
@@ -489,7 +527,7 @@
                               value="3"
                               id="list03-status03"
                             />
-                            <label for="list03-status03" class="status-interview">面談中</label>
+                            <label for="list03-status03" class="status-interview">面接中</label>
                           </li>
                           <li>
                             <input
@@ -498,7 +536,7 @@
                               value="4"
                               id="list03-status04"
                             />
-                            <label for="list03-status04" class="status-hired">内定</label>
+                            <label for="list03-status04" class="status-hired">採用</label>
                           </li>
                           <li>
                             <input
@@ -506,16 +544,27 @@
                               name="ApplyStatus03Method"
                               value="5"
                               id="list03-status05"
+                              checked
                             />
-                            <label for="list03-status05" class="status-unresponsive"
-                              >音信不通</label
+                            <label for="list03-status05" class="status-rejected">不採用</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="ApplyStatus03Method"
+                              value="6"
+                              id="list03-status06"
+                            />
+                            <label for="list03-status06" class="status-unresponsive"
+                              >連絡待ち</label
                             >
                           </li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                  <div class="item-date">2025/8/4</div>
+                  <div class="item-date date-apply">2025/9/22</div>
+                  <div class="item-date">2025/10/05</div>
                 </li>
               </ul>
             </li>
@@ -550,7 +599,6 @@
                               name="ApplyStatus04Method"
                               value="1"
                               id="list04-status01"
-                              checked
                             />
                             <label for="list04-status01" class="status-registered">登録中</label>
                           </li>
@@ -560,6 +608,7 @@
                               name="ApplyStatus04Method"
                               value="2"
                               id="list04-status02"
+                              checked
                             />
                             <label for="list04-status02" class="status-applied">応募中</label>
                           </li>
@@ -570,7 +619,7 @@
                               value="3"
                               id="list04-status03"
                             />
-                            <label for="list04-status03" class="status-interview">面談中</label>
+                            <label for="list04-status03" class="status-interview">面接中</label>
                           </li>
                           <li>
                             <input
@@ -579,7 +628,7 @@
                               value="4"
                               id="list04-status04"
                             />
-                            <label for="list04-status04" class="status-hired">内定</label>
+                            <label for="list04-status04" class="status-hired">採用</label>
                           </li>
                           <li>
                             <input
@@ -588,15 +637,25 @@
                               value="5"
                               id="list04-status05"
                             />
-                            <label for="list04-status05" class="status-unresponsive"
-                              >音信不通</label
+                            <label for="list04-status05" class="status-rejected">不採用</label>
+                          </li>
+                          <li>
+                            <input
+                              type="radio"
+                              name="ApplyStatus04Method"
+                              value="6"
+                              id="list04-status06"
+                            />
+                            <label for="list04-status06" class="status-unresponsive"
+                              >連絡待ち</label
                             >
                           </li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                  <div class="item-date">2025/8/4</div>
+                  <div class="item-date date-apply">2025/9/22</div>
+                  <div class="item-date">2025/10/05</div>
                 </li>
               </ul>
             </li>

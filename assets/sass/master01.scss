@@ -117,7 +117,7 @@
                     --active-color: #9c9c9c;
                     .label {
                         &::before {
-                            width: 2.1rem;
+                            width: 2rem;
                             @include svg-icon-status06("403726");
                             bottom: calc(100% + 0.3em);
                         }
