@@ -1,0 +1,59 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(事業者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/log-in.css" />
+  </head>
+
+  <body>
+    <main class="contents-log-in">
+      <article class="block-login">
+        <div class="item-logo">
+          <img src="../assets/images/maun-logo.svg" alt="RITAのロゴ" />
+        </div>
+        <!-- ログイン画面 -->
+        <div class="box-log-in">
+          <span class="title">メールアドレス</span>
+          <input type="text" />
+          <span class="title">パスワード</span>
+          <input type="text" />
+          <div class="text-caution">メールアドレスとパスワードを正しく入力してください</div>
+          <button type="submit">ログイン</button>
+          <a href="#" class="link-pw">パスワードをお忘れの方はこちら</a>
+        </div>
+        <div class="reset-password">
+          <h2>パスワードの再設定</h2>
+          <p>
+            ご登録のメールアドレスを入力してください。<br />パスワード再設定用のURLをお送りします。
+          </p>
+          <span class="title">メールアドレス</span>
+          <input type="text" />
+          <button type="submit">設定用URLを送信</button>
+        </div>
+        <div class="again-reset-password">
+          <h2>送信が完了しました</h2>
+          <p>
+            ご登録のメールアドレス宛に、パスワード再設定用のURLを送信しました。<br />
+            メールが届かない場合は、迷惑メールフォルダをご確認のうえ、下記ボタンより再送信をお試しください。
+          </p>
+          <button type="submit">設定用URLを再送信</button>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>
