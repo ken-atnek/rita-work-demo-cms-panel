@@ -8,6 +8,7 @@
  *  2025.12.15
  */
 
+#***** タグ生成開始 *****#
 print <<<HTML
 <header class="area-master" id="Header">
   <div class="item-logo">

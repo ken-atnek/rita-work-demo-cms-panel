@@ -24,5 +24,5 @@ unset($_SESSION['master_login']);
 session_destroy();
 
 /***** 表示：ログインページへリダイレクト *****/
-header("Location: ./index.php");
+header("Location: ./");
 exit;

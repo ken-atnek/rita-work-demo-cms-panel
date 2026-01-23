@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/master03_02_01.php]
- *  - 管理画面 -
+ * [rw-client/client03_01_01.php]
+ *  - 【事業所】管理画面 -
  *  求人カード登録／編集
  *
  * [初版]
- *  2025.12.26
+ *  2026.1.23
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -15,7 +15,7 @@ require_once '../../cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
 require_once '../../cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once '../../cms_config/master/start_processing.php';
+require_once '../../cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once '../../cms_config/database/db_corporations.php';
@@ -28,22 +28,22 @@ require_once '../../cms_config/database/db_jobs.php';
 # SESSIONチェック
 #----------------#
 #セッションキー
-$pagePrefix = 'mKey03-02_';
+$pagePrefix = 'cKey03-01_';
 #このページのユニークなセッションキーを生成
 $noUpDateKey = $pagePrefix . bin2hex(random_bytes(8));
 $_SESSION['sKey'] = $noUpDateKey;
 #不要なセッション削除
 foreach ($_SESSION as $key => $val) {
-  if ($key !== 'sKey' && $key !== 'master_login' && $key !== $noUpDateKey) {
+  if ($key !== 'sKey' && $key !== 'client_login' && $key !== $noUpDateKey) {
     unset($_SESSION[$key]);
   }
 }
 #セッション本体の初期化
 $_SESSION[$noUpDateKey] = array();
 #アカウントキー
-$_SESSION[$noUpDateKey]['masterKey'] = $_SESSION['master_login']['account_id'];
+$_SESSION[$noUpDateKey]['clientKey'] = $_SESSION['client_login']['account_id'];
 #データ取得エラー
-if ($_SESSION[$noUpDateKey]['masterKey'] < 1) {
+if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
   header("Location: ./logout.php");
   exit;
 }
@@ -73,7 +73,7 @@ try {
   ]);
 } catch (Throwable $e) {
   if (function_exists('makeLog')) {
-    makeLog('[master03_02_01] master JSON load failed: ' . $e->getMessage());
+    makeLog('[client03_01_01] master JSON load failed: ' . $e->getMessage());
   }
   $jsonMasters = [];
 }
@@ -115,17 +115,6 @@ $corporationsList = getCorporationList();
 
 #=============#
 # POSTチェック
-#-------------#
-#新規／編集
-$method = isset($_GET['method']) ? $_GET['method'] : null;
-#モードチェック
-if ($method === null || ($method !== 'new' && $method !== 'edit')) {
-  #不正アクセス：トップページへリダイレクト
-  header("Location: ./master03_02.php");
-  exit;
-}
-#プラン変更アクション
-$planAction = isset($_GET['planAction']) ? $_GET['planAction'] : null;
 #-------------#
 #求人カードID（編集／削除時のみ）
 $jobId = isset($_GET['jobId']) ? $_GET['jobId'] : null;
@@ -181,6 +170,10 @@ if (is_array($jobData) === false || count($jobData) === 0) {
     'is_active' => 1,
   );
 }
+#-------------#
+#求人コード生成
+$job_code = $jobData['job_code'];
+#-------------#
 #職場環境の特徴が無ければ初期化
 if (is_array($workEnvironmentMetricsData) === false || count($workEnvironmentMetricsData) === 0) {
   #job_code
@@ -191,6 +184,7 @@ if (is_array($workEnvironmentMetricsData) === false || count($workEnvironmentMet
     'value' => '',
   );
 }
+#-------------#
 #仕事の詳細情報が無ければ初期化
 if (is_array($jobOptionGroupData) === false || count($jobOptionGroupData) === 0) {
   #job_code
@@ -211,39 +205,13 @@ if (is_array($jobOptionTextData) === false || count($jobOptionTextData) === 0) {
     'option_text' => '',
   );
 }
-#-------------#
-#求人コード生成
-$job_code = '';
-if ($method === 'new') {
-  $getLastJobId = getLastJobId();
-  $job_code = 'job_' . sprintf("%04d", $getLastJobId['AUTO_INCREMENT']);
-} else {
-  $job_code = $jobData['job_code'];
-}
-
-#===============================#
-# メニュータイトル／日付初期値設定
-#-------------------------------#
-#メニュータイトル
-$menuTitle = "求人カード一覧";
-if ($method === 'new') {
-  $menuTitle = "新規求人カード登録<span>" . htmlspecialchars($facilityData['name'], ENT_QUOTES, 'UTF-8') . "</span>";
-} elseif ($method === 'edit') {
-  if (!isset($facilityData) || empty($facilityData)) {
-    #事業所データが無い場合は不正アクセス：トップページへリダイレクト
-    header("Location: ./master03_02.php");
-    exit;
-  } else {
-    $menuTitle = "求人カード情報<span>" . htmlspecialchars($facilityData['name'], ENT_QUOTES, 'UTF-8') . "</span>";
-  }
-}
 
 #***** タグ生成開始 *****#
 print <<<HTML
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
@@ -256,17 +224,14 @@ print <<<HTML
   </head>
 
   <body>
-
 HTML;
 @include './inc_header.php';
 print <<<HTML
     <main class="inner-03-02-01">
       <section class="page-nav">
-        <h2>事業所管理</h2>
+        <h2>求人カード管理</h2>
         <nav>
-          <a href="./master03_01_01.php?method=edit&facId={$facId}">事業所情報</a>
-          <a href="./master03_02.php?facId={$facId}" class="is-active">求人カード一覧</a>
-          <a href="#">パスワード設定</a>
+          <a href="javascript:void(0);" class="is-active">求人カード一覧</a>
         </nav>
       </section>
       <section class="container-job-card-register">
@@ -278,10 +243,10 @@ print <<<HTML
           <a href="#blockSchedule"><i></i>1日の流れ</a>
           <a href="#blockDetailInfo"><i></i>詳細情報</a>
         </nav>
-        <a href="./master03_02.php?facId={$facId}" class="link-page-back">戻る</a>
-        <h2>{$menuTitle}</h2>
+        <a href="./client03_01.php?facId={$facId}" class="link-page-back">戻る</a>
+        <h2>求人カード情報<span>機能回復を支える理学療法士</span></h2>
         <form name="inputForm" class="block-form">
-          <input type="hidden" name="method" value="{$method}">
+          <input type="hidden" name="method" value="edit">
           <input type="hidden" name="action" value="checkInput">
           <input type="hidden" name="facId" value="{$facId}">
           <input type="hidden" name="jobId" value="{$jobData['job_id']}">
@@ -322,8 +287,8 @@ print <<<HTML
                   <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで事業形態が選択されていたら
-if ($method === 'edit' && isset($jobData['job_category_id']) && $jobData['job_category_id'] != '') {
+#事業形態が選択されていたら
+if (isset($jobData['job_category_id']) && $jobData['job_category_id'] != '') {
   #選択中のラベル取得
   foreach ($jobCategories as $jobCategory) {
     if ($jobData['job_category_id'] == $jobCategory['id']) {
@@ -387,7 +352,7 @@ print <<<HTML
                   <input type="hidden" name="upload_image_mode" value="multiple" id="js-uploadImageMode-heroImage">
                   <input type="hidden" name="upload_image_area" value="hero_image" id="js-uploadImageArea-heroImage">
                   <input type="hidden" name="up_image_area[]" value="hero_image">
-                  <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                  <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                   <button type="button" id="js-fileSelect-heroImage">ファイルを選択</button>
                   <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                   <!-- NOTE 警告用表示 -->
@@ -474,8 +439,8 @@ print <<<HTML
                   <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで雇用形態が選択されていたら
-if ($method === 'edit' && isset($employmentTypes['employment_type_id']) && $employmentTypes['employment_type_id'] != '') {
+#雇用形態が選択されていたら
+if (isset($employmentTypes['employment_type_id']) && $employmentTypes['employment_type_id'] != '') {
   #選択中のラベル取得
   foreach ($employmentTypes as $employmentType) {
     if ($employmentTypes['employment_type_id'] == $employmentType['id']) {
@@ -637,8 +602,8 @@ print <<<HTML
                       <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで初年度年収が選択されていたら
-if ($method === 'edit' && isset($jobData['first_year_income_range_id']) && $jobData['first_year_income_range_id'] != '') {
+#初年度年収が選択されていたら
+if (isset($jobData['first_year_income_range_id']) && $jobData['first_year_income_range_id'] != '') {
   #選択中のラベル取得
   foreach ($firstYearIncomeRanges as $firstYearIncomeRange) {
     if ($jobData['first_year_income_range_id'] == $firstYearIncomeRange['id']) {
@@ -696,15 +661,15 @@ print <<<HTML
               <dt class="position-top">給与備考</dt>
               <dd><textarea name="salary_note">{$salaryNotice}</textarea></dd>
             </dl>
-            <dl id="targetSelectPlan">
+            <dl>
               <dt>契約プラン</dt>
               <dd>
-                <div class="select-plan" data-selectbox>
+                <div class="select-plan" data-selectbox style="pointer-events: none">
                   <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで事業形態が選択されていたら
-if ($method === 'edit' && isset($jobData['contract_plan_id']) && $jobData['contract_plan_id'] != '') {
+#事業形態が選択されていたら
+if (isset($jobData['contract_plan_id']) && $jobData['contract_plan_id'] != '') {
   #選択中のラベル取得
   foreach ($contractPlans as $contractPlan) {
     if ($jobData['contract_plan_id'] == $contractPlan['id']) {
@@ -848,7 +813,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-interview1Image">
                           <input type="hidden" name="upload_image_area" value="interview1_image" id="js-uploadImageArea-interview1Image">
                           <input type="hidden" name="up_image_area[]" value="interview1_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-interview1Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -973,7 +938,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-interview2Image">
                           <input type="hidden" name="upload_image_area" value="interview2_image" id="js-uploadImageArea-interview2Image">
                           <input type="hidden" name="up_image_area[]" value="interview2_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-interview2Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1090,7 +1055,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-interview3Image">
                           <input type="hidden" name="upload_image_area" value="interview3_image" id="js-uploadImageArea-interview3Image">
                           <input type="hidden" name="up_image_area[]" value="interview3_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-interview3Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1274,7 +1239,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-benefits1Image">
                           <input type="hidden" name="upload_image_area" value="benefits1_image" id="js-uploadImageArea-benefits1Image">
                           <input type="hidden" name="up_image_area[]" value="benefits1_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-benefits1Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1369,7 +1334,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-benefits2Image">
                           <input type="hidden" name="upload_image_area" value="benefits2_image" id="js-uploadImageArea-benefits2Image">
                           <input type="hidden" name="up_image_area[]" value="benefits2_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-benefits2Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1464,7 +1429,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-benefits3Image">
                           <input type="hidden" name="upload_image_area" value="benefits3_image" id="js-uploadImageArea-benefits3Image">
                           <input type="hidden" name="up_image_area[]" value="benefits3_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-benefits3Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1559,7 +1524,7 @@ print <<<HTML
                           <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-benefits4Image">
                           <input type="hidden" name="upload_image_area" value="benefits4_image" id="js-uploadImageArea-benefits4Image">
                           <input type="hidden" name="up_image_area[]" value="benefits4_image">
-                          <input type="hidden" name="send_php" value="proc_master03_02_01.php">
+                          <input type="hidden" name="send_php" value="proc_client03_01_01.php">
                           <button type="button" id="js-fileSelect-benefits4Image">ファイルを選択</button>
                           <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                           <!-- NOTE 警告用表示 -->
@@ -1637,12 +1602,12 @@ print <<<HTML
                 </div>
               </li>
             </ul>
-            <div class="box-premium-ban">
+            <!-- <div class="box-premium-ban">
               <h3>特別バナープランの設定について</h3>
               <p>
                 特別バナープランはこちらのページでは設定できません。｢事業所管理］→｢事業所情報｣にて設定が行えます。
               </p>
-            </div>
+            </div> -->
           </article>
           <hr>
           <article class="block-workplace" id="blockWorkSpace">
@@ -1680,8 +1645,8 @@ print <<<HTML
                     <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで職場環境の特徴が選択されていたら
-if ($method === 'edit' && isset($selectedMetricArea1) && $selectedMetricArea1 != '') {
+#職場環境の特徴が選択されていたら
+if (isset($selectedMetricArea1) && $selectedMetricArea1 != '') {
   #選択中のラベル取得
   foreach ($workEnvironmentMetrics as $metric) {
     if ($selectedMetricArea1 == $metric['id']) {
@@ -1745,8 +1710,8 @@ print <<<HTML
                     <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで職場環境の特徴が選択されていたら
-if ($method === 'edit' && isset($selectedMetricArea2) && $selectedMetricArea2 != '') {
+#職場環境の特徴が選択されていたら
+if (isset($selectedMetricArea2) && $selectedMetricArea2 != '') {
   #選択中のラベル取得
   foreach ($workEnvironmentMetrics as $metric) {
     if ($selectedMetricArea2 == $metric['id']) {
@@ -1810,8 +1775,8 @@ print <<<HTML
                     <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで職場環境の特徴が選択されていたら
-if ($method === 'edit' && isset($selectedMetricArea3) && $selectedMetricArea3 != '') {
+#職場環境の特徴が選択されていたら
+if (isset($selectedMetricArea3) && $selectedMetricArea3 != '') {
   #選択中のラベル取得
   foreach ($workEnvironmentMetrics as $metric) {
     if ($selectedMetricArea3 == $metric['id']) {
@@ -2897,21 +2862,12 @@ print <<<HTML
           </article>
         </form>
         <div class="bottom-box-btn">
-          <button type="button" class="item-back" onclick="location.href='./master03_02.php?facId={$facId}'">戻る</button>
-          <button type="button" class="item-check" onclick="checkInput('{$method}')">登録する</button>
+          <button type="button" class="item-back" onclick="location.href='./client03_01.php?facId={$facId}'">戻る</button>
+          <button type="button" class="item-check" onclick="checkInput('edit')">登録する</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
-
-HTML;
-if ($method === 'edit') {
-  print <<<HTML
         <button type="button" class="btn-delate-item" onclick="checkDeleteJobCard({$facId},{$jobId})">削除する</button>
-
-HTML;
-}
-print <<<HTML
       </section>
-
 HTML;
 @include './inc_page-top.html';
 print <<<HTML
@@ -2927,7 +2883,7 @@ print <<<HTML
           <p>新規求人カード情報を登録します。よろしいですか？</p>
           <div class="box-btn">
             <button type="button" class="btn-cancel" onclick="closeModal()">キャンセル</button>
-            <button type="button" class="btn-confirm" onclick="sendInput('{$method}');">はい</button>
+            <button type="button" class="btn-confirm" onclick="sendInput('edit');">はい</button>
           </div>
         </div>
       </div>
@@ -2936,7 +2892,7 @@ print <<<HTML
     <script src="../assets/js/form.js" defer></script>
     <script src="../assets/js/dropZone.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master03_02_01.js" defer></script>
+    <script src="./assets/js/client03_01_01.js" defer></script>
   </body>
 </html>
 

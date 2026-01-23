@@ -1,7 +1,7 @@
 <?php
 /*
- * [rw-master/index.php]
- *  - 管理画面 -
+ * [rw-client/logout.php]
+ *  - 【事業所】管理画面 -
  *  ログアウト
  *
  * [初版]
@@ -15,14 +15,14 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** セッション初期化ファイル：インクルード *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 
 /***** セッション破棄 *****/
 #セッション情報を完全に初期化してから破棄
 $_SESSION = [];
-unset($_SESSION['master_login']);
+unset($_SESSION['client_login']);
 session_destroy();
 
 /***** 表示：ログインページへリダイレクト *****/
-header("Location: ./index.php");
+header("Location: ./");
 exit;

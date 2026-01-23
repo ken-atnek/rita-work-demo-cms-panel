@@ -51,7 +51,7 @@ function bindToggle(btnId, panelId) {
  * API送信先 共通定数
  *
  */
-const requestURL = './assets/function/proc_master03_02_01.php';
+const requestURL = './assets/function/proc_client03_01_01.php';
 /**
  * 給与形態選択による入力項目の表示切替
  *
@@ -503,16 +503,13 @@ async function sendInput(method) {
         ElementButton.remove();
       });
       //一覧へ戻るボタン生成
-      let newButton = `<button type="button" class="btn-cancel" onclick="closeModalToPage('master03_02.php?facId=${list['facId']}');">一覧に戻る</button>`;
+      let newButton = `<button type="button" class="btn-cancel" onclick="closeModalToPage('client03_01.php?facId=${list['facId']}');">一覧に戻る</button>`;
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
-      //求人カード作成ボタン生成
-      let addButton = `<button type="button" class="btn-cancel" onclick="closeModalToPage('master03_02_01.php?method=new&facId=${list['facId']}');" style="width:26rem;">続けて求人カードを登録する</button>`;
-      blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
       //「✕」ボタンも変更
       blockModal
         .querySelector('.box-title')
         .querySelector('button')
-        .setAttribute('onclick', "closeModalToPage('master03_02.php?facId=${list['facId']}')");
+        .setAttribute('onclick', "closeModalToPage('client03_01.php?facId=${list['facId']}')");
     }
     blockModal.classList.add('is-active');
     htmlElement.style.overflow = 'hidden';
@@ -695,13 +692,13 @@ async function deleteJobCard(facId, jobCardId) {
         ElementButton.remove();
       });
       //ボタン生成
-      let newButton = `<button type="button" class="btn-cancel" onclick="closeModalToPage('master03_02.php?facId=${list['facId']}');">一覧に戻る</button>`;
+      let newButton = `<button type="button" class="btn-cancel" onclick="closeModalToPage('client03_01.php?facId=${list['facId']}');">一覧に戻る</button>`;
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
       //「✕」ボタンも変更
       blockModal
         .querySelector('.box-title')
         .querySelector('button')
-        .setAttribute('onclick', "closeModalToPage('master03_02.php?facId=${list['facId']}')");
+        .setAttribute('onclick', "closeModalToPage('client03_01.php?facId=${list['facId']}')");
     }
     blockModal.classList.add('is-active');
     htmlElement.style.overflow = 'hidden';

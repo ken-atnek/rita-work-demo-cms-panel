@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/master03_01_01.php]
- *  - 管理画面 -
+ * [rw-client/client02_01.php]
+ *  - 【事業所】管理画面 -
  *  事業所登録／編集
  *
  * [初版]
- *  2025.12.22
+ *  2026.1.22
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -15,7 +15,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
@@ -26,24 +26,35 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 # SESSIONチェック
 #----------------#
 #セッションキー
-$pagePrefix = 'mKey03-01_';
+$pagePrefix = 'cKey02-01_';
 #このページのユニークなセッションキーを生成
 $noUpDateKey = $pagePrefix . bin2hex(random_bytes(8));
 $_SESSION['sKey'] = $noUpDateKey;
 #不要なセッション削除
 foreach ($_SESSION as $key => $val) {
-  #一覧（master03_01）の検索条件だけ保持（戻る操作で条件保持するため）
-  $isSearchConditionsKey = ($key === 'searchConditions_master03_01');
-  if ($key !== 'sKey' && $key !== 'master_login' && $key !== $noUpDateKey && $isSearchConditionsKey === false) {
+  #一覧（client02_01）の検索条件だけ保持（戻る操作で条件保持するため）
+  $isSearchConditionsKey = ($key === 'searchConditions_client02_01');
+  if ($key !== 'sKey' && $key !== 'client_login' && $key !== $noUpDateKey && $isSearchConditionsKey === false) {
     unset($_SESSION[$key]);
   }
 }
 #セッション本体の初期化
 $_SESSION[$noUpDateKey] = array();
 #アカウントキー
-$_SESSION[$noUpDateKey]['masterKey'] = $_SESSION['master_login']['account_id'];
+$_SESSION[$noUpDateKey]['clientKey'] = $_SESSION['client_login']['account_id'];
 #データ取得エラー
-if ($_SESSION[$noUpDateKey]['masterKey'] < 1) {
+if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
+  header("Location: ./logout.php");
+  exit;
+}
+
+#==============#
+# 事業者情報取得
+#--------------#
+#事業所ID
+$facId = isset($_SESSION['client_login']['facility_id']) ? $_SESSION['client_login']['facility_id'] : null;
+$facilityData = getFacility_FindById($_SESSION['client_login']['facility_id']);
+if (!$facilityData) {
   header("Location: ./logout.php");
   exit;
 }
@@ -61,7 +72,7 @@ try {
   ]);
 } catch (Throwable $e) {
   if (function_exists('makeLog')) {
-    makeLog('[master03_01_01] master JSON load failed: ' . $e->getMessage());
+    makeLog('[client02_01] master JSON load failed: ' . $e->getMessage());
   }
   $jsonMasters = [];
 }
@@ -90,20 +101,7 @@ foreach (($recruitmentArea['groups'] ?? []) as $group) {
 #-------------#
 $corporationsList = getCorporationList();
 
-#=============#
-# POSTチェック
 #-------------#
-#新規／編集
-$method = isset($_GET['method']) ? $_GET['method'] : null;
-#モードチェック
-if ($method === null || ($method !== 'new' && $method !== 'edit')) {
-  #不正アクセス：トップページへリダイレクト
-  header("Location: ./master03_01.php");
-  exit;
-}
-#-------------#
-#事業所ID（編集／削除時のみ）
-$facId = isset($_GET['facId']) ? $_GET['facId'] : null;
 #事業所IDがあれば事業所情報取得
 if ($facId !== null) {
   $facilityData = getFacility_FindById($facId);
@@ -160,29 +158,12 @@ if ($facId !== null) {
   );
 }
 
-#===============================#
-# メニュータイトル／日付初期値設定
-#-------------------------------#
-#メニュータイトル
-$menuTitle = "事業所情報";
-if ($method === 'new') {
-  $menuTitle = "新規事業所登録";
-} elseif ($method === 'edit') {
-  if (!isset($facilityData) || empty($facilityData)) {
-    #事業所データが無い場合は不正アクセス：トップページへリダイレクト
-    header("Location: ./master03_01.php");
-    exit;
-  } else {
-    $menuTitle = "事業所情報<span>" . htmlspecialchars($facilityData['name'], ENT_QUOTES, 'UTF-8') . "</span>";
-  }
-}
-
 #***** タグ生成開始 *****#
 print <<<HTML
 <html lang="ja">
   <head>
-    <meta charset="UTF-8">
-    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://zipcloud.ibsnet.co.jp; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
@@ -203,29 +184,14 @@ print <<<HTML
       <section class="page-nav">
         <h2>事業所管理</h2>
         <nav>
-
-HTML;
-if ($method === 'new') {
-  print <<<HTML
-          <a href="./master03_01_01.php?method=new" class="is-active">新規事業所登録</a>
-
-HTML;
-} else {
-  print <<<HTML
-          <a href="./master03_01_01.php?method=edit&facId={$facId}" class="is-active">事業所情報</a>
-          <a href="./master03_02.php?facId={$facId}">求人カード一覧</a>
-          <a href="./master03_03.php?facId={$facId}">パスワード設定</a>
-
-HTML;
-}
-print <<<HTML
+          <a href="javascript:void(0);" class="is-active">事業所情報</a>
         </nav>
       </section>
       <section class="container-vendor-register">
         <a href="javascript:history.back()" class="link-page-back">戻る</a>
-        <h2>{$menuTitle}</h2>
+        <h2>事業所情報</h2>
         <form name="inputForm" class="block-form">
-          <input type="hidden" name="method" value="{$method}">
+          <input type="hidden" name="method" value="edit">
           <input type="hidden" name="action" value="checkInput">
           <input type="hidden" name="facId" value="{$facId}">
           <input type="hidden" name="facCode" value="{$facilityData['facility_code']}">
@@ -244,8 +210,8 @@ print <<<HTML
                 <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで事業形態が選択されていたら
-if ($method === 'edit' && isset($facilityData['facility_type_id']) && $facilityData['facility_type_id'] != '') {
+#事業形態が選択されていたら
+if (isset($facilityData['facility_type_id']) && $facilityData['facility_type_id'] != '') {
   #選択中のラベル取得
   foreach ($facilityTypes as $facilityType) {
     if ($facilityData['facility_type_id'] == $facilityType['id']) {
@@ -321,8 +287,8 @@ print <<<HTML
                 <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで事業形態が選択されていたら
-if ($method === 'edit' && isset($facilityData['recruitment_area']) && $facilityData['recruitment_area'] != '') {
+#事業形態が選択されていたら
+if (isset($facilityData['recruitment_area']) && $facilityData['recruitment_area'] != '') {
   #選択中のラベル取得
   foreach ($recruitmentAreaList as $recruitmentArea) {
     if ($facilityData['recruitment_area'] == $recruitmentArea['id']) {
@@ -508,7 +474,7 @@ print <<<HTML
           <div class="inner-ban-plan">
             <div class="box-head">
               <h3>特別バナープラン</h3>
-              <div class="wrap-toggle-button">
+              <div class="wrap-toggle-button" style="display:none;">
                 <label class="toggle-button">
 
 HTML;
@@ -539,7 +505,7 @@ print <<<HTML
                   <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-mainLogo">
                   <input type="hidden" name="upload_image_area" value="special_banner_logo_list" id="js-uploadImageArea-mainLogo">
                   <input type="hidden" name="up_image_area[]" value="special_banner_logo_list">
-                  <input type="hidden" name="send_php" value="proc_master03_01_01.php">
+                  <input type="hidden" name="send_php" value="proc_client02_01.php">
                   <button type="button" id="js-fileSelect-mainLogo">ファイルを選択</button>
                   <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                   <!-- NOTE 警告用表示 -->
@@ -624,12 +590,12 @@ print <<<HTML
             <dl>
               <dt class="is-required">法人名</dt>
               <dd>
-                <div class="select-company" data-selectbox>
+                <div class="select-company is-client" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
 
 HTML;
-#編集モードで法人が選択されていたら
-if ($method == 'edit' && (isset($facilityData['corporation_id']) && $facilityData['corporation_id'] != '')) {
+#法人が選択されていたら
+if (isset($facilityData['corporation_id']) && $facilityData['corporation_id'] != '') {
   #法人コードをキーに法人情報を取得
   $selectedCorporation = getCorporations_FindById_Code($facilityData['corporation_id'], null);
   $selectedCorporationName = $selectedCorporation['name'];
@@ -647,6 +613,7 @@ HTML;
 }
 print <<<HTML
                   </button>
+<!--
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
 
@@ -671,6 +638,7 @@ HTML;
 print <<<HTML
                     </ul>
                   </div>
+-->
                 </div>
               </dd>
             </dl>
@@ -680,16 +648,8 @@ print <<<HTML
           <button type="button" class="item-back" onclick="history.back()">戻る</button>
           <button type="button" class="item-check" onclick="checkInput()">入力を確認する</button>
         </div>
-
-HTML;
-if ($method === 'edit') {
-  print <<<HTML
         <!--NOTE 修正画面のみ表示 -->
         <button type="button" class="btn-delate-item" onclick="checkDeleteFacility('{$facId}','{$facilityData['name']}','{$facilityData['facility_code']}')">削除する</button>
-
-HTML;
-}
-print <<<HTML
       </section>
 
 HTML;
@@ -716,7 +676,7 @@ print <<<HTML
     <script src="../assets/js/form.js" defer></script>
     <script src="../assets/js/dropZone.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master03_01_01.js" defer></script>
+    <script src="./assets/js/client02_01.js" defer></script>
     <script>
     //複数アップロードエリア対応：ID命名規則に従い全領域を初期化
     document.addEventListener('DOMContentLoaded', function() {

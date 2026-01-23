@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/index.php]
- *  - 管理画面 -
+ * [rw-client/check.php]
+ *  - 【事業所】管理画面 -
  *  ログインチェック
  *
  * [初版]
- *  2024.8.27
+ *  2026.1.22
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -22,7 +22,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_login.php';
 #-------------#
 #POST以外は不正リクエストとして拒否
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-	header("Location: ./index.php");
+	header("Location: ./");
 	exit;
 }
 #メールアドレス
@@ -33,7 +33,7 @@ $userPassword = isset($_POST['userPassword']) ? $_POST['userPassword'] : null;
 #***** セッション宣言 *****#
 session_cache_limiter('private,must-revalidate');
 #セッション名設定
-session_name('RW_MASTER_SESSID');
+session_name('RW_CLIENT_SESSID');
 #セッションCookie設定
 session_set_cookie_params([
 	'lifetime' => 0,                #ブラウザ終了まで有効
@@ -56,29 +56,38 @@ $loginPassword = isset($userPassword) ? (string)$userPassword : '';
 #メールアドレス／パスワードどちらかでも欠けていれば即エラー
 if ($loginEmail === '' || $loginPassword === '') {
 	$_SESSION["login_err"] = $loginErrorMessage;
-	header("Location: ./index.php?loginERR=1");
+	header("Location: ./?loginERR=1");
 	exit;
 }
 
 #オペレーター種別かつ施設ひも付きが無いことを確認
 $loginData = accounts_Login($loginEmail);
 $facilityValue = $loginData['facility_id'] ?? null;
-$isOperator = $loginData && isset($loginData['account_type']) && $loginData['account_type'] === 'operator';
-$hasNoFacilityBinding = $loginData && $facilityValue === null;
-if (!$loginData || !$isOperator || !$hasNoFacilityBinding || !password_verify($loginPassword, $loginData['password_hash'])) {
+$isFacility = $loginData && isset($loginData['account_type']) && $loginData['account_type'] === 'facility';
+$hasNoFacilityBinding = $loginData && $facilityValue !== null;
+if (!$loginData || !$isFacility || !$hasNoFacilityBinding || !password_verify($loginPassword, $loginData['password_hash'])) {
+	#事業者アカウントじゃない場合や認証失敗
+	if (!$loginData) {
+		$loginErrorMessage = "入力されたメールアドレスは登録されていません。";
+	} elseif (!$isFacility || !$hasNoFacilityBinding) {
+		$loginErrorMessage = "事業者アカウントでログインしてください。";
+	} else {
+		$loginErrorMessage = "パスワードが正しくありません。";
+	}
+	#エラー応答
 	$_SESSION["login_err"] = $loginErrorMessage;
-	header("Location: ./index.php?loginERR=1");
+	header("Location: ./?loginERR=1");
 	exit;
 }
 
 #既存セッションがある場合は同一アカウントか判定
-if (!empty($_SESSION['master_login']['status'])) {
-	$currentAccountId = $_SESSION['master_login']['account_id'] ?? null;
+if (!empty($_SESSION['client_login']['status'])) {
+	$currentAccountId = $_SESSION['client_login']['account_id'] ?? null;
 	if ($currentAccountId === (int)$loginData['account_id']) {
 		header("Location: ./master01_01.php");
 	} else {
 		$_SESSION["login_err"] = "既にログイン中のアカウントがあります。ログアウト後に再度お試しください";
-		header("Location: ./index.php?loginERR=1");
+		header("Location: ./?loginERR=1");
 	}
 	exit;
 }
@@ -90,11 +99,11 @@ accounts_UpdateLastLoginAt($loginData['account_id']);
 session_regenerate_id(true);
 
 #画面遷移後でも最低限のアカウント情報だけ参照できるよう格納
-$_SESSION['master_login'] = [];
-$_SESSION['master_login']['account_id'] = (int)$loginData['account_id'];
-$_SESSION['master_login']['account_type'] = $loginData['account_type'];
-$_SESSION['master_login']['facility_id'] = $facilityValue;
-$_SESSION['master_login']['status'] = 1;
+$_SESSION['client_login'] = [];
+$_SESSION['client_login']['account_id'] = (int)$loginData['account_id'];
+$_SESSION['client_login']['account_type'] = $loginData['account_type'];
+$_SESSION['client_login']['facility_id'] = $facilityValue;
+$_SESSION['client_login']['status'] = 1;
 $_SESSION['login_err'] = '';
-header("Location: ./master01_01.php");
+header("Location: ./client01_01.php");
 exit;

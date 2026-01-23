@@ -1,11 +1,11 @@
 ﻿<?php
 /*
- * [rw-master/assets/function/proc_master03_02_01.php]
- *  - 管理画面 -
+ * [rw-client/assets/function/proc_client03_01_01.php]
+ *  - 【事業所】管理画面 -
  *  求人カード登録／編集 処理
  *
  * [初版]
- *  2025.12.26
+ *  2026.1.23
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -15,7 +15,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
@@ -61,7 +61,7 @@ try {
   ]);
 } catch (Throwable $e) {
   if (function_exists('makeLog')) {
-    makeLog('[proc_master03_02_01] master JSON load failed: ' . $e->getMessage());
+    makeLog('[proc_client03_01_01] master JSON load failed: ' . $e->getMessage());
   }
   $jsonMasters = [];
 }
@@ -1342,7 +1342,7 @@ HTML;
         if ($result == false) {
           #エラーログ出力
           $data = [
-            'pageName' => 'proc_master03_02_01',
+            'pageName' => 'proc_client03_01_01',
             'reason' => 'トランザクション開始失敗',
           ];
           makeLog($data);
@@ -1403,7 +1403,7 @@ HTML;
                   $newJobCardIdRaw = $DB_CONNECT->lastInsertId();
                   if (!is_numeric($newJobCardIdRaw) || (int)$newJobCardIdRaw <= 0) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '求人カードID採番失敗（lastInsertId不正）: ' . (string)$newJobCardIdRaw,
                     ];
                     makeLog($data);
@@ -1511,7 +1511,7 @@ HTML;
                         if ($dbImageSuccessFlg != 1) {
                           #エラーログ出力
                           $data = [
-                            'pageName' => 'proc_master03_02_01',
+                            'pageName' => 'proc_client03_01_01',
                             'reason' => 'PR画像パスDB登録失敗',
                           ];
                           makeLog($data);
@@ -1536,7 +1536,7 @@ HTML;
                         if ($jobCardPlanResult == false) {
                           #エラーログ出力
                           $data = [
-                            'pageName' => 'proc_master03_02_01',
+                            'pageName' => 'proc_client03_01_01',
                             'reason' => '求人カードプラン用JSON作成失敗',
                           ];
                           makeLog($data);
@@ -1625,7 +1625,7 @@ HTML;
                     } else {
                       #エラーログ出力
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'フリーテキストDB登録失敗',
                       ];
                       makeLog($data);
@@ -1639,7 +1639,7 @@ HTML;
                   #給与備考
                   if (!DB_jobSet_option_text($DB_CONNECT, $newJobCardId, 'salary_note', $salary_note ?? '')) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '給与備考DB登録失敗',
                     ];
                     makeLog($data);
@@ -1662,7 +1662,7 @@ HTML;
                   }
                   if (!DB_jobReplaceWorkEnvironment_metrics($DB_CONNECT, $newJobCardId, $WorkEnvironmentMetrics)) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '職場環境の特徴DB登録失敗',
                     ];
                     makeLog($data);
@@ -1707,7 +1707,7 @@ HTML;
                     $dailyScheduleJson = json_encode($dailySchedule, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     if (!DB_jobSet_document_json($DB_CONNECT, $newJobCardId, 'dailySchedule', $dailyScheduleJson, 1)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => '1日の流れDB登録失敗',
                       ];
                       makeLog($data);
@@ -1716,7 +1716,7 @@ HTML;
                   } else {
                     if (!DB_jobSet_document_json($DB_CONNECT, $newJobCardId, 'dailySchedule', '', 1)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => '1日の流れDB削除失敗（空登録）',
                       ];
                       makeLog($data);
@@ -1739,7 +1739,7 @@ HTML;
                   foreach ($optionLinkGroups as $groupCode => $optionIds) {
                     if (!DB_jobReplace_option_links($DB_CONNECT, $newJobCardId, $groupCode, $optionIds)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'オプションDB登録失敗(' . $groupCode . ')',
                       ];
                       makeLog($data);
@@ -1763,7 +1763,7 @@ HTML;
                   foreach ($optionTextGroups as $groupCode => $text) {
                     if (!DB_jobSet_option_text($DB_CONNECT, $newJobCardId, $groupCode, $text)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'オプション備考DB登録失敗(' . $groupCode . ')',
                       ];
                       makeLog($data);
@@ -1774,7 +1774,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードDB登録失敗',
                   ];
                   makeLog($data);
@@ -1788,7 +1788,7 @@ HTML;
                 if (!is_numeric($jobId) || (int)$jobId <= 0) {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードID未指定（編集）',
                   ];
                   makeLog($data);
@@ -1958,7 +1958,7 @@ HTML;
                         if ($dbImageSuccessFlg != 1) {
                           #エラーログ出力
                           $data = [
-                            'pageName' => 'proc_master03_02_01',
+                            'pageName' => 'proc_client03_01_01',
                             'reason' => 'PR画像パスDB登録失敗',
                           ];
                           makeLog($data);
@@ -1983,7 +1983,7 @@ HTML;
                         if ($jobCardPlanResult == false) {
                           #エラーログ出力
                           $data = [
-                            'pageName' => 'proc_master03_02_01',
+                            'pageName' => 'proc_client03_01_01',
                             'reason' => '求人カードプラン用JSON作成失敗',
                           ];
                           makeLog($data);
@@ -2058,7 +2058,7 @@ HTML;
                     } else {
                       #エラーログ出力
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'フリーテキストDB更新失敗',
                       ];
                       makeLog($data);
@@ -2070,7 +2070,7 @@ HTML;
                     if (!DB_jobSet_document_json($DB_CONNECT, $jobId, 'freespace', '', 1)) {
                       #エラーログ出力
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'フリーテキストDB削除失敗（空更新）',
                       ];
                       makeLog($data);
@@ -2085,7 +2085,7 @@ HTML;
                   #給与備考
                   if (!DB_jobSet_option_text($DB_CONNECT, $jobId, 'salary_note', $salary_note ?? '')) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '給与備考DB登録失敗',
                     ];
                     makeLog($data);
@@ -2108,7 +2108,7 @@ HTML;
                   }
                   if (!DB_jobReplaceWorkEnvironment_metrics($DB_CONNECT, $jobId, $WorkEnvironmentMetrics)) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '職場環境の特徴DB登録失敗',
                     ];
                     makeLog($data);
@@ -2153,7 +2153,7 @@ HTML;
                     $dailyScheduleJson = json_encode($dailySchedule, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     if (!DB_jobSet_document_json($DB_CONNECT, $jobId, 'dailySchedule', $dailyScheduleJson, 1)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => '1日の流れDB登録失敗',
                       ];
                       makeLog($data);
@@ -2162,7 +2162,7 @@ HTML;
                   } else {
                     if (!DB_jobSet_document_json($DB_CONNECT, $jobId, 'dailySchedule', '', 1)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => '1日の流れDB削除失敗（空更新）',
                       ];
                       makeLog($data);
@@ -2185,7 +2185,7 @@ HTML;
                   foreach ($optionLinkGroups as $groupCode => $optionIds) {
                     if (!DB_jobReplace_option_links($DB_CONNECT, $jobId, $groupCode, $optionIds)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'オプションDB登録失敗(' . $groupCode . ')',
                       ];
                       makeLog($data);
@@ -2209,7 +2209,7 @@ HTML;
                   foreach ($optionTextGroups as $groupCode => $text) {
                     if (!DB_jobSet_option_text($DB_CONNECT, $jobId, $groupCode, $text)) {
                       $data = [
-                        'pageName' => 'proc_master03_02_01',
+                        'pageName' => 'proc_client03_01_01',
                         'reason' => 'オプション備考DB登録失敗(' . $groupCode . ')',
                       ];
                       makeLog($data);
@@ -2220,7 +2220,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードDB更新失敗',
                   ];
                   makeLog($data);
@@ -2233,7 +2233,7 @@ HTML;
                 if (!is_numeric($jobId) || (int)$jobId <= 0) {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードID未指定（編集）',
                   ];
                   makeLog($data);
@@ -2249,7 +2249,7 @@ HTML;
                 if (empty($changePlanName)) {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '変更プラン名未指定（編集）',
                   ];
                   makeLog($data);
@@ -2309,7 +2309,7 @@ HTML;
                     foreach ($purgeDocTypes as $docType) {
                       if (!DB_jobSet_document_json($DB_CONNECT, $jobId, $docType, '', 1)) {
                         $data = [
-                          'pageName' => 'proc_master03_02_01',
+                          'pageName' => 'proc_client03_01_01',
                           'reason' => 'プランダウングレード：不要ドキュメント削除失敗(' . $docType . ')',
                         ];
                         makeLog($data);
@@ -2357,7 +2357,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードDB更新失敗（プラン変更）',
                   ];
                   makeLog($data);
@@ -2370,7 +2370,7 @@ HTML;
                 if (!is_numeric($jobId) || (int)$jobId <= 0) {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カードID未指定（削除）',
                   ];
                   makeLog($data);
@@ -2446,7 +2446,7 @@ HTML;
                   }
                   if (!$deleteOk) {
                     $data = [
-                      'pageName' => 'proc_master03_02_01',
+                      'pageName' => 'proc_client03_01_01',
                       'reason' => '求人カード関連データ削除（DB）失敗',
                     ];
                     makeLog($data);
@@ -2519,7 +2519,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_02_01',
+                    'pageName' => 'proc_client03_01_01',
                     'reason' => '求人カード削除（論理削除）DB更新失敗',
                   ];
                   makeLog($data);
@@ -2650,7 +2650,7 @@ HTML;
             }
             if (count($fsErrors) > 0) {
               $data = [
-                'pageName' => 'proc_master03_02_01',
+                'pageName' => 'proc_client03_01_01',
                 'reason' => 'コミット後の画像確定処理で失敗',
                 'fsErrors' => $fsErrors,
               ];
@@ -3023,7 +3023,7 @@ HTML;
       } catch (Exception $e) {
         #エラーログ出力
         $data = [
-          'pageName' => 'proc_master03_02_01',
+          'pageName' => 'proc_client03_01_01',
           'reason' => 'トランザクション開始失敗',
           'errorMessage' => $e->getMessage(),
         ];
@@ -3341,7 +3341,7 @@ function createJobCard_Plan_JSON($jobCardId, $contract_plan = 'standard', $image
     }
   } else {
     $data = [
-      'pageName' => 'proc_master03_02_01',
+      'pageName' => 'proc_client03_01_01',
       'reason' => 'インタビューデータDB登録失敗',
     ];
     makeLog($data);
@@ -3404,7 +3404,7 @@ function createJobCard_Plan_JSON($jobCardId, $contract_plan = 'standard', $image
       }
     } else {
       $data = [
-        'pageName' => 'proc_master03_02_01',
+        'pageName' => 'proc_client03_01_01',
         'reason' => '職場紹介動画DB登録失敗',
       ];
       makeLog($data);
@@ -3459,7 +3459,7 @@ function createJobCard_Plan_JSON($jobCardId, $contract_plan = 'standard', $image
       }
     } else {
       $data = [
-        'pageName' => 'proc_master03_02_01',
+        'pageName' => 'proc_client03_01_01',
         'reason' => '福利厚生DB登録失敗',
       ];
       makeLog($data);

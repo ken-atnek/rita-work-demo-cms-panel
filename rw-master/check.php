@@ -1,6 +1,6 @@
 <?php
 /*
- * [rw-master/index.php]
+ * [rw-master/check.php]
  *  - 管理画面 -
  *  ログインチェック
  *
@@ -66,6 +66,14 @@ $facilityValue = $loginData['facility_id'] ?? null;
 $isOperator = $loginData && isset($loginData['account_type']) && $loginData['account_type'] === 'operator';
 $hasNoFacilityBinding = $loginData && $facilityValue === null;
 if (!$loginData || !$isOperator || !$hasNoFacilityBinding || !password_verify($loginPassword, $loginData['password_hash'])) {
+	#管理者アカウントじゃない場合や認証失敗
+	if (!$loginData) {
+		$loginErrorMessage = "入力されたメールアドレスは登録されていません。";
+	} elseif (!$isOperator || !$hasNoFacilityBinding) {
+		$loginErrorMessage = "管理者アカウントでログインしてください。";
+	} else {
+		$loginErrorMessage = "パスワードが正しくありません。";
+	}
 	$_SESSION["login_err"] = $loginErrorMessage;
 	header("Location: ./index.php?loginERR=1");
 	exit;

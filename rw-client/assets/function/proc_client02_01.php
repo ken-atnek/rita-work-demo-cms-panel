@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/assets/function/proc_master03_01_01.php]
- *  - 管理画面 -
+ * [rw-client/assets/function/proc_client02_01.php]
+ *  - 【事業所】管理画面 -
  *  事業所登録／編集／削除 処理
  *
  * [初版]
- *  2025.12.22
+ *  2026.1.22
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -16,7 +16,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
@@ -44,6 +44,7 @@ if (function_exists('getJson_FrontEndMaster_many')) {
       'areas',
     ]);
     $facilityTypes = $jsonMasters['facilityTypes'] ?? [];
+
     #募集エリアマスタ（areas.json）をフラットなリストに整形
     $recruitmentArea = $jsonMasters['areas'] ?? [];
     $recruitmentAreaList = [];
@@ -57,7 +58,7 @@ if (function_exists('getJson_FrontEndMaster_many')) {
     $recruitmentAreaList = [];
     if (function_exists('makeLog')) {
       $data = [
-        'pageName' => 'proc_master03_01_01',
+        'pageName' => 'proc_client02_01',
         'reason' => 'マスタJSON取得で例外',
         'errorMessage' => $e->getMessage(),
       ];
@@ -207,25 +208,12 @@ if ($checkAccountEmail !== null && $checkAccountEmail !== '') {
     }
   } catch (Exception $e) {
     $data = [
-      'pageName' => 'proc_master03_01_01',
+      'pageName' => 'proc_client02_01',
       'reason' => 'メールアドレス重複チェックで例外',
       'errorMessage' => $e->getMessage(),
     ];
     makeLog($data);
   }
-}
-
-#================#
-# メニュータイトル
-#----------------#
-$menuTitle = '事業所情報';
-$sideMenuTitle = '事業所管理';
-if ($method === 'new') {
-  $menuTitle = '新規事業所登録';
-  $sideMenuTitle = '新規事業所管理';
-} elseif ($method === 'edit') {
-  $menuTitle = '事業所情報<span>' . $facility_name . '</span>';
-  $sideMenuTitle = '事業所情報';
 }
 
 /**
@@ -936,7 +924,7 @@ HTML;
           <div class="inner-ban-plan">
             <div class="box-head">
               <h3>特別バナープラン</h3>
-              <div class="wrap-toggle-button">
+              <div class="wrap-toggle-button" style="display:none;">
                 <label class="toggle-button">
                   <input type="checkbox" {$checked}>
                 </label>
@@ -1059,7 +1047,7 @@ HTML;
         </div>
         <form name="inputForm" style="display:none;">
           <input type="hidden" name="action" value="sendInput">
-          <input type="hidden" name="method" value="{$method}">
+          <input type="hidden" name="method" value="edit">
           <input type="hidden" name="facId" value="{$facId}">
           <input type="hidden" name="facCode" value="{$facCode}">
           <input type="hidden" name="facility_name" value="{$facility_name}">
@@ -1102,9 +1090,9 @@ HTML;
       $makeTag['tag'] .= <<<HTML
       <section class="container-vendor-register">
         <a href="javascript:history.back()" class="link-page-back">戻る</a>
-        <h2>{$menuTitle}</h2>
+        <h2>事業所情報</h2>
         <form name="inputForm" class="block-form">
-          <input type="hidden" name="method" value="{$method}">
+          <input type="hidden" name="method" value="edit">
           <input type="hidden" name="action" value="checkInput">
           <input type="hidden" name="facId" value="{$facId}">
           <input type="hidden" name="facCode" value="{$facCode}">
@@ -1366,7 +1354,7 @@ HTML;
           <div class="inner-ban-plan">
             <div class="box-head">
               <h3>特別バナープラン</h3>
-              <div class="wrap-toggle-button">
+              <div class="wrap-toggle-button" style="display:none;">
                 <label class="toggle-button">
 
 HTML;
@@ -1398,7 +1386,7 @@ HTML;
                   <input type="hidden" name="upload_image_mode" value="only" id="js-uploadImageMode-mainLogo">
                   <input type="hidden" name="upload_image_area" value="special_banner_logo_list" id="js-uploadImageArea-mainLogo">
                   <input type="hidden" name="up_image_area[]" value="special_banner_logo_list">
-                  <input type="hidden" name="send_php" value="proc_master03_01_01.php">
+                  <input type="hidden" name="send_php" value="proc_client02_01.php">
                   <button type="button" id="js-fileSelect-mainLogo">ファイルを選択</button>
                   <span>※縦横サイズがオーバーしている場合は自動でリサイズされます</span>
                   <!-- NOTE 警告用表示 -->
@@ -1579,16 +1567,8 @@ HTML;
           <button type="button" class="item-back" onclick="history.back(2)">戻る</button>
           <button type="button" class="item-check" onclick="checkInput()">入力を確認する</button>
         </div>
-
-HTML;
-      if ($method === 'edit') {
-        $makeTag['tag'] .= <<<HTML
         <!--NOTE 修正画面のみ表示 -->
         <button type="button" class="btn-delate-item" onclick="checkDeleteFacility('{$facId}','{$facility_name}','{$facCode}')">削除する</button>
-
-HTML;
-      }
-      $makeTag['tag'] .= <<<HTML
       </section>
 
 HTML;
@@ -1603,7 +1583,7 @@ HTML;
         if ($result == false) {
           #エラーログ出力
           $data = [
-            'pageName' => 'proc_master03_01_01',
+            'pageName' => 'proc_client02_01',
             'reason' => 'トランザクション開始失敗',
           ];
           makeLog($data);
@@ -1734,7 +1714,7 @@ HTML;
                   if ($tempPassword === null || $tempPassword === '') {
                     #エラーログ出力
                     $data = [
-                      'pageName' => 'proc_master03_01_01',
+                      'pageName' => 'proc_client02_01',
                       'reason' => '仮パスワード生成失敗',
                     ];
                     makeLog($data);
@@ -1764,7 +1744,7 @@ HTML;
                     if ($dbAccountSuccessFlg != 1) {
                       #エラーログ出力
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '事業所アカウント情報DB登録失敗',
                       ];
                       makeLog($data);
@@ -1881,7 +1861,7 @@ HTML;
                   if ($dbDetailSuccessFlg != 1) {
                     #エラーログ出力
                     $data = [
-                      'pageName' => 'proc_master03_01_01',
+                      'pageName' => 'proc_client02_01',
                       'reason' => '事業所詳細情報DB登録失敗',
                     ];
                     makeLog($data);
@@ -1891,7 +1871,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_01_01',
+                    'pageName' => 'proc_client02_01',
                     'reason' => '事業所基本情報DB登録失敗',
                   ];
                   makeLog($data);
@@ -2114,7 +2094,7 @@ HTML;
                   if ($dbDetailSuccessFlg != 1) {
                     #エラーログ出力
                     $data = [
-                      'pageName' => 'proc_master03_01_01',
+                      'pageName' => 'proc_client02_01',
                       'reason' => '事業所詳細情報DB更新失敗',
                     ];
                     makeLog($data);
@@ -2140,7 +2120,7 @@ HTML;
                     $dbAccountSuccessFlg = SQL_Process($DB_CONNECT, "accounts", $dbAccountFiledData, $dbAccountFiledValue, $accountProcessFlg, $accountExeFlg);
                     if ($dbAccountSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '事業所アカウント情報(login_email)DB更新失敗',
                       ];
                       makeLog($data);
@@ -2150,7 +2130,7 @@ HTML;
                 } else {
                   #エラーログ出力
                   $data = [
-                    'pageName' => 'proc_master03_01_01',
+                    'pageName' => 'proc_client02_01',
                     'reason' => '事業所基本情報DB更新失敗',
                   ];
                   makeLog($data);
@@ -2194,7 +2174,7 @@ HTML;
                     $dbJobDocSuccessFlg = SQL_Process($DB_CONNECT, "job_documents", $dbJobDocFiledData, $dbJobDocFiledValue, $jobDocProcessFlg, $jobDocExeFlg);
                     if ($dbJobDocSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人カード関連DB削除失敗（job_documents）',
                         'job_id' => $jobIdForDelete,
                       ];
@@ -2216,7 +2196,7 @@ HTML;
                     $dbMetricSuccessFlg = SQL_Process($DB_CONNECT, "job_metric_values", $dbMetricFiledData, $dbMetricFiledValue, $metricProcessFlg, $metricExeFlg);
                     if ($dbMetricSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人カード関連DB削除失敗（job_metric_values）',
                         'job_id' => $jobIdForDelete,
                       ];
@@ -2238,7 +2218,7 @@ HTML;
                     $dbOptLinkSuccessFlg = SQL_Process($DB_CONNECT, "job_option_links", $dbOptLinkFiledData, $dbOptLinkFiledValue, $optLinkProcessFlg, $optLinkExeFlg);
                     if ($dbOptLinkSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人カード関連DB削除失敗（job_option_links）',
                         'job_id' => $jobIdForDelete,
                       ];
@@ -2260,7 +2240,7 @@ HTML;
                     $dbOptExtraSuccessFlg = SQL_Process($DB_CONNECT, "job_option_link_extras", $dbOptExtraFiledData, $dbOptExtraFiledValue, $optExtraProcessFlg, $optExtraExeFlg);
                     if ($dbOptExtraSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人カード関連DB削除失敗（job_option_link_extras）',
                         'job_id' => $jobIdForDelete,
                       ];
@@ -2274,7 +2254,7 @@ HTML;
                       $stmtApp->execute([':job_id' => $jobIdForDelete]);
                     } catch (Exception $e) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人応募データ削除で例外（applications）',
                         'job_id' => $jobIdForDelete,
                         'errorMessage' => $e->getMessage(),
@@ -2296,7 +2276,7 @@ HTML;
                     $dbJobSuccessFlg = SQL_Process($DB_CONNECT, "jobs", $dbJobFiledData, $dbJobFiledValue, $jobProcessFlg, $jobExeFlg);
                     if ($dbJobSuccessFlg != 1) {
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '求人カードDB削除失敗（jobs）',
                         'job_id' => $jobIdForDelete,
                       ];
@@ -2319,7 +2299,7 @@ HTML;
                       if ($dbAccountSuccessFlg != 1) {
                         #エラーログ出力
                         $data = [
-                          'pageName' => 'proc_master03_01_01',
+                          'pageName' => 'proc_client02_01',
                           'reason' => '事業所アカウント情報DB削除失敗',
                         ];
                         makeLog($data);
@@ -2330,7 +2310,7 @@ HTML;
                   }
                 } catch (Exception $e) {
                   $data = [
-                    'pageName' => 'proc_master03_01_01',
+                    'pageName' => 'proc_client02_01',
                     'reason' => '求人カード一覧取得／削除処理で例外',
                     'errorMessage' => $e->getMessage(),
                   ];
@@ -2385,7 +2365,7 @@ HTML;
                         $pendingDeleteDirs[] = DEFINE_FILE_DIR_PATH . '/facilities/' . $facCode . '/';
                       } else {
                         $data = [
-                          'pageName' => 'proc_master03_01_01',
+                          'pageName' => 'proc_client02_01',
                           'reason' => '事業所コード未指定のためディレクトリ削除をスキップ',
                         ];
                         makeLog($data);
@@ -2393,7 +2373,7 @@ HTML;
                     } else {
                       #エラーログ出力
                       $data = [
-                        'pageName' => 'proc_master03_01_01',
+                        'pageName' => 'proc_client02_01',
                         'reason' => '事業所アカウント情報DB削除失敗',
                       ];
                       makeLog($data);
@@ -2403,7 +2383,7 @@ HTML;
                   } else {
                     #エラーログ出力
                     $data = [
-                      'pageName' => 'proc_master03_01_01',
+                      'pageName' => 'proc_client02_01',
                       'reason' => '事業所詳細情報DB削除失敗',
                     ];
                     makeLog($data);
@@ -2496,7 +2476,7 @@ HTML;
             }
             if (count($fsErrors) > 0) {
               $data = [
-                'pageName' => 'proc_master03_01_01',
+                'pageName' => 'proc_client02_01',
                 'reason' => 'コミット後のファイル確定処理で失敗',
                 'fsErrors' => $fsErrors,
               ];
@@ -2528,7 +2508,7 @@ HTML;
       } catch (Exception $e) {
         #エラーログ出力
         $data = [
-          'pageName' => 'proc_master03_01_01',
+          'pageName' => 'proc_client02_01',
           'reason' => 'トランザクション開始失敗',
           'errorMessage' => $e->getMessage(),
         ];
