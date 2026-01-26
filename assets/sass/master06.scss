@@ -1,0 +1,234 @@
+/*==========================================================
+事業所管理
+==========================================================*/
+@use "./_reset_v2.5" as *;
+@use "./_variable" as *;
+@use "./svg" as *;
+@use "./_font" as *;
+@use "./_common" as *;
+@use "./mixin_decoration" as *;
+@use "./mixin_layout" as *;
+/*=================================
+***明細一覧
+=================================*/
+.inner-06-01 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-detail-list {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        // 条件で検索
+        .block-search {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                flex-direction: column;
+                li {
+                    padding-inline: 2.4rem;
+                }
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-bottom: 1px solid $border-gray;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-application-date {
+                    flex: 1;
+                    .wrap-period {
+                        // width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+                .item-search {
+                    @include main-button("confirm");
+                }
+            }
+        }
+        // 絞り込み
+        .block-filter {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                .item-name {
+                    flex: 1;
+                    padding-inline: 1.5em;
+                    border-right: 1px solid $border-gray;
+                }
+                .item-application-date {
+                    padding-inline: 2em;
+                    .wrap-period {
+                        width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+            }
+        }
+        // 明細一覧
+        .block-vendor-list {
+            @include layout-block-article;
+            .list-search-results {
+                @include layout-table-list(auto 1fr auto auto auto, 5);
+                margin-top: 1.4rem;
+                .item-price,
+                .item-name,
+                .item-date {
+                    padding-inline: 1em;
+                    padding-block: 1.6rem;
+                    font-size: FZ(14);
+                }
+                .item-name {
+                    display: flex;
+                    align-items: center;
+                }
+                .item-price,
+                .item-date {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                }
+                .item-plan {
+                    padding-left: 1em;
+                    padding-right: 3.4rem;
+                    padding-block: 1.6rem;
+                    font-size: inherit;
+                    .head-item {
+                        position: relative;
+                        font-size: FZ(14);
+                        display: inline-block;
+                        width: 100%;
+                        line-height: 1.6em;
+                        .btn-arrow {
+                            position: absolute;
+                            left: calc(100% + 4px);
+                            top: 0;
+                            width: 2rem;
+                            @include svg-icon-circle-arrow("403726");
+                            scale: 1 -1;
+                        }
+                    }
+                    .inner-plan {
+                        display: grid;
+                        grid-template-rows: 0fr;
+                        transition: 0.2s ease-out;
+                        font-size: inherit;
+                        .wrap-plan {
+                            overflow: hidden;
+                            position: relative;
+                            font-size: inherit;
+                            display: flex;
+                            flex-direction: column;
+                            span {
+                                font-size: FZ(14);
+                                line-height: 1.6em;
+                            }
+                        }
+                        &.is-active {
+                            pointer-events: auto;
+                            grid-template-rows: 1fr;
+                        }
+                    }
+                }
+                .item-btn {
+                    button {
+                        position: absolute;
+                        inset: 0;
+                        margin: auto;
+                        width: 24px;
+                        aspect-ratio: 1;
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            background-color: $hover-bg-blue;
+                            transition: 0.3s ease-out;
+                            border-radius: 50%;
+                            opacity: 0;
+                        }
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            margin: auto;
+                            width: 7px;
+                            @include svg-icon-download("403726");
+                        }
+                        &:hover {
+                            &::before {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+                & > li {
+                    &:not(:first-of-type) {
+                        cursor: auto;
+                        &:hover {
+                            &::before {
+                                background-color: transparent;
+                            }
+                        }
+                        &:active {
+                            &::before {
+                                background-color: transparent;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
+        }
+    }
+    .bottom-box-btn {
+        align-self: center;
+        position: relative;
+        font-size: inherit;
+        margin-top: 2.4rem;
+        display: flex;
+        gap: 0 2.4rem;
+        .item-back {
+            @include main-button("back-orange");
+            width: 16rem;
+            height: 48px;
+            font-size: FZ(14);
+        }
+    }
+}

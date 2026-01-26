@@ -192,3 +192,14 @@
     @include svg-bg-base($w, $h);
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 #{$w} #{$h}" fill="%23#{$color}"><path d="M0 5.19444V3.77778H14.1667V5.19444H0ZM0 1.41667V0H14.1667V1.41667H0Z"/></svg>');
 }
+
+// トップコントロール0
+@mixin svg-icon-circle-arrow($color, $w: 20, $h: 20) {
+    @include svg-bg-base($w, $h);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 #{$w} #{$h}" fill="%23#{$color}"><path d="M19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1V0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10C20 4.47715 15.5228 0 10 0V1C14.9706 1 19 5.02944 19 10Z" /><path d="M14.3609 11.3586L9.99774 7L5.63912 11.3586L6.28049 12L9.99774 8.28275L13.715 12L14.3564 11.3586H14.3609Z" /></svg>');
+}
+// ダウンロード
+@mixin svg-icon-download($color, $w: 7, $h: 10) {
+    @include svg-bg-base($w, $h);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 #{$w} #{$h}" fill="%23#{$color}"><path d="M0 8.86667H7V9.33333H0V8.86667Z" /><path d="M0.466666 4.65243L1.04879 4.12863L3.09672 6.02864L3.09672 0L3.90328 7.05109e-08L3.90328 6.02864L5.95121 4.12863L6.53333 4.65243L3.5 7.46667L0.466666 4.65243Z" /></svg>');
+}
