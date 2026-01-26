@@ -17,14 +17,20 @@
       href="../assets/images/favicon/apple-touch-icon.png"
     />
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
-    <link rel="stylesheet" href="../assets/css/master03.css" />
+    <link rel="stylesheet" href="../assets/css/master06.css" />
   </head>
 
   <body>
     <!--#include virtual="./inc_header.html"-->
-    <main class="inner-03">
-      <section class="container-vendor-list">
-        <h2>事業所一覧</h2>
+    <main class="inner-06-01">
+      <section class="page-nav">
+        <h2>明細管理</h2>
+        <nav>
+          <a href="#" class="is-active">明細一覧</a>
+        </nav>
+      </section>
+      <section class="container-detail-list">
+        <h2>明細一覧</h2>
         <form class="block-search">
           <button
             type="button"
@@ -37,45 +43,12 @@
           <article id="innerSearch">
             <div class="blockGrid">
               <ul class="box-search-items">
-                <li class="item-id">
-                  <h4>事業所ID</h4>
-                  <input type="text" />
-                </li>
                 <li class="item-name">
                   <h4>事業所名</h4>
                   <input type="text" />
                 </li>
-                <li class="item-plan">
-                  <h4>契約プラン</h4>
-                  <div class="wrap-radio">
-                    <div class="item-check-box">
-                      <input type="radio" id="radio-plan01" name="select-plan" checked /><label
-                        for="radio-plan01"
-                        >ライトプラン</label
-                      >
-                    </div>
-                    <div class="item-check-box">
-                      <input type="radio" id="radio-plan02" name="select-plan" /><label
-                        for="radio-plan02"
-                        >スタンダードプラン</label
-                      >
-                    </div>
-                    <div class="item-check-box">
-                      <input type="radio" id="radio-plan03" name="select-plan" /><label
-                        for="radio-plan03"
-                        >プレミアムプラン</label
-                      >
-                    </div>
-                    <div class="item-check-box">
-                      <input type="radio" id="radio-plan04" name="select-plan" /><label
-                        for="radio-plan04"
-                        >契約終了</label
-                      >
-                    </div>
-                  </div>
-                </li>
                 <li class="item-application-date">
-                  <h4>契約日</h4>
+                  <h4>受信日</h4>
                   <div class="wrap-period">
                     <input type="date" name="searchStartDay" />
                     <span>〜</span>
@@ -166,7 +139,7 @@
         </form>
         <article class="block-vendor-list">
           <div class="box-head">
-            <p class="announce-results">条件に<span>45件</span>が該当</p>
+            <p class="announce-results">条件に<span>23件</span>が該当</p>
             <div class="list-display" data-selectbox>
               <button type="button" class="selectbox__head" aria-expanded="false">
                 <input type="hidden" name="display" value="10" data-selectbox-hidden />
@@ -201,91 +174,59 @@
           <ul class="list-search-results">
             <li>
               <div>
-                番号<span class="wrap-sort-btn"
+                掲載月<span class="wrap-sort-btn"
                   ><button type="button" class="arrow-top"></button
                   ><button type="button" class="arrow-bottom is-active"></button
                 ></span>
               </div>
-              <div>事業所ID</div>
-              <div>事業所</div>
-              <div>住所</div>
-              <div>募集業種</div>
-              <div>プラン</div>
-              <div>バナー契約</div>
-              <div>
-                契約日<span class="wrap-sort-btn"
-                  ><button type="button" class="arrow-top is-active"></button
-                  ><button type="button" class="arrow-bottom"></button
-                ></span>
-              </div>
+              <div>事業所名</div>
+              <div>契約プラン</div>
+              <div>請求額<small>(税別)</small></div>
+              <div>ダウンロード</div>
             </li>
             <li>
-              <div class="item-number">12</div>
-              <div class="item-id">fac0001</div>
+              <div class="item-date">2025年10月</div>
               <div class="item-name">住宅型有料老人ホーム メディケア癒やしDX花園</div>
-              <div class="item-add"><span>〒860-0807</span>熊本県熊本市中央区下通2丁目5-18-2F</div>
-              <!--NOTE  リストの数をクラスで付与（list-count-**） -->
-              <div class="wrap-items list-count-3">
-                <ul class="card-list">
-                  <li>
-                    <div class="item-job-category">看護師</div>
-                    <div class="item-plan">プレミアム</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                  <li>
-                    <div class="item-job-category">理学療法士</div>
-                    <div class="item-plan">スタンダード</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                  <li>
-                    <div class="item-job-category">言語聴覚士</div>
-                    <div class="item-plan">ライト</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                </ul>
-                <div class="item-ban"><i></i></div>
+              <div class="item-plan">
+                <span class="head-item"
+                  >ライトプラン
+                  <button type="button" class="btn-arrow"></button>
+                </span>
+                <div class="inner-plan">
+                  <div class="wrap-plan">
+                    <span>プレミアムプラン</span><span>ベーシックプラン</span>
+                  </div>
+                </div>
               </div>
+              <div class="item-price">45,000円</div>
+              <div class="item-btn"><button type="button"></button></div>
             </li>
             <li>
-              <div class="item-number">8</div>
-              <div class="item-id">fac0002</div>
-              <div class="item-name">住宅型有料老人ホーム メディケア癒やしDX花園</div>
-              <div class="item-add"><span>〒860-0807</span>熊本県熊本市中央区下通2丁目5-18-2F</div>
-              <!--NOTE  リストの数をクラスで付与（list-count-**） -->
-              <div class="wrap-items list-count-2">
-                <ul class="card-list">
-                  <li>
-                    <div class="item-job-category">看護師</div>
-                    <div class="item-plan">プレミアム</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                  <li>
-                    <div class="item-job-category">言語聴覚士</div>
-                    <div class="item-plan">ライト</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                </ul>
-                <!--NOTE  is-active付与で掲載中 -->
-                <div class="item-ban is-active"><i></i></div>
+              <div class="item-date">2025年8月</div>
+              <div class="item-name">住テスト メディケア癒やしDX花園</div>
+              <div class="item-plan">
+                <span class="head-item"
+                  >特別バナープラン
+                  <button type="button" class="btn-arrow"></button>
+                </span>
+                <div class="inner-plan">
+                  <div class="wrap-plan">
+                    <span>プレミアムプラン</span><span>ベーシックプラン</span
+                    ><span>ライトプラン</span>
+                  </div>
+                </div>
               </div>
+              <div class="item-price">98,000円</div>
+              <div class="item-btn"><button type="button"></button></div>
             </li>
             <li>
-              <div class="item-number">8</div>
-              <div class="item-id">fac0002</div>
+              <div class="item-date">2025年10月</div>
               <div class="item-name">住宅型有料老人ホーム メディケア癒やしDX花園</div>
-              <div class="item-add"><span>〒860-0807</span>熊本県熊本市中央区下通2丁目5-18-2F</div>
-              <!--NOTE  リストの数をクラスで付与（list-count-**） -->
-              <div class="wrap-items list-count-1">
-                <ul class="card-list">
-                  <li>
-                    <div class="item-job-category">看護師</div>
-                    <div class="item-plan">プレミアム</div>
-                    <div class="item-date">2025/10/24</div>
-                  </li>
-                </ul>
-                <!--NOTE  is-active付与で掲載中-->
-                <div class="item-ban is-active"><i></i></div>
+              <div class="item-plan">
+                <span class="head-item">ライトプラン</span>
               </div>
+              <div class="item-price">45,000円</div>
+              <div class="item-btn"><button type="button"></button></div>
             </li>
           </ul>
           <div class="box-pager">
@@ -308,11 +249,25 @@
           </div>
         </article>
         <div class="bottom-box-btn">
-          <button type="button" class="item-register"><span>新規記事登録</span></button>
+          <button type="button" class="item-back">戻る</button>
         </div>
       </section>
       <!--#include virtual="./inc_page-top.html"-->
     </main>
     <script src="../assets/js/common.js" defer></script>
+    <script>
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-arrow');
+        if (!btn) return;
+
+        const itemPlan = btn.closest('.item-plan');
+        if (!itemPlan) return;
+
+        const innerPlan = itemPlan.querySelector('.inner-plan');
+        if (!innerPlan) return;
+
+        innerPlan.classList.toggle('is-active');
+      });
+    </script>
   </body>
 </html>
