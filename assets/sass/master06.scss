@@ -140,6 +140,11 @@
                             width: 2rem;
                             @include svg-icon-circle-arrow("403726");
                             scale: 1 -1;
+                            transition: 0.3s ease-out;
+                            &:hover {
+                                background-color: $hover-bg-blue;
+                                border-radius: 50%;
+                            }
                         }
                     }
                     .inner-plan {
@@ -200,7 +205,12 @@
                         cursor: auto;
                         &:hover {
                             &::before {
-                                background-color: transparent;
+                                opacity: 0;
+                            }
+                        }
+                        &:hover:not(:has(:is(button):hover)) {
+                            &::before {
+                                opacity: 1;
                             }
                         }
                         &:active {

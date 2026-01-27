@@ -11,7 +11,7 @@
 /*=================================
 ***転職のヒント
 =================================*/
-.inner-05-01 {
+.inner-05-01-01 {
     @include layout-inner-main-grid;
     .page-nav {
         @include container-left-menu;
@@ -164,12 +164,22 @@
                 }
                 & > li {
                     &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:hover:not(:has(.select-status:hover)) {
+                            &::before {
+                                opacity: 1;
+                            }
+                        }
                         &:active {
                             &::before {
                                 background-color: #edf1f8;
                             }
                         }
-                        &:active:not(:has(.box-status:active)) {
+                        &:active:not(:has(.select-status:active)) {
                             &::before {
                                 background-color: #fff;
                             }
@@ -212,7 +222,8 @@
 /*=================================
 ***記事登録・修正
 =================================*/
-.inner-05-01-02 {
+.inner-05-01-02,
+.inner-05-03-02 {
     @include layout-inner-main-grid;
     .page-nav {
         @include container-left-menu;
@@ -503,6 +514,7 @@
                 }
                 & > li {
                     &:not(:first-of-type) {
+                        cursor: auto;
                         &:hover {
                             &::before {
                                 opacity: 0;
@@ -513,7 +525,7 @@
                                 background-color: #edf1f8;
                             }
                         }
-                        &:hover:not(:has(.item-icon:hover)) {
+                        &:hover:not(:has(:is(a, button):hover)) {
                             &::before {
                                 opacity: 1;
                             }
@@ -584,6 +596,196 @@
                 span {
                     position: relative;
                     font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+/*=================================
+***事業所へのお知らせ
+=================================*/
+.inner-05-03-01 {
+    @include layout-inner-main-grid;
+    .page-nav {
+        @include container-left-menu;
+    }
+    .container-applicant-list {
+        @include layout-container-section;
+        padding-bottom: 8rem;
+        // 条件で検索
+        .block-search {
+            @include layout-block-search;
+            .box-search-items {
+                display: flex;
+                flex-wrap: wrap;
+                .item-last-update {
+                    padding-inline: 1.5em;
+                    .wrap-period {
+                        width: 37rem;
+                        @include item-period;
+                    }
+                }
+            }
+            .box-btn {
+                position: relative;
+                display: flex;
+                gap: 0 1em;
+                font-size: inherit;
+                padding-block: 1rem;
+                align-self: flex-end;
+                padding-right: 2.4rem;
+                button {
+                    font-size: FZ(14);
+                    height: 36px;
+                    width: 12rem;
+                }
+                .item-clear {
+                    @include main-button("clear");
+                }
+                .item-search {
+                    @include main-button("confirm");
+                }
+            }
+        }
+
+        // 記事一覧
+        .block-search-results {
+            @include layout-block-article;
+            .box-head {
+                z-index: 1000;
+            }
+            .list-search-results {
+                margin-top: 1.4rem;
+                @include layout-table-list(auto 1fr auto auto, 4);
+                .item-number,
+                .item-date {
+                    @include flex-center;
+                }
+                .item-title {
+                    display: flex;
+                    align-items: center;
+                    padding-inline: 1.6rem;
+                    font-weight: 600;
+                }
+                .box-status {
+                    @include flex-center;
+                    padding-inline: 1.6rem;
+                    font-size: inherit;
+                    padding-block: 1rem;
+                    .select-status {
+                        width: 14rem;
+                        @include select-status-box(
+                            $height: 3.6rem,
+                            $position: "center",
+                            $list-height: 3.6rem
+                        );
+                        .selectbox__head {
+                            &.status-published {
+                                .selectbox__value {
+                                    background-color: #395bbe;
+                                }
+                            }
+                            &.status-draft {
+                                .selectbox__value {
+                                    background-color: #ababab;
+                                }
+                            }
+                        }
+                        .list-wrapper {
+                            .selectbox__panel {
+                                li {
+                                    label {
+                                        &.status-published {
+                                            --status-color: #395bbe;
+                                        }
+                                        &.status-draft {
+                                            --status-color: #ababab;
+                                        }
+                                        &::before {
+                                            content: "";
+                                            position: absolute;
+                                            inset: 0;
+                                            background-color: var(--status-color);
+                                            z-index: -1;
+                                            transition: 0.3s ease-out;
+                                        }
+                                        &:hover {
+                                            &::before {
+                                                filter: brightness(0.9);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        &.is-client {
+                            pointer-events: none;
+                            .selectbox__head {
+                                &::after {
+                                    display: none;
+                                }
+                                i {
+                                    display: none;
+                                }
+                                .selectbox__value {
+                                    border-radius: 8px;
+                                }
+                            }
+                        }
+                    }
+                }
+                & > li {
+                    &:not(:first-of-type) {
+                        &:hover {
+                            &::before {
+                                opacity: 0;
+                            }
+                        }
+                        &:hover:not(:has(.select-status:hover)) {
+                            &::before {
+                                opacity: 1;
+                            }
+                        }
+                        &:active {
+                            &::before {
+                                background-color: #edf1f8;
+                            }
+                        }
+                        &:active:not(:has(.select-status:active)) {
+                            &::before {
+                                background-color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // ページャー
+        .box-pager {
+            @include layout-pager;
+        }
+        .bottom-box-btn {
+            align-self: center;
+            position: relative;
+            font-size: inherit;
+            margin-top: 3rem;
+            .item-register {
+                @include main-button("confirm");
+                width: 20rem;
+                height: 48px;
+                span {
+                    position: relative;
+                    font-size: 1.6rem;
+                    padding-left: 1.6em;
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 50%;
+                        translate: 0 -50%;
+                        width: 1.4rem;
+                        @include svg-icon-plus("fff");
+                    }
                 }
             }
         }
