@@ -75,7 +75,8 @@ $pageNumber = isset($_POST['pageNumber']) ? intval($_POST['pageNumber']) : 1;
 #-------------#
 #ソートモード
 $sortTarget = '';
-$sortOrder = '';
+$idSortOrder = '';
+$contractDateSortOrder = '';
 #-------------#
 #前回のソート状態（sortMode=none などのときに維持）
 $searchConditionsSessionKey = 'searchConditions_master02_01';
@@ -87,13 +88,14 @@ if (!is_array($prevSearchConditions)) {
 		'endDay' => '',
 		'initials' => [],
 		'sortTarget' => 'corporation_id',
-		'sortOrder' => 'desc',
+		'idSortOrder' => 'desc',
+		'contractDateSortOrder' => 'desc',
 		'displayNumber' => $initialDisplayNumber,
 		'pageNumber' => 1,
 	];
 	$_SESSION[$searchConditionsSessionKey] = $prevSearchConditions;
 }
-$requiredKeys = ['companyName', 'startDay', 'endDay', 'initials', 'sortTarget', 'sortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['companyName', 'startDay', 'endDay', 'initials', 'sortTarget', 'idSortOrder', 'contractDateSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
 	if (!array_key_exists($requiredKey, $prevSearchConditions)) {
 		$prevSearchConditions = [
@@ -102,7 +104,8 @@ foreach ($requiredKeys as $requiredKey) {
 			'endDay' => '',
 			'initials' => [],
 			'sortTarget' => 'corporation_id',
-			'sortOrder' => 'desc',
+			'idSortOrder' => 'desc',
+			'contractDateSortOrder' => 'desc',
 			'displayNumber' => $initialDisplayNumber,
 			'pageNumber' => 1,
 		];
@@ -110,84 +113,78 @@ foreach ($requiredKeys as $requiredKey) {
 		break;
 	}
 }
-$prevSortTarget = $prevSearchConditions['sortTarget'];
-$prevSortOrder = $prevSearchConditions['sortOrder'];
-#ソートモードのアクティブ判定
-$sortIdAscActive = '';
-$sortIdDescActive = '';
-$sortContractDateAscActive = '';
-$sortContractDateDescActive = '';
-if ($sortMode === '' || $sortMode === 'none') {
-	$sortTarget = $prevSortTarget;
-	$sortOrder = $prevSortOrder;
-	if ($sortTarget === 'contract_date') {
-		if (strtolower($sortOrder) === 'asc') {
-			$sortContractDateAscActive = 'is-active';
-		} else {
-			$sortContractDateDescActive = 'is-active';
-		}
-	} else {
-		if (strtolower($sortOrder) === 'asc') {
-			$sortIdAscActive = 'is-active';
-		} else {
-			$sortIdDescActive = 'is-active';
-		}
-	}
-} else {
+
+$prevSortTarget = isset($prevSearchConditions['sortTarget']) ? (string)$prevSearchConditions['sortTarget'] : 'corporation_id';
+$prevIdSortOrder = strtolower((string)($prevSearchConditions['idSortOrder'] ?? 'desc'));
+$prevContractDateSortOrder = strtolower((string)($prevSearchConditions['contractDateSortOrder'] ?? 'desc'));
+if ($prevIdSortOrder !== 'asc' && $prevIdSortOrder !== 'desc') {
+	$prevIdSortOrder = 'desc';
+}
+if ($prevContractDateSortOrder !== 'asc' && $prevContractDateSortOrder !== 'desc') {
+	$prevContractDateSortOrder = 'desc';
+}
+
+$sortTarget = $prevSortTarget;
+$idSortOrder = $prevIdSortOrder;
+$contractDateSortOrder = $prevContractDateSortOrder;
+
+if ($sortMode !== '' && $sortMode !== 'none') {
 	switch ($sortMode) {
 		#--------------
 		# 番号順にソート
 		#--------------
-		#IDの昇順
 		case 'sortId_asc': {
 				$sortTarget = 'corporation_id';
-				$sortOrder = 'asc';
-				$sortIdAscActive = 'is-active';
+				$idSortOrder = 'asc';
 			}
 			break;
-		#IDの降順
 		case 'sortId_desc': {
 				$sortTarget = 'corporation_id';
-				$sortOrder = 'desc';
-				$sortIdDescActive = 'is-active';
+				$idSortOrder = 'desc';
 			}
 			break;
 		#----------------
 		# 契約日順にソート
 		#----------------
-		#契約日の昇順
 		case 'sortContractDate_asc': {
 				$sortTarget = 'contract_date';
-				$sortOrder = 'asc';
-				$sortContractDateAscActive = 'is-active';
+				$contractDateSortOrder = 'asc';
 			}
 			break;
-		#契約日の降順
 		case 'sortContractDate_desc': {
 				$sortTarget = 'contract_date';
-				$sortOrder = 'desc';
-				$sortContractDateDescActive = 'is-active';
+				$contractDateSortOrder = 'desc';
 			}
 			break;
-		#デフォルト：IDの降順
 		default:
 			$sortTarget = $prevSortTarget;
-			$sortOrder = $prevSortOrder;
-			if ($sortTarget === 'contract_date') {
-				if (strtolower($sortOrder) === 'asc') {
-					$sortContractDateAscActive = 'is-active';
-				} else {
-					$sortContractDateDescActive = 'is-active';
-				}
-			} else {
-				if (strtolower($sortOrder) === 'asc') {
-					$sortIdAscActive = 'is-active';
-				} else {
-					$sortIdDescActive = 'is-active';
-				}
-			}
+			$idSortOrder = $prevIdSortOrder;
+			$contractDateSortOrder = $prevContractDateSortOrder;
 			break;
 	}
+}
+
+#ソートモードのアクティブ判定（番号・契約日 両方に付与）
+$sortIdAscActive = '';
+$sortIdDescActive = '';
+$sortContractDateAscActive = '';
+$sortContractDateDescActive = '';
+if ($sortTarget === 'contract_date') {
+	#主ソート：契約日（契約日のみアクティブ表示）
+	$sortContractDateAscActive = (strtolower((string)$contractDateSortOrder) === 'asc') ? 'is-active' : '';
+	$sortContractDateDescActive = (strtolower((string)$contractDateSortOrder) === 'asc') ? '' : 'is-active';
+} else {
+	#主ソート：番号（番号のみアクティブ表示）
+	$sortIdAscActive = (strtolower((string)$idSortOrder) === 'asc') ? 'is-active' : '';
+	$sortIdDescActive = (strtolower((string)$idSortOrder) === 'asc') ? '' : 'is-active';
+}
+
+#表示側へ渡すソートモード文字列（主ソート：ページ移動等で維持する）
+$sortModeValue = 'none';
+if ($sortTarget === 'contract_date') {
+	$sortModeValue = 'sortContractDate_' . strtolower((string)$contractDateSortOrder);
+} else {
+	$sortModeValue = 'sortId_' . strtolower((string)$idSortOrder);
 }
 #-------------#
 #検索条件配列生成してSESSIONに保存
@@ -204,7 +201,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'contractDateSortOrder' => $contractDateSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -221,7 +219,8 @@ switch ($action) {
 				'endDay' => '',
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'contractDateSortOrder' => $contractDateSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -238,7 +237,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => [],
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'contractDateSortOrder' => $contractDateSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -252,7 +252,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'contractDateSortOrder' => $contractDateSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -266,7 +267,8 @@ switch ($action) {
 				'endDay' => '',
 				'initials' => [],
 				'sortTarget' => 'corporation_id',
-				'sortOrder' => 'desc',
+				'idSortOrder' => 'desc',
+				'contractDateSortOrder' => 'desc',
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -300,7 +302,7 @@ $corporationsCount = $totalCorporationsCount;
 
 #***** タグ生成開始 *****#
 $makeTag['tag'] .= <<<HTML
-        <article class="block-company-list">
+        <article class="block-company-list" data-current-sort-mode="{$sortModeValue}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$corporationsCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>
@@ -329,7 +331,7 @@ foreach ($displayNumberList as $number) {
 	$checked = ($number === (int)$searchConditions['displayNumber']) ? ' checked' : '';
 	$makeTag['tag'] .= <<<HTML
                   <li>
-                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked}>
+                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none')">
                     <label for="display{$number}">{$number}</label>
                   </li>
 

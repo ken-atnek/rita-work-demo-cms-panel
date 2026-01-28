@@ -2304,7 +2304,7 @@ HTML;
                       $dbCompleteFlg = false;
                       break;
                     } else {
-                      #accounts（事業者削除によりアカウントも削除）
+                      #accounts（事業所削除によりアカウントも削除）
                       #登録用配列：初期化
                       $dbAccountFiledData = array();
                       #更新用キー：初期化

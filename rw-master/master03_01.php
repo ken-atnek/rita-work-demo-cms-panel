@@ -85,7 +85,8 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
     'endDay' => '',
     'initials' => array(),
     'sortTarget' => 'facility_id',
-    'sortOrder' => 'desc',
+    'idSortOrder' => 'desc',
+    'publishedStartSortOrder' => 'desc',
     'displayNumber' => $initialDisplayNumber,
     'pageNumber' => 1
   );
@@ -96,7 +97,7 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
   $searchConditions = $_SESSION[$searchConditionsSessionKey];
 }
 #必須キーが欠けている場合は初期化（運用上は常に揃う前提）
-$requiredKeys = ['facilityId', 'facilityName', 'plan', 'startDay', 'endDay', 'initials', 'sortTarget', 'sortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['facilityId', 'facilityName', 'plan', 'startDay', 'endDay', 'initials', 'sortTarget', 'idSortOrder', 'publishedStartSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
   if (!array_key_exists($requiredKey, $searchConditions)) {
     #欠けているキーがあれば初期化
@@ -108,7 +109,8 @@ foreach ($requiredKeys as $requiredKey) {
       'endDay' => '',
       'initials' => array(),
       'sortTarget' => 'facility_id',
-      'sortOrder' => 'desc',
+      'idSortOrder' => 'desc',
+      'publishedStartSortOrder' => 'desc',
       'displayNumber' => $initialDisplayNumber,
       'pageNumber' => 1
     );
@@ -162,17 +164,22 @@ $sortIdAscActive = '';
 $sortIdDescActive = '';
 $sortContractDateAscActive = '';
 $sortContractDateDescActive = '';
+$sortModeValue = '';
 if ($searchConditions['sortTarget'] === 'published_start') {
-  if (strtolower($searchConditions['sortOrder']) === 'asc') {
+  if (strtolower($searchConditions['publishedStartSortOrder']) === 'asc') {
     $sortContractDateAscActive = 'is-active';
+    $sortModeValue = 'sortContractDate_asc';
   } else {
     $sortContractDateDescActive = 'is-active';
+    $sortModeValue = 'sortContractDate_desc';
   }
 } else {
-  if (strtolower($searchConditions['sortOrder']) === 'asc') {
+  if (strtolower($searchConditions['idSortOrder']) === 'asc') {
     $sortIdAscActive = 'is-active';
+    $sortModeValue = 'sortId_asc';
   } else {
     $sortIdDescActive = 'is-active';
+    $sortModeValue = 'sortId_desc';
   }
 }
 
@@ -312,7 +319,7 @@ print <<<HTML
             </div>
           </article>
         </form>
-        <article class="block-vendor-list">
+        <article class="block-vendor-list" data-current-sort-mode="{$sortModeValue}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$facilityCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>

@@ -8,6 +8,24 @@ const requestURL = './assets/function/proc_master03_01.php';
  *
  */
 let currentSortMode = 'sortId_desc';
+function detectCurrentSortMode() {
+  const block = document.querySelector('.block-vendor-list');
+  const root = block || document;
+  const dataMode = block?.getAttribute('data-current-sort-mode');
+  if (dataMode) return dataMode;
+  const activeBtn = root.querySelector('button.is-active[onclick]');
+  if (activeBtn) {
+    const onclick = activeBtn.getAttribute('onclick') || '';
+    const match = onclick.match(/searchConditions\('search','([^']+)'\)/);
+    if (match && match[1]) return match[1];
+  }
+  return null;
+}
+//初期表示：サーバ側の状態に合わせる
+{
+  const detected = detectCurrentSortMode();
+  if (detected) currentSortMode = detected;
+}
 function getCurrentDisplayNumber() {
   const root = document.querySelector('.block-vendor-list') || document;
   const checked = root.querySelector('input[name="displayNumber"]:checked');
@@ -82,6 +100,11 @@ async function searchConditions(action, sortMode) {
     document.querySelector('.block-vendor-list').remove();
     //ページ表示
     document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    // サーバ側の現行ソート状態に同期（セッション初期化などのズレを吸収）
+    {
+      const detected = detectCurrentSortMode();
+      if (detected) currentSortMode = detected;
+    }
     //input情報クリア
     switch (action) {
       //条件をクリア
@@ -141,6 +164,11 @@ async function movePage(pageNumber) {
     document.querySelector('.block-vendor-list').remove();
     //ページ表示
     document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    // サーバ側の現行ソート状態に同期
+    {
+      const detected = detectCurrentSortMode();
+      if (detected) currentSortMode = detected;
+    }
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール

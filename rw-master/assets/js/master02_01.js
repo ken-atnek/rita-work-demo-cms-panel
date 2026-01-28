@@ -8,6 +8,21 @@ const requestURL = './assets/function/proc_master02_01.php';
  *
  */
 let currentSortMode = 'sortId_desc';
+function detectInitialSortMode() {
+  const block = document.querySelector('.block-company-list');
+  const fromData = block ? block.getAttribute('data-current-sort-mode') || '' : '';
+  if (fromData) return fromData;
+  const active = document.querySelector('.wrap-sort-btn button.is-active');
+  const onclick = active ? active.getAttribute('onclick') || '' : '';
+  if (onclick.includes('sortContractDate_asc')) return 'sortContractDate_asc';
+  if (onclick.includes('sortContractDate_desc')) return 'sortContractDate_desc';
+  if (onclick.includes('sortId_asc')) return 'sortId_asc';
+  if (onclick.includes('sortId_desc')) return 'sortId_desc';
+  return 'sortId_desc';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  currentSortMode = detectInitialSortMode();
+});
 function getCurrentDisplayNumber() {
   const root = document.querySelector('.block-company-list') || document;
   const checked = root.querySelector('input[name="displayNumber"]:checked');
@@ -82,6 +97,8 @@ async function searchConditions(action, sortMode) {
     document.querySelector('.block-company-list').remove();
     //ページ表示
     document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    //サーバ側の現行ソート状態に同期（セッション復元/正規化などのズレを吸収）
+    currentSortMode = detectInitialSortMode();
     //input情報クリア
     switch (action) {
       //条件をクリア
@@ -127,6 +144,8 @@ async function movePage(pageNumber) {
     document.querySelector('.block-company-list').remove();
     //ページ表示
     document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    //サーバ側の現行ソート状態に同期
+    currentSortMode = detectInitialSortMode();
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール

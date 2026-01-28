@@ -57,7 +57,8 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
     'endDay' => '',
     'initials' => array(),
     'sortTarget' => 'corporation_id',
-    'sortOrder' => 'desc',
+    'idSortOrder' => 'desc',
+    'contractDateSortOrder' => 'desc',
     'displayNumber' => $initialDisplayNumber,
     'pageNumber' => 1
   );
@@ -68,7 +69,7 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
   $searchConditions = $_SESSION[$searchConditionsSessionKey];
 }
 #必須キーが欠けている場合は初期化（運用上は常に揃う前提）
-$requiredKeys = ['companyName', 'startDay', 'endDay', 'initials', 'sortTarget', 'sortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['companyName', 'startDay', 'endDay', 'initials', 'sortTarget', 'idSortOrder', 'contractDateSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
   if (!array_key_exists($requiredKey, $searchConditions)) {
     $searchConditions = array(
@@ -77,7 +78,8 @@ foreach ($requiredKeys as $requiredKey) {
       'endDay' => '',
       'initials' => array(),
       'sortTarget' => 'corporation_id',
-      'sortOrder' => 'desc',
+      'idSortOrder' => 'desc',
+      'contractDateSortOrder' => 'desc',
       'displayNumber' => $initialDisplayNumber,
       'pageNumber' => 1
     );
@@ -126,23 +128,35 @@ if ($pageNumber < 1) {
 }
 #該当件数（表示用：総件数）
 $corporationsCount = $totalCorporationsCount;
-#ソートボタンのアクティブ判定
+#ソートボタンのアクティブ判定（番号・契約日 両方に付与）
+$idSortOrder = isset($searchConditions['idSortOrder']) ? strtolower((string)$searchConditions['idSortOrder']) : 'desc';
+$contractDateSortOrder = isset($searchConditions['contractDateSortOrder']) ? strtolower((string)$searchConditions['contractDateSortOrder']) : 'desc';
+if ($idSortOrder !== 'asc' && $idSortOrder !== 'desc') {
+  $idSortOrder = 'desc';
+}
+if ($contractDateSortOrder !== 'asc' && $contractDateSortOrder !== 'desc') {
+  $contractDateSortOrder = 'desc';
+}
 $sortIdAscActive = '';
 $sortIdDescActive = '';
 $sortContractDateAscActive = '';
 $sortContractDateDescActive = '';
 if ($searchConditions['sortTarget'] === 'contract_date') {
-  if (strtolower($searchConditions['sortOrder']) === 'asc') {
-    $sortContractDateAscActive = 'is-active';
-  } else {
-    $sortContractDateDescActive = 'is-active';
-  }
+  #主ソート：契約日（契約日のみアクティブ表示）
+  $sortContractDateAscActive = ($contractDateSortOrder === 'asc') ? 'is-active' : '';
+  $sortContractDateDescActive = ($contractDateSortOrder === 'asc') ? '' : 'is-active';
 } else {
-  if (strtolower($searchConditions['sortOrder']) === 'asc') {
-    $sortIdAscActive = 'is-active';
-  } else {
-    $sortIdDescActive = 'is-active';
-  }
+  #主ソート：番号（番号のみアクティブ表示）
+  $sortIdAscActive = ($idSortOrder === 'asc') ? 'is-active' : '';
+  $sortIdDescActive = ($idSortOrder === 'asc') ? '' : 'is-active';
+}
+
+#ソートモード判別（主ソートのみ：ページ移動等で維持する）
+$sortMode = '';
+if ($searchConditions['sortTarget'] === 'contract_date') {
+  $sortMode = 'sortContractDate_' . strtolower($contractDateSortOrder);
+} else {
+  $sortMode = 'sortId_' . strtolower($idSortOrder);
 }
 
 #***** タグ生成開始 *****#
@@ -243,7 +257,7 @@ print <<<HTML
             </div>
           </article>
         </form>
-        <article class="block-company-list">
+        <article class="block-company-list" data-current-sort-mode="{$sortMode}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$corporationsCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>

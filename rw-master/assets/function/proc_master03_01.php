@@ -104,7 +104,8 @@ $pageNumber = isset($_POST['pageNumber']) ? intval($_POST['pageNumber']) : 1;
 #-------------#
 #ソートモード
 $sortTarget = '';
-$sortOrder = '';
+$idSortOrder = '';
+$publishedStartSortOrder = '';
 #-------------#
 #前回のソート状態（sortMode=none などのときに維持）
 $searchConditionsSessionKey = 'searchConditions_master03_01';
@@ -118,13 +119,14 @@ if (!is_array($prevSearchConditions)) {
 		'endDay' => '',
 		'initials' => [],
 		'sortTarget' => 'facility_id',
-		'sortOrder' => 'desc',
+		'idSortOrder' => 'desc',
+		'publishedStartSortOrder' => 'desc',
 		'displayNumber' => $initialDisplayNumber,
 		'pageNumber' => 1,
 	];
 	$_SESSION[$searchConditionsSessionKey] = $prevSearchConditions;
 }
-$requiredKeys = ['facilityId', 'facilityName', 'plan', 'startDay', 'endDay', 'initials', 'sortTarget', 'sortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['facilityId', 'facilityName', 'plan', 'startDay', 'endDay', 'initials', 'sortTarget', 'idSortOrder', 'publishedStartSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
 	if (!array_key_exists($requiredKey, $prevSearchConditions)) {
 		$prevSearchConditions = [
@@ -135,7 +137,8 @@ foreach ($requiredKeys as $requiredKey) {
 			'endDay' => '',
 			'initials' => [],
 			'sortTarget' => 'facility_id',
-			'sortOrder' => 'desc',
+			'idSortOrder' => 'desc',
+			'publishedStartSortOrder' => 'desc',
 			'displayNumber' => $initialDisplayNumber,
 			'pageNumber' => 1,
 		];
@@ -144,7 +147,8 @@ foreach ($requiredKeys as $requiredKey) {
 	}
 }
 $prevSortTarget = $prevSearchConditions['sortTarget'];
-$prevSortOrder = $prevSearchConditions['sortOrder'];
+$prevIdSortOrder = $prevSearchConditions['idSortOrder'];
+$prevPublishedStartSortOrder = $prevSearchConditions['publishedStartSortOrder'];
 #ソートモードのアクティブ判定
 $sortIdAscActive = '';
 $sortIdDescActive = '';
@@ -152,15 +156,16 @@ $sortContractDateAscActive = '';
 $sortContractDateDescActive = '';
 if ($sortMode === '' || $sortMode === 'none') {
 	$sortTarget = $prevSortTarget;
-	$sortOrder = $prevSortOrder;
+	$idSortOrder = $prevIdSortOrder;
+	$publishedStartSortOrder = $prevPublishedStartSortOrder;
 	if ($sortTarget === 'published_start') {
-		if (strtolower($sortOrder) === 'asc') {
+		if (strtolower($publishedStartSortOrder) === 'asc') {
 			$sortContractDateAscActive = 'is-active';
 		} else {
 			$sortContractDateDescActive = 'is-active';
 		}
 	} else {
-		if (strtolower($sortOrder) === 'asc') {
+		if (strtolower($idSortOrder) === 'asc') {
 			$sortIdAscActive = 'is-active';
 		} else {
 			$sortIdDescActive = 'is-active';
@@ -174,15 +179,15 @@ if ($sortMode === '' || $sortMode === 'none') {
 		#IDの昇順
 		case 'sortId_asc': {
 				$sortTarget = 'facility_id';
-				$sortOrder = 'asc';
-				$sortIdAscActive = 'is-active';
+				$idSortOrder = 'asc';
+				$publishedStartSortOrder = $prevPublishedStartSortOrder;
 			}
 			break;
 		#IDの降順
 		case 'sortId_desc': {
 				$sortTarget = 'facility_id';
-				$sortOrder = 'desc';
-				$sortIdDescActive = 'is-active';
+				$idSortOrder = 'desc';
+				$publishedStartSortOrder = $prevPublishedStartSortOrder;
 			}
 			break;
 		#----------------
@@ -191,35 +196,54 @@ if ($sortMode === '' || $sortMode === 'none') {
 		#契約日の昇順
 		case 'sortContractDate_asc': {
 				$sortTarget = 'published_start';
-				$sortOrder = 'asc';
-				$sortContractDateAscActive = 'is-active';
+				$publishedStartSortOrder = 'asc';
+				$idSortOrder = $prevIdSortOrder;
 			}
 			break;
 		#契約日の降順
 		case 'sortContractDate_desc': {
 				$sortTarget = 'published_start';
-				$sortOrder = 'desc';
-				$sortContractDateDescActive = 'is-active';
+				$publishedStartSortOrder = 'desc';
+				$idSortOrder = $prevIdSortOrder;
 			}
 			break;
 		#デフォルト：IDの降順
 		default:
 			$sortTarget = $prevSortTarget;
-			$sortOrder = $prevSortOrder;
+			$idSortOrder = $prevIdSortOrder;
+			$publishedStartSortOrder = $prevPublishedStartSortOrder;
 			if ($sortTarget === 'published_start') {
-				if (strtolower($sortOrder) === 'asc') {
+				if (strtolower($publishedStartSortOrder) === 'asc') {
 					$sortContractDateAscActive = 'is-active';
 				} else {
 					$sortContractDateDescActive = 'is-active';
 				}
 			} else {
-				if (strtolower($sortOrder) === 'asc') {
+				if (strtolower($idSortOrder) === 'asc') {
 					$sortIdAscActive = 'is-active';
 				} else {
 					$sortIdDescActive = 'is-active';
 				}
 			}
 			break;
+	}
+}
+#主ソート列のみアクティブ（副ソートは保持するが表示上は混乱防止で非表示）
+$sortIdAscActive = '';
+$sortIdDescActive = '';
+$sortContractDateAscActive = '';
+$sortContractDateDescActive = '';
+if ($sortTarget === 'published_start') {
+	if (strtolower($publishedStartSortOrder) === 'asc') {
+		$sortContractDateAscActive = 'is-active';
+	} else {
+		$sortContractDateDescActive = 'is-active';
+	}
+} else {
+	if (strtolower($idSortOrder) === 'asc') {
+		$sortIdAscActive = 'is-active';
+	} else {
+		$sortIdDescActive = 'is-active';
 	}
 }
 #-------------#
@@ -239,7 +263,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'publishedStartSortOrder' => $publishedStartSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -258,7 +283,8 @@ switch ($action) {
 				'endDay' => '',
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'publishedStartSortOrder' => $publishedStartSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -277,7 +303,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => [],
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'publishedStartSortOrder' => $publishedStartSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -293,7 +320,8 @@ switch ($action) {
 				'endDay' => $searchEndDay,
 				'initials' => $searchInitials,
 				'sortTarget' => $sortTarget,
-				'sortOrder' => $sortOrder,
+				'idSortOrder' => $idSortOrder,
+				'publishedStartSortOrder' => $publishedStartSortOrder,
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -309,7 +337,8 @@ switch ($action) {
 				'endDay' => '',
 				'initials' => [],
 				'sortTarget' => 'facility_id',
-				'sortOrder' => 'desc',
+				'idSortOrder' => 'desc',
+				'publishedStartSortOrder' => 'desc',
 				'displayNumber' => $displayNumber,
 				'pageNumber' => $pageNumber,
 			];
@@ -341,9 +370,20 @@ $facilityList = searchFacilityList($searchConditions, $pageNumber, $displayNumbe
 #該当件数（表示用：総件数）
 $facilityCount = $totalFacilityCount;
 
+#返却HTML：現在の主ソートモード（JS初期判定用）
+$sortModeValue = '';
+$sortTargetSaved = isset($searchConditions['sortTarget']) ? (string)$searchConditions['sortTarget'] : 'facility_id';
+$idSortOrderSaved = isset($searchConditions['idSortOrder']) ? (string)$searchConditions['idSortOrder'] : 'desc';
+$publishedStartSortOrderSaved = isset($searchConditions['publishedStartSortOrder']) ? (string)$searchConditions['publishedStartSortOrder'] : 'desc';
+if ($sortTargetSaved === 'published_start') {
+	$sortModeValue = (strtolower($publishedStartSortOrderSaved) === 'asc') ? 'sortContractDate_asc' : 'sortContractDate_desc';
+} else {
+	$sortModeValue = (strtolower($idSortOrderSaved) === 'asc') ? 'sortId_asc' : 'sortId_desc';
+}
+
 #***** タグ生成開始 *****#
 $makeTag['tag'] .= <<<HTML
-        <article class="block-vendor-list">
+        <article class="block-vendor-list" data-current-sort-mode="{$sortModeValue}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$facilityCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>
