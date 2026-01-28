@@ -22,8 +22,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
 #応募者情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_applications.php';
-
-
 #事業所情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
@@ -80,12 +78,11 @@ $searchConditions = array();
 if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSION[$searchConditionsSessionKey])) {
   #セッション無し：初期化
   $_SESSION[$searchConditionsSessionKey] = array(
+    'facility_id' => '',
     'searchMode' => 'registered',
     'sortTarget' => 'application_at',
     'applicationSortOrder' => 'desc',
     'interviewSortOrder' => 'desc',
-    #後方互換：主ソートの順序を sortOrder としても保持
-    'sortOrder' => 'desc',
     'displayNumber' => $initialDisplayNumber,
     'pageNumber' => 1
   );
@@ -96,24 +93,31 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
   $searchConditions = $_SESSION[$searchConditionsSessionKey];
 }
 #必須キーが欠けている場合は初期化（運用上は常に揃う前提）
-$requiredKeys = ['searchMode', 'sortTarget', 'applicationSortOrder', 'interviewSortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['facility_id', 'searchMode', 'sortTarget', 'applicationSortOrder', 'interviewSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
   if (!array_key_exists($requiredKey, $searchConditions)) {
-    #後方互換：旧形式（sortOrderのみ）の場合は主キー側だけ引き継いで補完
-    $legacyTarget = isset($searchConditions['sortTarget']) ? (string)$searchConditions['sortTarget'] : 'application_at';
-    if ($legacyTarget !== 'application_at' && $legacyTarget !== 'interview_at') {
-      $legacyTarget = 'application_at';
+    $fixedSearchMode = isset($searchConditions['searchMode']) ? (string)$searchConditions['searchMode'] : 'registered';
+    if (!isset($applicationMasterSetting[$fixedSearchMode])) {
+      $fixedSearchMode = 'registered';
     }
-    $legacyOrder = isset($searchConditions['sortOrder']) ? strtolower((string)$searchConditions['sortOrder']) : 'desc';
-    if ($legacyOrder !== 'asc' && $legacyOrder !== 'desc') {
-      $legacyOrder = 'desc';
+    $fixedSortTarget = isset($searchConditions['sortTarget']) ? (string)$searchConditions['sortTarget'] : 'application_at';
+    if ($fixedSortTarget !== 'application_at' && $fixedSortTarget !== 'interview_at') {
+      $fixedSortTarget = 'application_at';
+    }
+    $fixedApplicationSortOrder = isset($searchConditions['applicationSortOrder']) ? strtolower((string)$searchConditions['applicationSortOrder']) : 'desc';
+    if ($fixedApplicationSortOrder !== 'asc' && $fixedApplicationSortOrder !== 'desc') {
+      $fixedApplicationSortOrder = 'desc';
+    }
+    $fixedInterviewSortOrder = isset($searchConditions['interviewSortOrder']) ? strtolower((string)$searchConditions['interviewSortOrder']) : 'desc';
+    if ($fixedInterviewSortOrder !== 'asc' && $fixedInterviewSortOrder !== 'desc') {
+      $fixedInterviewSortOrder = 'desc';
     }
     $searchConditions = array(
-      'searchMode' => isset($searchConditions['searchMode']) ? (string)$searchConditions['searchMode'] : 'registered',
-      'sortTarget' => $legacyTarget,
-      'applicationSortOrder' => ($legacyTarget === 'application_at') ? $legacyOrder : 'desc',
-      'interviewSortOrder' => ($legacyTarget === 'interview_at') ? $legacyOrder : 'desc',
-      'sortOrder' => $legacyOrder,
+      'facility_id' => isset($searchConditions['facility_id']) ? (string)$searchConditions['facility_id'] : '',
+      'searchMode' => $fixedSearchMode,
+      'sortTarget' => $fixedSortTarget,
+      'applicationSortOrder' => $fixedApplicationSortOrder,
+      'interviewSortOrder' => $fixedInterviewSortOrder,
       'displayNumber' => isset($searchConditions['displayNumber']) ? (int)$searchConditions['displayNumber'] : $initialDisplayNumber,
       'pageNumber' => isset($searchConditions['pageNumber']) ? (int)$searchConditions['pageNumber'] : 1
     );
@@ -136,7 +140,8 @@ $applicationsList = getApplicationList($searchConditions, $pageNumber, $displayN
 #応募人数取得
 $applicationCounts = [];
 foreach ($applicationMasterSetting as $statusKey => $status) {
-  $applicationCounts[$statusKey] = (int)getApplicationCount($statusKey);
+  $facilityIdForFilter = isset($searchConditions['facility_id']) ? (int)$searchConditions['facility_id'] : 0;
+  $applicationCounts[$statusKey] = (int)getApplicationCount($statusKey, $facilityIdForFilter);
 }
 #キーが無い場合も想定して0で補完
 foreach (array_keys($applicationMasterSetting) as $statusKey) {
@@ -156,13 +161,11 @@ if ($pageNumber < 1) {
 } elseif ($pageNumber > $totalPages) {
   $pageNumber = $totalPages;
 }
-
 #アクティブボタンタグ生成
 foreach ($applicationCounts as $statusKey => $count) {
   ${'statusClass_' . $statusKey} = '';
   ${'statusClass_' . $statusKey} = ($searchConditions['searchMode'] === $statusKey) ? ' is-active' : '';
 }
-
 #ソートボタンのアクティブ判定（応募日・面接日 両方に付与）
 $applicationSortOrder = isset($searchConditions['applicationSortOrder']) ? strtolower((string)$searchConditions['applicationSortOrder']) : 'desc';
 $interviewSortOrder = isset($searchConditions['interviewSortOrder']) ? strtolower((string)$searchConditions['interviewSortOrder']) : 'desc';
@@ -172,12 +175,11 @@ if ($applicationSortOrder !== 'asc' && $applicationSortOrder !== 'desc') {
 if ($interviewSortOrder !== 'asc' && $interviewSortOrder !== 'desc') {
   $interviewSortOrder = 'desc';
 }
-
+#ソートボタンアクティブクラス
 $sortApplicationsAscActive = ($applicationSortOrder === 'asc') ? 'is-active' : '';
 $sortApplicationsDescActive = ($applicationSortOrder === 'asc') ? '' : 'is-active';
 $sortInterviewDateAscActive = ($interviewSortOrder === 'asc') ? 'is-active' : '';
 $sortInterviewDateDescActive = ($interviewSortOrder === 'asc') ? '' : 'is-active';
-
 #ソートモード判別（主ソートのみ：ページ移動等で維持する）
 $sortMode = '';
 if ($searchConditions['sortTarget'] === 'interview_at') {
@@ -210,6 +212,7 @@ HTML;
 print <<<HTML
     <main class="inner-01-01">
       <section class="container-status">
+        <input type="hidden" name="noUpDateKey" value="{$noUpDateKey}">
         <h2>現在の応募状況</h2>
         <nav class="block-status is-admin">
           <button type="button" class="status-registered {$statusClass_registered}" onclick="searchConditions('search','registered','{$sortMode}')">
@@ -313,13 +316,17 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
     $lineDisplayNameEsc = htmlspecialchars($lineDisplayName, ENT_QUOTES, 'UTF-8');
     #名前
     $name = isset($application['applicant_name']) ? (string)$application['applicant_name'] : '';
+    $nameEsc = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    #ステータス変更用に名前セット（JS側で使用：$nameがあれば優先）
+    $sendStatusChangeName = $nameEsc !== '' ? $nameEsc : $lineDisplayNameEsc;
     #応募中の求人情報を取得
     $appliedJobs = getAllAppliedJobs(
       $application['line_user_id'],
       $statusesForTab,
       $searchConditions['sortTarget'],
       $applicationSortOrder,
-      $interviewSortOrder
+      $interviewSortOrder,
+      isset($searchConditions['facility_id']) ? (int)$searchConditions['facility_id'] : 0
     );
     print <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
@@ -329,7 +336,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 
 HTML;
     if (is_array($appliedJobs) && count($appliedJobs) > 0) {
-      foreach ($appliedJobs as $jobData) {
+      foreach ($appliedJobs as $jobKey => $jobData) {
         #募集職種
         $jobCategoryName = '';
         if (isset($jobData['status']) && $jobData['status'] === 'friend_only') {
@@ -351,6 +358,8 @@ HTML;
           $facilityName = $facilityData['name'] ?? '';
         }
         $facilityNameEsc = htmlspecialchars((string)$facilityName, ENT_QUOTES, 'UTF-8');
+        #事業所ID
+        $appliedJobsFacId = isset($jobData['facility_id']) ? (int)$jobData['facility_id'] : 0;
         #応募ステータス
         $db_applicationStatus = $jobData['status'] ?? '';
         #応募日
@@ -382,7 +391,7 @@ HTML;
             foreach ($applicationStatusMaster as $appStatusKey => $appStatus) {
               if ($db_applicationStatus == $appStatusKey) {
                 print <<<HTML
-                        <input type="hidden" name="application_status" value="{$appStatusKey}" data-selectbox-hidden>
+                        <input type="hidden" name="application_status{$jobKey}" value="{$appStatusKey}" data-selectbox-hidden>
                         <span class="selectbox__value" data-selectbox-value>{$appStatus}</span>
                         <i></i>
 
@@ -391,7 +400,7 @@ HTML;
             }
           } else {
             print <<<HTML
-                        <input type="hidden" name="application_status" value="" data-selectbox-hidden>
+                        <input type="hidden" name="application_status{$jobKey}" value="" data-selectbox-hidden>
                         <span class="selectbox__value" data-selectbox-value>選択してください</span>
                         <i></i>
 
@@ -416,8 +425,8 @@ HTML;
               print <<<HTML
                           <!-- NOTE  インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
-                            <input type="radio" name="application_status" value="{$appStatusKey}" id="application_status-{$appStatusKey}" {$checked}>
-                            <label for="application_status-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
+                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, '{$application['line_user_id']}', '{$sendStatusChangeName}', {$jobData['job_id']}, this.value,'{$searchConditions['searchMode']}','{$sortMode}');">
+                            <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
                           </li>
 
 HTML;
@@ -426,8 +435,8 @@ HTML;
             print <<<HTML
                           <!-- NOTE  インラインでz-indexを付与 -->
                           <li style="z-index: 2">
-                            <input type="radio" name="application_status" value="1" id="application_status-none" checked>
-                            <label for="application_status-none" class="status-registered">応募状況ステータスが未設定です</label>
+                            <input type="radio" name="application_status{$jobKey}" value="1" id="application_status{$jobKey}-none" checked>
+                            <label for="application_status{$jobKey}-none" class="status-registered">応募状況ステータスが未設定です</label>
                           </li>
 
 HTML;
@@ -450,13 +459,13 @@ HTML;
 HTML;
         if ($db_applicationStatus == 'friend_only') {
           print <<<HTML
-            <div class="item-date">{$appliedDateEsc}</div>
+                  <div class="item-date">{$appliedDateEsc}</div>
 
 HTML;
         } else {
           print <<<HTML
-            <div class="item-date applied">{$appliedDateEsc}</div>
-            <div class="item-date">{$interviewAtDateEsc}</div>
+                  <div class="item-date applied">{$appliedDateEsc}</div>
+                  <div class="item-date">{$interviewAtDateEsc}</div>
 
 HTML;
         }
@@ -468,6 +477,7 @@ HTML;
       print <<<HTML
               </ul>
             </li>
+
 HTML;
     }
   }

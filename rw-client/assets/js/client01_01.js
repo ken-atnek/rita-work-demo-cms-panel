@@ -2,7 +2,7 @@
  * API送信先 共通定数
  *
  */
-const requestURL = './assets/function/proc_master01_01.php';
+const requestURL = './assets/function/proc_client01_01.php';
 /**
  * 応募状況ボタン切替
  *
@@ -19,12 +19,12 @@ function getCurrentDisplayNumber() {
  * 検索条件確認：直近の並び替え・ステータス状態（ページ移動でも維持する）
  */
 let currentSortMode = 'sortApplicationsDate_desc';
-let currentSearchMode = 'registered';
+let currentSearchMode = 'applied';
 function detectInitialSearchMode() {
   const btn = document.querySelector('.block-status button.is-active');
-  if (!btn) return 'registered';
+  if (!btn) return 'applied';
   const statusClass = Array.from(btn.classList).find((c) => c.startsWith('status-'));
-  return statusClass ? statusClass.replace('status-', '') : 'registered';
+  return statusClass ? statusClass.replace('status-', '') : 'applied';
 }
 function detectInitialSortMode() {
   const block = document.querySelector('.block-search-results');
@@ -38,6 +38,7 @@ function detectInitialSortMode() {
   if (onclick.includes('sortApplicationsDate_desc')) return 'sortApplicationsDate_desc';
   return 'sortApplicationsDate_desc';
 }
+
 document.addEventListener('DOMContentLoaded', () => {
   currentSearchMode = detectInitialSearchMode();
   currentSortMode = detectInitialSortMode();
@@ -62,9 +63,10 @@ async function requestApplications({ action, searchMode, sortMode, pageNumber })
   const data = await response.json();
   if (data && data.status === 'error') {
     alert(data.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
-    location.href = './master01_01.php';
+    location.href = './client01_01.php';
     throw new Error(data.title || 'Session error');
   }
+
   if (data && data.noUpDateKey && noUpDateKeyEl) {
     noUpDateKeyEl.value = String(data.noUpDateKey);
   }
@@ -94,12 +96,6 @@ async function searchConditions(action, searchMode, sortMode) {
       button.classList.remove('is-active');
     });
     switch (currentSearchMode) {
-      //登録中
-      case 'registered':
-        {
-          document.querySelector('.status-registered').classList.add('is-active');
-        }
-        break;
       //応募中
       case 'applied':
         {
@@ -124,24 +120,18 @@ async function searchConditions(action, searchMode, sortMode) {
           document.querySelector('.status-rejected').classList.add('is-active');
         }
         break;
-      //連絡待ち
-      case 'unresponsive':
-        {
-          document.querySelector('.status-unresponsive').classList.add('is-active');
-        }
-        break;
-      //デフォルト：登録中
+      //デフォルト：応募中
       default:
         {
-          document.querySelector('.status-registered').classList.add('is-active');
+          document.querySelector('.status-applied').classList.add('is-active');
         }
         break;
     }
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    const areaMaster = document.querySelector('.area-master');
-    if (areaMaster) areaMaster.scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
@@ -169,14 +159,12 @@ function checkApplicationStatus(
   //既存内容をクリア（以前の .wrap-details 削除や .box-btn の残骸をまとめて解消）
   boxDetails.innerHTML = '';
   const statusLabelMap = {
-    registered: '登録中',
     applied: '応募中',
     interview: '面接中',
     hired: '採用',
     rejected: '不採用',
-    unresponsive: '連絡待ち',
   };
-  const statusLabel = statusLabelMap[status] || '登録中';
+  const statusLabel = statusLabelMap[status] || '応募中';
   const messageP = document.createElement('p');
   messageP.textContent = `${userLineName}様の応募状況を「${statusLabel}」に変更します。よろしいですか？`;
   boxDetails.appendChild(messageP);
@@ -254,7 +242,7 @@ async function changeApplicationStatus(
     const list = await response.json();
     if (list && list.status === 'error') {
       alert(list.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
-      location.href = './master01_01.php';
+      location.href = './client01_01.php';
       return;
     }
     //以後のページング/再検索も変更後タブを基準にする
@@ -286,8 +274,8 @@ async function changeApplicationStatus(
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    const areaMaster = document.querySelector('.area-master');
-    if (areaMaster) areaMaster.scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
@@ -312,8 +300,8 @@ async function movePage(pageNumber) {
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    const areaMaster = document.querySelector('.area-master');
-    if (areaMaster) areaMaster.scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
@@ -327,5 +315,5 @@ function makeNewsModal() {
   let blockModal = document.getElementById('modalBlock');
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  document.documentElement.style.overflow = 'hidden';
+  htmlElement.style.overflow = 'hidden';
 }

@@ -356,7 +356,8 @@ async function checkInput() {
         mainTag.classList.add('inner-03-01-02');
         sendBtn.disabled = true;
         //ページの上端までスクロール
-        document.querySelector('.area-client').scrollIntoView(true);
+        const areaClient = document.querySelector('.area-client');
+        if (areaClient) areaClient.scrollIntoView(true);
       }
     } catch (error) {
       console.error('送信エラー:', error);
@@ -410,7 +411,8 @@ async function historyBack() {
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    document.querySelector('.area-client').scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');

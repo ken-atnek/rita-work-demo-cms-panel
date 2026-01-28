@@ -28,7 +28,7 @@ print <<<HTML
     <a href="./client02_01.php" {$client02_active}><span>事業所管理</span></a>
     <a href="./client03_01.php" {$client03_active}><span>求人カード</span></a>
     <a href="#"><span>求職者管理</span></a>
-    <a href="./client05_01.php" {$client05_active}><span>パスワード設定</span></a>
+    <a href="#"><span>パスワード設定</span></a>
     <a href="#"><span>明細管理</span></a>
     <a href="#"><span>メッセージ管理</span></a>
   </nav>

@@ -47,7 +47,7 @@ if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
 }
 
 #==============#
-# 事業者情報取得
+# 事業所情報取得
 #--------------#
 $facilityData = getFacility_FindById($_SESSION['client_login']['facility_id']);
 if (!$facilityData) {

@@ -1237,8 +1237,8 @@ HTML;
             <dd><input type="text" name="phone_number" value="{$phone_number}" autocomplete="on" class="required-item phone_number" required style="max-width: 34rem"></dd>
           </dl>
           <dl>
-            <dt class="is-required">E-mail</dt>
-            <dd><input type="text" name="email" value="{$email}" autocomplete="on" class="required-item email" required style="max-width: 60rem"></dd>
+            <dt>E-mail</dt>
+            <dd><input type="text" name="email" value="{$email}" autocomplete="on" class="required-item email" required style="max-width: 60rem; border-color: #ababab; background-color: #eee;"></dd>
           </dl>
           <hr>
           <dl data-field="established_date">
@@ -1509,10 +1509,10 @@ HTML;
               <h3>法人名を選択</h3>
             </div>
             <dl>
-              <dt class="is-required">法人名</dt>
+              <dt>法人名</dt>
               <dd>
                 <div class="select-company" data-selectbox>
-                  <button type="button" class="selectbox__head" aria-expanded="false">
+                  <button type="button" class="selectbox__head" aria-expanded="false" style="pointer-events:none; border-color:#ababab; background-color:#eee;">
 
 HTML;
       #法人が選択されていたら
@@ -2284,7 +2284,7 @@ HTML;
                       $dbCompleteFlg = false;
                       break;
                     } else {
-                      #accounts（事業者削除によりアカウントも削除）
+                      #accounts（事業所削除によりアカウントも削除）
                       #登録用配列：初期化
                       $dbAccountFiledData = array();
                       #更新用キー：初期化
