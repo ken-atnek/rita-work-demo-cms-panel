@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/resetPassword.php]
- *  - 管理画面 -
+ * [rw-client/resetPassword.php]
+ *  - 【事業所】管理画面 -
  *  パスワード再設定ページ
  *
  * [初版]
- *  2025.12.13
+ *  2026.1.24
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -49,7 +49,7 @@ print <<<HTML
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">

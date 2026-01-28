@@ -56,6 +56,8 @@ $facId = isset($_GET['facId']) ? $_GET['facId'] : null;
 #事業所IDがあれば事業所情報取得
 $accountData = null;
 $accountStatus = 'edit';
+$setTitleLabel = 'パスワード変更';
+$setBtnLabel = '変更する';
 if ($facId !== null) {
   $facilityData = getFacility_FindById($facId);
   #メールアドレスをキーにアカウント情報を取得
@@ -64,6 +66,8 @@ if ($facId !== null) {
     $accountData = accounts_Waiting_FindByEmail($facilityData['email']);
     if (is_array($accountData) && count($accountData) > 0) {
       $accountStatus = 'new';
+      $setTitleLabel = 'パスワード設定';
+      $setBtnLabel = '登録する';
     }
   }
 } else {
@@ -106,7 +110,7 @@ print <<<HTML
         </nav>
       </section>
       <section class="container-password">
-        <h2>パスワード設定<span>{$facilityName}</span></h2>
+        <h2>{$setTitleLabel}<span>{$facilityName}</span></h2>
         <form name="inputForm" class="block-form">
           <input type="hidden" name="method" value="{$accountStatus}">
           <input type="hidden" name="noUpDateKey" value="{$noUpDateKey}">
@@ -115,7 +119,7 @@ HTML;
 if ($accountStatus === 'new') {
   print <<<HTML
           <dl>
-            <dt>新しいパスワード</dt>
+            <dt>登録するパスワード</dt>
             <!-- NOTE [is-close]でアイコンチェンジ -->
             <dd>
               <input type="password" name="newPassword" class="required-item" required id="newPassword">
@@ -123,7 +127,7 @@ if ($accountStatus === 'new') {
             </dd>
           </dl>
           <dl>
-            <dt>新しいパスワード(確認用)</dt>
+            <dt>登録するパスワード(確認用)</dt>
             <dd>
               <input type="password" name="confirmNewPassword" class="required-item" required id="confirmNewPassword">
               <button type="button" class="is-close" onclick="togglePassword(this, 'confirmNewPassword')"></button>
@@ -133,13 +137,13 @@ if ($accountStatus === 'new') {
 HTML;
 } else {
   print <<<HTML
-          <dl>
+          <!-- <dl>
             <dt>現在のパスワード</dt>
             <dd>
               <input type="password" name="currentPassword" class="required-item" required id="currentPassword">
               <button type="button" class="is-close" onclick="togglePassword(this, 'currentPassword')"></button>
             </dd>
-          </dl>
+          </dl> -->
           <dl>
             <dt>新しいパスワード</dt>
             <!-- NOTE [is-close]でアイコンチェンジ -->
@@ -162,7 +166,7 @@ print <<<HTML
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back" onclick="history.back()">戻る</button>
-          <button type="button" class="item-check" onclick="checkPasswordSetting('{$facId}','{$accountStatus}')">登録する</button>
+          <button type="button" class="item-check" onclick="checkPasswordSetting('{$facId}','{$accountStatus}')">{$setBtnLabel}</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
       </section>

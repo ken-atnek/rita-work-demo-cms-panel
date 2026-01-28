@@ -49,7 +49,7 @@ if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
 }
 
 #==============#
-# 事業者情報取得
+# 事業所情報取得
 #--------------#
 #事業所ID
 $facId = isset($_SESSION['client_login']['facility_id']) ? $_SESSION['client_login']['facility_id'] : null;
@@ -357,8 +357,8 @@ print <<<HTML
             <dd><input type="text" name="phone_number" value="{$facilityData['phone']}" autocomplete="on" class="required-item phone_number" required style="max-width: 34rem"></dd>
           </dl>
           <dl>
-            <dt class="is-required">E-mail</dt>
-            <dd><input type="text" name="email" value="{$facilityData['email']}" autocomplete="on" class="required-item email" required style="max-width: 60rem" onchange="checkUniqueEmail(this.value)"></dd>
+            <dt>E-mail</dt>
+            <dd><input type="text" name="email" value="{$facilityData['email']}" autocomplete="on" class="required-item email" style="max-width: 60rem; border-color:#ababab; background-color:#eee;" readonly></dd>
           </dl>
           <hr>
           <dl data-field="established_date">
@@ -588,10 +588,10 @@ print <<<HTML
               <h3>法人名を選択</h3>
             </div>
             <dl>
-              <dt class="is-required">法人名</dt>
+              <dt>法人名</dt>
               <dd>
                 <div class="select-company is-client" data-selectbox>
-                  <button type="button" class="selectbox__head" aria-expanded="false">
+                  <button type="button" class="selectbox__head" aria-expanded="false" style="pointer-events:none; border-color:#ababab; background-color:#eee;">
 
 HTML;
 #法人が選択されていたら
@@ -613,7 +613,6 @@ HTML;
 }
 print <<<HTML
                   </button>
-<!--
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
 
@@ -638,7 +637,6 @@ HTML;
 print <<<HTML
                     </ul>
                   </div>
--->
                 </div>
               </dd>
             </dl>

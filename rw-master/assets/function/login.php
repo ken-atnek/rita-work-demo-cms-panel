@@ -204,12 +204,41 @@ HTML;
 			#-------------#
 			$selector = isset($_POST['selector']) ? $_POST['selector'] : '';
 			$validator = isset($_POST['validator']) ? $_POST['validator'] : '';
+			$userEmail = isset($_POST['userEmail']) ? $_POST['userEmail'] : '';
 			$newPassword = isset($_POST['newPassword']) ? $_POST['newPassword'] : '';
 			$showForm = false;
 			#DBから該当トークンを検索
 			$resetData = accountPasswordReset_FindBySelectorAndValidator($selector, $validator);
 			#有効トークン判定
 			if ($resetData !== null && $newPassword !== '') {
+				#DBからアカウント情報を取得
+				$accountData = accounts_FindById_and_Email($resetData['account_id'], $userEmail);
+				if ($accountData === null || $accountData === false) {
+					$makeTag['status'] = 'error';
+					#***** タグ生成開始 *****#
+					$makeTag['tag'] .= <<<HTML
+        <!-- パスワードリセットフォーム -->
+        <form name="newPwForm" method="post" class="reset-password box-log-in">
+          <h2 style="text-align:center;">パスワード再設定不可</h2>
+          <div class="text-caution">入力されたメールアドレスでは<br>パスワードの再設定ができません。<br>再度ご確認のうえ、お試しください。</div>
+          <a href="javascript:void(0);" class="link-pw" onclick="showResetPassword()">パスワードを再設定する</a>
+        </form>
+
+HTML;
+					#パスワード再設定トークン削除
+					#登録用配列：初期化
+					$dbDeleteFiledData = array();
+					#更新用キー：初期化
+					$dbDeleteFiledValue = array();
+					$dbDeleteFiledValue['selector'] = array(':selector', $selector, 1);
+					#処理モード：[1].新規追加｜[2].更新｜[3].削除
+					$processDeleteFlg = 3;
+					#実行モード：[1].トランザクション｜[2].即実行
+					$exeDeleteFlg = 2;
+					$dbDeleteSuccessFlg = SQL_Process($DB_CONNECT, "account_password_resets", $dbDeleteFiledData, $dbDeleteFiledValue, $processDeleteFlg, $exeDeleteFlg);
+					#エラー応答終了
+					break;
+				}
 				try {
 					#トランザクション開始
 					# 1 = BEGIN／ 2 = COMMIT／ 3 = ROLLBACK

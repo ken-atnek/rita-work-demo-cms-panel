@@ -62,6 +62,7 @@ async function sendResetURL() {
 async function sendNewPassword() {
   const newPwForm = document.querySelector('form[name="newPwForm"]');
   if (!newPwForm) return;
+  const userEmail = newPwForm.querySelector('input[name="userEmail"]').value;
   const newPassword = newPwForm.querySelector('input[name="newPassword"]').value;
   const confirmPassword = newPwForm.querySelector('input[name="confirmPassword"]').value;
   //エラー表示用divがなければ作成
@@ -73,6 +74,12 @@ async function sendNewPassword() {
     newPwForm.appendChild(errorDivTextCaution);
   }
   //バリデーション
+  if (!userEmail) {
+    errorDivTextCaution.textContent = 'メールアドレスを入力してください。';
+    errorDivTextCaution.style.display = 'block';
+    setInputFocusClearError(newPwForm, errorDivTextCaution);
+    return;
+  }
   if (!newPassword || !confirmPassword) {
     errorDivTextCaution.textContent = '新しいパスワードを入力してください。';
     errorDivTextCaution.style.display = 'block';

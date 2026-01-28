@@ -62,7 +62,7 @@ $method = isset($_POST['method']) ? $_POST['method'] : null;
 #事業所ID
 $facId = isset($_POST['facId']) ? $_POST['facId'] : null;
 #現在のパスワード
-$currentPassword = isset($_POST['currentPassword']) ? $_POST['currentPassword'] : null;
+#$currentPassword = isset($_POST['currentPassword']) ? $_POST['currentPassword'] : null;
 #新パスワード
 $newPassword = isset($_POST['newPassword']) ? $_POST['newPassword'] : null;
 #新パスワード（確認用）
@@ -97,13 +97,13 @@ if ($newPassword !== $confirmNewPassword) {
 	echo json_encode($makeTag);
 	exit;
 }
-if ($method === 'edit' && ($currentPassword === null || $currentPassword === '')) {
-	$makeTag['status'] = 'error';
-	$makeTag['title'] = 'パスワード設定';
-	$makeTag['msg'] = '現在のパスワードを入力してください。';
-	echo json_encode($makeTag);
-	exit;
-}
+#if ($method === 'edit' && ($currentPassword === null || $currentPassword === '')) {
+#	$makeTag['status'] = 'error';
+#	$makeTag['title'] = 'パスワード設定';
+#	$makeTag['msg'] = '現在のパスワードを入力してください。';
+#	echo json_encode($makeTag);
+#	exit;
+#}
 #-------------#
 #事業所IDがあれば事業所情報取得
 $accountData = null;
@@ -141,15 +141,15 @@ if (!is_array($accountData) || count($accountData) === 0) {
 	exit;
 }
 #編集モードの場合は現在のパスワード照合
-if ($method === 'edit') {
-	if (!isset($accountData['password_hash']) || $accountData['password_hash'] === '' || !password_verify($currentPassword, $accountData['password_hash'])) {
-		$makeTag['status'] = 'error';
-		$makeTag['title'] = 'パスワード設定';
-		$makeTag['msg'] = '現在のパスワードが正しくありません。再度やり直してください。';
-		echo json_encode($makeTag);
-		exit;
-	}
-}
+#if ($method === 'edit') {
+#	if (!isset($accountData['password_hash']) || $accountData['password_hash'] === '' || !password_verify($currentPassword, $accountData['password_hash'])) {
+#		$makeTag['status'] = 'error';
+#		$makeTag['title'] = 'パスワード設定';
+#		$makeTag['msg'] = '現在のパスワードが正しくありません。再度やり直してください。';
+#		echo json_encode($makeTag);
+#		exit;
+#	}
+#}
 
 #==================#
 # パスワード設定開始
@@ -257,23 +257,26 @@ function sendMail_Facility_PasswordSetComplete($toEmail, $toName, $newPassword, 
 	$mailTitle = '【RITA】パスワード設定完了のお知らせ';
 	#メール本文
 	$mailBody = <<<EOD
-{$toName}　様
+{$toName} 様
+
 いつもRITAをご利用いただき、誠にありがとうございます。
 このたび、事業所アカウントのパスワード設定が完了いたしましたのでお知らせいたします。
 下記の内容をご確認のうえ、ログインをお願いいたします。
 ─────────────────────────────
 【ログイン情報】
-メールアドレス：{$toEmail}
-パスワード　　：{$newPassword}
-─────────────────────────────
 ■ログインURL
 {$CMS_PANEL_URL}/rw-client/
+
+ＩＤ(メールアドレス)：{$toEmail}
+パスワード：{$newPassword}
+
+─────────────────────────────
 ■RITAサポートセンター
 E-mail：info@a-fact.co.jp
 ─────────────────────────────
 EOD;
 	#-------------------------------------------
-	# 事業者向け送信（従来本文のまま）
+	# 事業所向け送信（従来本文のまま）
 	#  - 失敗したら false を返す（既存挙動）
 	#-------------------------------------------
 	$resultFacility = sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $DEFINE_NO_REPLY, $DEFINE_MAIL_SENDER_NAME, $sendAddressList);
@@ -282,7 +285,7 @@ EOD;
 	}
 	#-------------------------------------------
 	# マスター通知（パスワードは含めない）
-	#  - 事業者送信と併用時は「ベストエフォート」
+	#  - 事業所送信と併用時は「ベストエフォート」
 	#-------------------------------------------
 	$masterEmail = isset($DEFINE_MASTER_NOTIFY_EMAIL) ? trim((string)$DEFINE_MASTER_NOTIFY_EMAIL) : '';
 	$masterName = isset($DEFINE_MASTER_NOTIFY_NAME) ? (string)$DEFINE_MASTER_NOTIFY_NAME : 'マスター';
@@ -301,9 +304,8 @@ EOD;
 		. "日時：{$now}\n"
 		. ($facilityId !== null ? "事業所ID：{$facilityId}\n" : '')
 		. "事業所名：{$toName}\n"
-		. "事業所メールアドレス：{$toEmail}\n"
-		. "\n"
-		. "管理画面：{$CMS_PANEL_URL}/demo-cms-panel/rw-master/\n";
+		. "ＩＤ(メールアドレス)：{$toEmail}\n"
+		. "パスワード：{$newPassword}\n";
 	#メール送信
 	$resultMaster = sendMail_Common($masterEmail, $masterName, $notifyTitle, $notifyBody, $DEFINE_NO_REPLY, $DEFINE_MAIL_SENDER_NAME, []);
 	if ($resultMaster == false) {

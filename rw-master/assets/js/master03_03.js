@@ -10,10 +10,10 @@ const requestURL = './assets/function/proc_master03_03.php';
 function checkPasswordSetting(facId, accountStatus) {
   const pwForm = document.querySelector('form[name="inputForm"]');
   if (!pwForm) return;
-  let currentPassword = '';
-  if (accountStatus == 'edit') {
-    currentPassword = pwForm.querySelector('input[name="currentPassword"]').value;
-  }
+  // let currentPassword = '';
+  // if (accountStatus == 'edit') {
+  //   currentPassword = pwForm.querySelector('input[name="currentPassword"]').value;
+  // }
   const newPassword = pwForm.querySelector('input[name="newPassword"]').value;
   const confirmPassword = pwForm.querySelector('input[name="confirmNewPassword"]').value;
   //入力チェック
@@ -34,7 +34,7 @@ function checkPasswordSetting(facId, accountStatus) {
     blockModal.querySelector('.box-title p').innerHTML = 'パスワード設定';
     if (accountStatus == 'new') {
       blockModal.querySelector('.box-details p').innerHTML =
-        'パスワードを設定します。よろしいですか？';
+        'パスワードを登録します。よろしいですか？';
     } else {
       blockModal.querySelector('.box-details p').innerHTML =
         'パスワードを変更します。よろしいですか？';
