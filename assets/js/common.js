@@ -245,17 +245,41 @@ function initSelectBox() {
       // ヘッダクリックで開閉（クラス付与のみ）
       head.addEventListener('click', (e) => {
         e.preventDefault();
+        // 親要素（行クリックなど）にイベントが伝播すると、
+        // セレクトボックスが開く前に別ハンドラが動いてしまうことがあるため遮断
+        e.stopPropagation();
         toggle(box);
       });
 
+      // セレクトボックス内のクリックが親コンテナに伝播しないようにする
+      // （一覧行がクリック可能なUIで、行側のクリック処理と干渉するケースを防止）
+      box.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
       // 選択時：表示更新 + headクラス同期 + hidden反映 + 閉じる
+      const applySelection = (r) => {
+        const label = box.querySelector(`label[for="${r.id}"]`);
+        if (label) valueEl.textContent = label.textContent.trim();
+        syncHeadStatusClass(head, label); // ★追加：選択時も同期
+        setSelectedState(box, hiddenEl, r.value, idx, isArray);
+        close(box);
+      };
+
       radios.forEach((r) => {
+        // click: 既にcheckedの選択肢をクリックした場合でも発火する
+        // （master05の2行目以降のように、hidden優先で表示を作ると
+        // クリック先が「既にchecked」になっていて change が発火しないケースがある）
+        r.addEventListener('click', () => {
+          applySelection(r);
+        });
+
+        // change: キーボード操作(矢印/Space)などのために残す。
+        // ただし click → change の二重反映を避けるため、既にhiddenが同値ならスキップ。
         r.addEventListener('change', () => {
-          const label = box.querySelector(`label[for="${r.id}"]`);
-          if (label) valueEl.textContent = label.textContent.trim();
-          syncHeadStatusClass(head, label); // ★追加：選択時も同期
-          setSelectedState(box, hiddenEl, r.value, idx, isArray);
-          close(box);
+          const current = hiddenEl ? String(hiddenEl.value || '') : '';
+          if (current === String(r.value)) return;
+          applySelection(r);
         });
       });
 
