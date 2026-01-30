@@ -153,7 +153,7 @@ async function sendInput() {
         .setAttribute('onclick', "closeModalToPage('master02_01.php')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
@@ -183,7 +183,7 @@ function checkDeleteCorporation(corpId, corpName) {
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 法人削除実行
@@ -243,7 +243,7 @@ async function deleteCorporation(corpId, corpName) {
         .setAttribute('onclick', "closeModalToPage('master02_01.php')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');

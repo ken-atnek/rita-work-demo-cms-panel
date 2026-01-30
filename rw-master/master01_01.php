@@ -2,7 +2,7 @@
 /*
  * [rw-master/master01_01.php]
  *  - 管理画面 -
- *  応募者一覧
+ *  応募者一覧(トップ)
  *
  * [初版]
  *  2025.12.15
@@ -39,7 +39,7 @@ try {
   ]);
 } catch (Throwable $e) {
   if (function_exists('makeLog')) {
-    makeLog('[proc_master03_01] master JSON load failed: ' . $e->getMessage());
+    makeLog('[proc_master01_01] master JSON load failed: ' . $e->getMessage());
   }
   $jsonMasters = [];
 }
@@ -113,7 +113,7 @@ foreach ($requiredKeys as $requiredKey) {
       $fixedInterviewSortOrder = 'desc';
     }
     $searchConditions = array(
-      'facility_id' => isset($searchConditions['facility_id']) ? (string)$searchConditions['facility_id'] : '',
+      'facility_id' => isset($searchConditions['facility_id']) ? (int)$searchConditions['facility_id'] : '',
       'searchMode' => $fixedSearchMode,
       'sortTarget' => $fixedSortTarget,
       'applicationSortOrder' => $fixedApplicationSortOrder,
@@ -318,7 +318,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
     $name = isset($application['applicant_name']) ? (string)$application['applicant_name'] : '';
     $nameEsc = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     #ステータス変更用に名前セット（JS側で使用：$nameがあれば優先）
-    $sendStatusChangeName = $nameEsc !== '' ? $nameEsc : $lineDisplayNameEsc;
+    $sendStatusChangeName = $name !== '' ? $name : $lineDisplayName;
     #応募中の求人情報を取得
     $appliedJobs = getAllAppliedJobs(
       $application['line_user_id'],
@@ -329,7 +329,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
       isset($searchConditions['facility_id']) ? (int)$searchConditions['facility_id'] : 0
     );
     print <<<HTML
-            <!-- NOTE  インラインでz-indexを付与 -->
+            <!-- NOTE インラインでz-indexを付与 -->
             <li {$zIndexStyle} onclick="location.href='./master01_01_01.php?application_id={$application['application_id']}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
@@ -380,7 +380,7 @@ HTML;
         if (isset($db_applicationStatus) && $db_applicationStatus != '' && $db_applicationStatus != 'friend_only') {
           print <<<HTML
                   <div class="wrap-apply-status">
-                    <!--NOTE  連番注意 list01-status- -->
+                    <!--NOTE 連番注意 list01-status- -->
                     <div class="apply-status" data-selectbox>
                       <button type="button" class="selectbox__head" aria-expanded="false">
 
@@ -423,7 +423,7 @@ HTML;
                 $zIndexStyleStatus = 'style="z-index:2;"';
               }
               print <<<HTML
-                          <!-- NOTE  インラインでz-indexを付与 -->
+                          <!-- NOTE インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
                             <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, '{$application['line_user_id']}', '{$sendStatusChangeName}', {$jobData['job_id']}, this.value,'{$searchConditions['searchMode']}','{$sortMode}');">
                             <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
@@ -433,7 +433,7 @@ HTML;
             }
           } else {
             print <<<HTML
-                          <!-- NOTE  インラインでz-indexを付与 -->
+                          <!-- NOTE インラインでz-indexを付与 -->
                           <li style="z-index: 2">
                             <input type="radio" name="application_status{$jobKey}" value="1" id="application_status{$jobKey}-none" checked>
                             <label for="application_status{$jobKey}-none" class="status-registered">応募状況ステータスが未設定です</label>

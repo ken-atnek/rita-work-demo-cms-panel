@@ -2,7 +2,7 @@
 /*
  * [rw-client/assets/function/proc_client01_01.php]
  *  - 【事業所】管理画面 -
- *  応募者一覧：検索/絞り込み/並び替え/ページング（AJAX）
+ *  応募者一覧(トップ)：検索/絞り込み/並び替え/ページング（AJAX）
  *
  * [初版]
  *  2026.1.27
@@ -515,7 +515,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 		$name = isset($application['applicant_name']) ? (string)$application['applicant_name'] : '';
 		$nameEsc = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
 		#ステータス変更用に名前セット（JS側で使用：$nameがあれば優先）
-		$sendStatusChangeName = $nameEsc !== '' ? $nameEsc : $lineDisplayNameEsc;
+		$sendStatusChangeName = $name !== '' ? $name : $lineDisplayName;
 		#応募中の求人情報を取得
 		$appliedJobs = getAllAppliedJobs(
 			$application['line_user_id'],

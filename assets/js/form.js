@@ -188,7 +188,6 @@ function createError(elem, errorMessage) {
         elem.placeholder = '';
         elem.classList.add(errorClassName, 'error-email');
         elem.parentNode.classList.add(errorClassName);
-        // elem.parentNode.previousElementSibling.classList.add(errorClassName);
         form_inputValue = elem.value;
         elem.value = '';
         elem.placeholder = 'Eメールアドレス形式で入力して下さい。';
@@ -199,7 +198,6 @@ function createError(elem, errorMessage) {
         elem.placeholder = '';
         elem.classList.add(errorClassName, 'error-email_check');
         elem.parentNode.classList.add(errorClassName);
-        // elem.parentNode.previousElementSibling.classList.add(errorClassName);
         form_inputValue = elem.value;
         elem.value = '';
         elem.placeholder = '入力されたメールアドレスが違います。';
@@ -210,7 +208,6 @@ function createError(elem, errorMessage) {
         elem.placeholder = '';
         elem.classList.add(errorClassName, 'error-phone_number');
         elem.parentNode.classList.add(errorClassName);
-        // elem.parentNode.previousElementSibling.classList.add(errorClassName);
         form_inputValue = elem.value;
         elem.value = '';
         elem.placeholder = '半角数字で入力して下さい。';

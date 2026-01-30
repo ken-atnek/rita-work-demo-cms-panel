@@ -165,5 +165,5 @@ function checkNewCorporation() {
   let blockModal = document.getElementById('modalBlock');
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }

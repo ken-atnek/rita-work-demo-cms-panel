@@ -392,7 +392,7 @@ async function checkInput(method) {
     blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', cancelButton);
     blockModal.classList.add('bg-orange');
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     //入力項目までスクロール
     document.querySelector(errorInput).scrollIntoView(true);
     return;
@@ -436,7 +436,7 @@ async function checkInput(method) {
   }
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 送信
@@ -515,7 +515,7 @@ async function sendInput(method) {
         .setAttribute('onclick', "closeModalToPage('master03_02.php?facId=${list['facId']}')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     //リクエスト完了後は解除（必要なら離脱時破棄が動く）
     window.__rwUploadDraftDiscardDisable = false;
   } catch (error) {
@@ -550,7 +550,7 @@ function checkChangeJobCardPlan(el, facId, jobId, jobCode) {
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 求人プラン変更実行
@@ -613,7 +613,7 @@ async function changeJobCardPlan(facId, jobId, jobCode, selectPlan) {
         .setAttribute('onclick', 'closeModal()');
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     //通信エラー時の処理
     console.error('送信エラー:', error);
@@ -644,7 +644,7 @@ function checkDeleteJobCard(facId, jobCardId) {
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 求人カード削除実行
@@ -704,7 +704,7 @@ async function deleteJobCard(facId, jobCardId) {
         .setAttribute('onclick', "closeModalToPage('master03_02.php?facId=${list['facId']}')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     //通信エラー時の処理
     console.error('送信エラー:', error);

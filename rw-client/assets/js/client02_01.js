@@ -277,7 +277,7 @@ async function checkUniqueEmail(email) {
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
       blockModal.classList.add('bg-orange');
       blockModal.classList.add('is-active');
-      htmlElement.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
   } catch (error) {
     console.error('送信エラー:', error);
@@ -344,7 +344,7 @@ async function checkInput() {
         blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
         blockModal.classList.add('bg-orange');
         blockModal.classList.add('is-active');
-        htmlElement.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
       } else {
         //表示中の情報入替
         document.querySelector('.container-vendor-register').remove();
@@ -481,7 +481,7 @@ async function sendInput() {
         .setAttribute('onclick', "closeModalToPage('client02_01.php')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     //リクエスト完了後は解除
     window.__rwUploadDraftDiscardDisable = false;
   } catch (error) {
@@ -514,7 +514,7 @@ function checkDeleteFacility(facId, facName, facCode) {
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 事業所削除実行
@@ -575,7 +575,7 @@ async function deleteFacility(facId, facName, facCode) {
         .setAttribute('onclick', "closeModalToPage('client02_01.php')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');

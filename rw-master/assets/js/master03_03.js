@@ -61,7 +61,7 @@ function checkPasswordSetting(facId, accountStatus) {
     blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
   }
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * パスワード設定
@@ -103,7 +103,7 @@ async function setPassword(facId, accountStatus) {
         : '<button type="button" class="btn-cancel" onclick="closeModal();">閉じる</button>';
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', closeButton);
       blockModal.classList.add('is-active');
-      htmlElement.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
   } catch (error) {
     console.error(error);
@@ -122,7 +122,7 @@ async function setPassword(facId, accountStatus) {
         '<button type="button" class="btn-cancel" onclick="closeModal();">閉じる</button>';
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', closeButton);
       blockModal.classList.add('is-active');
-      htmlElement.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
   }
 }

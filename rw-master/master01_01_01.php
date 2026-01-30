@@ -17,48 +17,48 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_applications.php';
 
 function e($value)
 {
-	return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+  return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
 function findJobCategoryNameById(array $jobCategories, string $jobCategoryId): string
 {
-	foreach ($jobCategories as $jobCategory) {
-		if (!is_array($jobCategory)) {
-			continue;
-		}
-		$id = isset($jobCategory['id']) ? (string)$jobCategory['id'] : '';
-		if ($id === (string)$jobCategoryId) {
-			return isset($jobCategory['name']) ? (string)$jobCategory['name'] : '';
-		}
-	}
-	return '';
+  foreach ($jobCategories as $jobCategory) {
+    if (!is_array($jobCategory)) {
+      continue;
+    }
+    $id = isset($jobCategory['id']) ? (string)$jobCategory['id'] : '';
+    if ($id === (string)$jobCategoryId) {
+      return isset($jobCategory['name']) ? (string)$jobCategory['name'] : '';
+    }
+  }
+  return '';
 }
 
 $applicationId = filter_input(INPUT_GET, 'application_id', FILTER_VALIDATE_INT, [
-	'options' => ['min_range' => 1]
+  'options' => ['min_range' => 1]
 ]);
 if (!$applicationId) {
-	header('Location: ./master01_01.php');
-	exit;
+  header('Location: ./master01_01.php');
+  exit;
 }
 
 $jsonMasters = [];
 try {
-	$jsonMasters = getJson_FrontEndMaster_many([
-		'jobCategories'
-	]);
+  $jsonMasters = getJson_FrontEndMaster_many([
+    'jobCategories'
+  ]);
 } catch (Throwable $e) {
-	if (function_exists('makeLog')) {
-		makeLog('[master01_01_01] master JSON load failed: ' . $e->getMessage());
-	}
-	$jsonMasters = [];
+  if (function_exists('makeLog')) {
+    makeLog('[master01_01_01] master JSON load failed: ' . $e->getMessage());
+  }
+  $jsonMasters = [];
 }
 $jobCategories = $jsonMasters['jobCategories'] ?? [];
 
 $application = getApplicationById($applicationId);
 if (!$application) {
-	header('Location: ./master01_01.php');
-	exit;
+  header('Location: ./master01_01.php');
+  exit;
 }
 
 $jobCategoryId = isset($application['job_category_id']) ? (string)$application['job_category_id'] : '';

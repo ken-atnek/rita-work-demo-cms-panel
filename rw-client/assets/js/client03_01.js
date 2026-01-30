@@ -11,7 +11,7 @@ function checkNewJobCard() {
   let blockModal = document.getElementById('modalBlock');
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 求人カード状態変更チェック
@@ -76,7 +76,7 @@ function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
-  htmlElement.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 /**
  * 求人カード状態変更
@@ -127,7 +127,7 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
         .setAttribute('onclick', "closeModalToPage('client03_01.php')");
     }
     blockModal.classList.add('is-active');
-    htmlElement.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');

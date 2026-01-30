@@ -27,7 +27,7 @@ print <<<HTML
     <a href="./master01_01.php" {$master01_active}><span>トップ</span></a>
     <a href="./master02_01.php" {$master02_active}><span>法人管理</span></a>
     <a href="./master03_01.php" {$master03_active}><span>事業所管理</span></a>
-    <a href="#" {$master04_active}><span>求職者管理</span></a>
+    <a href="./master04_01.php" {$master04_active}><span>求職者管理</span></a>
     <a href="#" {$master05_active}><span>運営管理</span></a>
     <a href="#" {$master06_active}><span>明細管理</span></a>
     <a href="#" {$master07_active}><span>メッセージ管理</span></a>
