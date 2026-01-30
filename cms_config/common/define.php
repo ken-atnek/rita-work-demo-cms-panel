@@ -1,0 +1,73 @@
+<?php
+/*
+ * 型宣言を厳密にする
+ */
+
+declare(strict_types=1);
+
+/*
+ * [定数定義]
+ */
+#デバッグモード設定
+define('DEFINE_DEBUGFLG', 0);
+
+#ドメイン定義
+#define('DOMAIN_NAME', 'https://cms-panel.rita-work.jp');
+#define('DOMAIN_NAME', 'https://rita5258.xbiz.jp');
+
+#ドキュメントルート定義
+define('DOCUMENT_ROOT_PATH', $_SERVER['DOCUMENT_ROOT']);
+
+/*
+ * PUBLIC_HTML直下のパス定義
+ * ここを起点に public_html を確定し、以後は絶対パスで扱う
+ */
+$publicHtml = realpath(__DIR__ . '/../../');
+if ($publicHtml === false) {
+	throw new RuntimeException('PUBLIC_HTML の特定に失敗しました: ' . __DIR__);
+}
+#Windows対策(\ を / に統一しておくと扱いが安定)
+$publicHtml = str_replace('\\', '/', $publicHtml);
+#PUBLIC_HTMLパス
+define('PUBLIC_HTML_DIR', $publicHtml);
+
+#フロントエンド側ディレクトリパス
+#define('DEFINE_FRONTEND_DIR_PATH', PUBLIC_HTML_DIR . '/2604');
+define('DEFINE_FRONTEND_DIR_PATH', PUBLIC_HTML_DIR . '/2604/public');
+
+#===================================#
+#json生成ファンクションファイルパス
+define('DEFINE_JSON_FUNCTION_MASTER', PUBLIC_HTML_DIR . '/demo-cms-panel/cms_config/common');
+
+#デバッグ用
+define('DOMAIN_NAME', '../../2604/public');
+
+#===================================#
+#jsonデータ保存パス
+define('DEFINE_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db');
+
+#フロント側マスタ定義jsonファイル
+define('DEFINE_MASTER_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db/master');
+
+#事業所登録画像ファイル保存パス
+define('DEFINE_FILE_DIR_PATH', DEFINE_JSON_DIR_PATH . '/images');
+
+#===================================#
+#管理画面URL
+$CMS_PANEL_URL = 'https://rita5258.xbiz.jp';
+
+#メールアドレス送信リスト
+$sendAddressList = array(
+	'shigetaka@a-fact.co.jp',
+);
+
+#マスター通知先（固定）
+#※未設定の場合は $sendAddressList の先頭をフォールバック
+$DEFINE_MASTER_NOTIFY_EMAIL = $sendAddressList[0] ?? '';
+$DEFINE_MASTER_NOTIFY_NAME = 'RITA WORK運営';
+
+#NoReplyメールアドレス
+$DEFINE_NO_REPLY = 'noreply@rita-work.jp';
+
+#メール送信元名称
+$DEFINE_MAIL_SENDER_NAME = 'RITA WORK事務局';
