@@ -14,15 +14,16 @@ define('DEFINE_DEBUGFLG', 0);
 #ドメイン定義
 #define('DOMAIN_NAME', 'https://cms-panel.rita-work.jp');
 #define('DOMAIN_NAME', 'https://rita5258.xbiz.jp');
+define('DOMAIN_NAME', '../../2604/public');
 
 #ドキュメントルート定義
-define('DOCUMENT_ROOT_PATH', $_SERVER['DOCUMENT_ROOT']);
+define('DOCUMENT_ROOT_PATH', dirname(__DIR__) . '/../');
 
 /*
  * PUBLIC_HTML直下のパス定義
  * ここを起点に public_html を確定し、以後は絶対パスで扱う
  */
-$publicHtml = realpath(__DIR__ . '/../../');
+$publicHtml = realpath(__DIR__ . '/../../../');
 if ($publicHtml === false) {
 	throw new RuntimeException('PUBLIC_HTML の特定に失敗しました: ' . __DIR__);
 }
@@ -39,15 +40,15 @@ define('DEFINE_FRONTEND_DIR_PATH', PUBLIC_HTML_DIR . '/2604/public');
 #json生成ファンクションファイルパス
 define('DEFINE_JSON_FUNCTION_MASTER', PUBLIC_HTML_DIR . '/demo-cms-panel/cms_config/common');
 
-#デバッグ用
-define('DOMAIN_NAME', '../../2604/public');
-
 #===================================#
 #jsonデータ保存パス
 define('DEFINE_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db');
 
 #フロント側マスタ定義jsonファイル
 define('DEFINE_MASTER_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db/master');
+
+#プレビュー画像保存パス
+define('DEFINE_PREVIEW_IMAGE_DIR_PATH', '../tmp_upload');
 
 #事業所登録画像ファイル保存パス
 define('DEFINE_FILE_DIR_PATH', DEFINE_JSON_DIR_PATH . '/images');

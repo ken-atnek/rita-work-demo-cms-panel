@@ -9,7 +9,7 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once $_SERVER['DOCUMENT_ROOT'] . '/cms_config/common/define.php';
+require_once dirname(__DIR__) . '/../../cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
@@ -330,18 +330,30 @@ $benefits4_body = isset($_POST['benefits4_body']) ? $_POST['benefits4_body'] : n
 $selectedMetricArea1 = isset($_POST['work_environment_metrics1']) ? $_POST['work_environment_metrics1'] : null;
 #職場環境の特徴１：数値入力値
 $metricArea1Value = isset($_POST['work_environment_metrics1_value']) ? $_POST['work_environment_metrics1_value'] : null;
+#登録するときは「,」あれば除去
+if ($metricArea1Value != null) {
+  $metricArea1Value = str_replace(',', '', $metricArea1Value);
+}
 #職場環境の特徴１：単位
 $metricArea1Unit = isset($_POST['work_environment_metrics1_unit']) ? $_POST['work_environment_metrics1_unit'] : null;
 #職場環境の特徴２：選択値
 $selectedMetricArea2 = isset($_POST['work_environment_metrics2']) ? $_POST['work_environment_metrics2'] : null;
 #職場環境の特徴２：数値入力値
 $metricArea2Value = isset($_POST['work_environment_metrics2_value']) ? $_POST['work_environment_metrics2_value'] : null;
+#登録するときは「,」あれば除去
+if ($metricArea2Value != null) {
+  $metricArea2Value = str_replace(',', '', $metricArea2Value);
+}
 #職場環境の特徴２：単位
 $metricArea2Unit = isset($_POST['work_environment_metrics2_unit']) ? $_POST['work_environment_metrics2_unit'] : null;
 #職場環境の特徴３：選択値
 $selectedMetricArea3 = isset($_POST['work_environment_metrics3']) ? $_POST['work_environment_metrics3'] : null;
 #職場環境の特徴３：数値入力値
 $metricArea3Value = isset($_POST['work_environment_metrics3_value']) ? $_POST['work_environment_metrics3_value'] : null;
+#登録するときは「,」あれば除去
+if ($metricArea3Value != null) {
+  $metricArea3Value = str_replace(',', '', $metricArea3Value);
+}
 #職場環境の特徴３：単位
 $metricArea3Unit = isset($_POST['work_environment_metrics3_unit']) ? $_POST['work_environment_metrics3_unit'] : null;
 #-------------#
@@ -599,7 +611,7 @@ function jobCardBuildPreviewTagsFromSession(string $area): string
       $previewPath = DOMAIN_NAME . $info['path'];
       $ext = strtolower(pathinfo($info['path'], PATHINFO_EXTENSION));
     } elseif (isset($info['name']) && is_string($info['name']) && $info['name'] !== '') {
-      $previewPath = '../../tmp_upload/' . $info['name'];
+      $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $info['name'];
       $ext = strtolower(pathinfo($info['name'], PATHINFO_EXTENSION));
     } else {
       continue;
@@ -1107,11 +1119,11 @@ switch ($action) {
           $makeTag['msg'] = '許可されていないファイル形式です。';
         } else {
           #一時保存先
-          $tmpDir = __DIR__ . '/../../../../tmp_upload/';
+          $tmpDir = __DIR__ . '/../../../tmp_upload/';
           if (!file_exists($tmpDir)) mkdir($tmpDir, 0777, true);
           $uniqueName = 'image_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
           $savePath = $tmpDir . $uniqueName;
-          $previewPath = '../../tmp_upload/' . $uniqueName;
+          $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $uniqueName;
           if (move_uploaded_file($file['tmp_name'], $savePath)) {
             #onlyモードの場合は、既存（DB/tmp）を置換扱いにしてドラフトを1枚に揃える
             if ($upImageMode === 'only' && isset($_SESSION[$targetImageUploadSessionKey]) && is_array($_SESSION[$targetImageUploadSessionKey]) && !empty($_SESSION[$targetImageUploadSessionKey])) {
@@ -1211,11 +1223,11 @@ HTML;
           $makeTag['title'] = 'アップロード失敗';
           $makeTag['msg'] = '入れ替え対象がありません。';
         } else {
-          $tmpDir = __DIR__ . '/../../../../tmp_upload/';
+          $tmpDir = __DIR__ . '/../../../tmp_upload/';
           if (!file_exists($tmpDir)) mkdir($tmpDir, 0777, true);
           $uniqueName = 'image_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
           $savePath = $tmpDir . $uniqueName;
-          $previewPath = '../../tmp_upload/' . $uniqueName;
+          $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $uniqueName;
           if (move_uploaded_file($file['tmp_name'], $savePath)) {
             $old = $_SESSION[$targetImageUploadSessionKey][$replaceIndex];
             if (is_array($old)) {

@@ -9,20 +9,20 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once '../../cms_config/common/define.php';
+require_once dirname(__DIR__) . '/cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
-require_once '../../cms_config/common/set_function.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
-require_once '../../cms_config/database/set_db.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once '../../cms_config/client/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
-require_once '../../cms_config/database/db_corporations.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
 #事業所情報
-require_once '../../cms_config/database/db_facilities.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
-require_once '../../cms_config/database/db_jobs.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
 #================#
 # SESSIONチェック

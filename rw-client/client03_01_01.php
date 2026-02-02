@@ -9,20 +9,20 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once '../../cms_config/common/define.php';
+require_once dirname(__DIR__) . '/cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
-require_once '../../cms_config/common/set_function.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
-require_once '../../cms_config/database/set_db.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once '../../cms_config/client/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
-require_once '../../cms_config/database/db_corporations.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
 #事業所情報
-require_once '../../cms_config/database/db_facilities.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
-require_once '../../cms_config/database/db_jobs.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
 #================#
 # SESSIONチェック
@@ -515,8 +515,18 @@ if (isset($jobData['salary_unit_id']) && $jobData['salary_unit_id'] == 'monthly'
   $hourlySalaryFlag = '';
   $yearlySalaryFlag = '';
   #月給入力情報
+  #Min
   $monthlySalaryMin = $jobData['salary_min'];
+  if ($monthlySalaryMin != '') {
+    $monthlySalaryMin = str_replace(',', '', $monthlySalaryMin);
+    $monthlySalaryMin = number_format($monthlySalaryMin);
+  }
+  #Max
   $monthlySalaryMax = $jobData['salary_max'];
+  if ($monthlySalaryMax != '') {
+    $monthlySalaryMax = str_replace(',', '', $monthlySalaryMax);
+    $monthlySalaryMax = number_format($monthlySalaryMax);
+  }
   print <<<HTML
                       <div class="item-check-box">
                         <input type="radio" id="radio-salary01" name="select_salary" value="monthly" checked onclick="toggleSalaryType('monthly');"><label for="radio-salary01">月給</label>
@@ -1629,12 +1639,27 @@ if (is_array($workEnvironmentMetricsData)) {
 #項目１
 $selectedMetricArea1 = isset($workEnvironmentMetricsData[0]['metric_id']) ? $workEnvironmentMetricsData[0]['metric_id'] : '';
 $metricArea1Value = isset($metricsMap[$selectedMetricArea1]) ? htmlspecialchars(normalizeMetricValue($metricsMap[$selectedMetricArea1]), ENT_QUOTES, 'UTF-8') : '';
+#「,」を追加
+if ($metricArea1Value != '') {
+  $metricArea1Value = str_replace(',', '', $metricArea1Value);
+  $metricArea1Value = number_format($metricArea1Value);
+}
 #項目２
 $selectedMetricArea2 = isset($workEnvironmentMetricsData[1]['metric_id']) ? $workEnvironmentMetricsData[1]['metric_id'] : '';
 $metricArea2Value = isset($metricsMap[$selectedMetricArea2]) ? htmlspecialchars(normalizeMetricValue($metricsMap[$selectedMetricArea2]), ENT_QUOTES, 'UTF-8') : '';
+#「,」を追加
+if ($metricArea2Value != '') {
+  $metricArea2Value = str_replace(',', '', $metricArea2Value);
+  $metricArea2Value = number_format($metricArea2Value);
+}
 #項目３
 $selectedMetricArea3 = isset($workEnvironmentMetricsData[2]['metric_id']) ? $workEnvironmentMetricsData[2]['metric_id'] : '';
 $metricArea3Value = isset($metricsMap[$selectedMetricArea3]) ? htmlspecialchars(normalizeMetricValue($metricsMap[$selectedMetricArea3]), ENT_QUOTES, 'UTF-8') : '';
+#「,」を追加
+if ($metricArea3Value != '') {
+  $metricArea3Value = str_replace(',', '', $metricArea3Value);
+  $metricArea3Value = number_format($metricArea3Value);
+}
 print <<<HTML
             <div class="box-details">
               <span>項目</span>

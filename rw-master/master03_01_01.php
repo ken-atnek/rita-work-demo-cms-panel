@@ -9,7 +9,7 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once $_SERVER['DOCUMENT_ROOT'] . '/cms_config/common/define.php';
+require_once dirname(__DIR__) . '/cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 #***** DB設定ファイル：インクルード *****#
@@ -185,7 +185,7 @@ print <<<HTML
     <title>リタワーク｜コントロールパネル(管理者)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://zipcloud.ibsnet.co.jp; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://zipcloud.ibsnet.co.jp; img-src 'self' data: https://rita-work.jp; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">

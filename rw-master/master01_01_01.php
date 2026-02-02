@@ -8,7 +8,7 @@
  *  2026.01.27
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/cms_config/common/define.php';
+require_once dirname(__DIR__) . '/cms_config/common/define.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';

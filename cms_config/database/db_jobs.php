@@ -7,7 +7,7 @@ function getLastJobId()
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		#$strSQL = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'rita5258_workRecruit' AND TABLE_NAME = 'jobs'";
+		#$strSQL = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'rita5258_workrecruit' AND TABLE_NAME = 'jobs'";
 		$strSQL = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'rita5258_demowork' AND TABLE_NAME = 'jobs'";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);

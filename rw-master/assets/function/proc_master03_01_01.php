@@ -9,7 +9,7 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once $_SERVER['DOCUMENT_ROOT'] . '/cms_config/common/define.php';
+require_once dirname(__DIR__) . '/../../cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
@@ -366,11 +366,11 @@ switch ($action) {
           $makeTag['msg'] = '許可されていないファイル形式です。';
         } else {
           #一時保存先
-          $tmpDir = __DIR__ . '/../../../../tmp_upload/';
+          $tmpDir = __DIR__ . '/../../../tmp_upload/';
           if (!file_exists($tmpDir)) mkdir($tmpDir, 0777, true);
           $uniqueName = 'logo_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
           $savePath = $tmpDir . $uniqueName;
-          $previewPath = '../../tmp_upload/' . $uniqueName;
+          $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $uniqueName;
           if (move_uploaded_file($file['tmp_name'], $savePath)) {
             #セッションにファイル情報を保存
             # - onlyモードは「1枠」のため、成功時に既存を掃除して置換する
@@ -471,13 +471,13 @@ HTML;
         echo json_encode($makeTag);
         exit;
       }
-      $tmpDir = __DIR__ . '/../../../../tmp_upload/';
+      $tmpDir = __DIR__ . '/../../../tmp_upload/';
       if (!file_exists($tmpDir)) {
         @mkdir($tmpDir, 0777, true);
       }
       $uniqueName = 'logo_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
       $savePath = $tmpDir . $uniqueName;
-      $previewPath = '../../tmp_upload/' . $uniqueName;
+      $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $uniqueName;
       if (!move_uploaded_file($file['tmp_name'], $savePath)) {
         $makeTag['status'] = 'error';
         $makeTag['title'] = 'アップロード失敗';
@@ -1010,7 +1010,7 @@ HTML;
                   $mimeType = '';
                   break;
               }
-              $previewPath = '../../tmp_upload/' . $info['name'];
+              $previewPath = DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $info['name'];
               $makeTag['tag'] .= <<<HTML
               <dd>
                 <picture>
@@ -1421,7 +1421,7 @@ HTML;
           if (!is_string($name) || $name === '') {
             continue;
           }
-          $src = $info['preview'] ?? ('../../tmp_upload/' . $name);
+          $src = $info['preview'] ?? (DEFINE_PREVIEW_IMAGE_DIR_PATH . '/' . $name);
           if (is_string($src) && $src !== '') {
             $sessionPreviews[] = $src;
           }

@@ -1165,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const unitDisplayMap = {
     day: '日',
     year: '年',
-    yen: '円',
+    yen: '万円',
     h: 'ｈ(時間)',
     '%': '％',
   };

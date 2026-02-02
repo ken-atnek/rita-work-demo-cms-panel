@@ -9,7 +9,7 @@
  */
 
 #***** 定数定義ファイル：インクルード *****#
-require_once $_SERVER['DOCUMENT_ROOT'] . '/cms_config/common/define.php';
+require_once dirname(__DIR__) . '/cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
