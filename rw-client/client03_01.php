@@ -113,7 +113,7 @@ if ($facId !== null) {
 print <<<HTML
 <html lang="ja">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -143,7 +143,6 @@ print <<<HTML
         <article class="block-card-list">
           <p class="announce-results"><span>{$jobCardCount}件</span>が登録中</p>
           <!--NOTE  特別バナー契約時のみ表示 -->
-
 
 HTML;
 if (isset($facilityDetailsJson['specialBanner']['enabled']) && $facilityDetailsJson['specialBanner']['enabled'] == true) {
@@ -319,7 +318,6 @@ HTML;
                 </div>
               </div>
             </li>
-
 
 HTML;
   }

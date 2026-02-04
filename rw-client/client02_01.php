@@ -162,7 +162,7 @@ if ($facId !== null) {
 print <<<HTML
 <html lang="ja">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
