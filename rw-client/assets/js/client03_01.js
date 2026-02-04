@@ -133,3 +133,10 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
   }
 }
+/**
+ * プレビューページを開く
+ *
+ */
+function openPreviewPage(url) {
+  window.open(url, '_blank');
+}

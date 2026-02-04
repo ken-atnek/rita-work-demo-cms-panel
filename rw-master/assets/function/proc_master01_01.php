@@ -27,25 +27,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
-#===================================#
-# フロント側マスタ定義JSONファイル取得
-#-----------------------------------#
-#取得項目一覧
-$jsonMasters = [];
-try {
-	$jsonMasters = getJson_FrontEndMaster_many([
-		'jobCategories',
-		'contractPlans'
-	]);
-} catch (Throwable $e) {
-	if (function_exists('makeLog')) {
-		makeLog('[proc_master01_01] master JSON load failed: ' . $e->getMessage());
-	}
-	$jsonMasters = [];
-}
-#募集職種マスタ
-$jobCategories = $jsonMasters['jobCategories'] ?? [];
-
 #================#
 # 応答用タグ初期化
 #----------------#
@@ -82,6 +63,26 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 }
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
+
+#===================================#
+# フロント側マスタ定義JSONファイル取得
+#-----------------------------------#
+#取得項目一覧
+$jsonMasters = [];
+try {
+	$jsonMasters = getJson_FrontEndMaster_many([
+		'jobCategories',
+		'contractPlans'
+	]);
+} catch (Throwable $e) {
+	if (function_exists('makeLog')) {
+		makeLog('[proc_master01_01] master JSON load failed: ' . $e->getMessage());
+	}
+	$jsonMasters = [];
+}
+#募集職種マスタ
+$jobCategories = $jsonMasters['jobCategories'] ?? [];
+
 #-------------#
 #検索・ステータス変更
 $action = isset($_POST['action']) ? $_POST['action'] : '';
@@ -531,7 +532,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 		);
 		$makeTag['tag'] .= <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle} onclick="location.href='./master01_01_01.php?application_id={$application['application_id']}'">
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$application['line_user_id']}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 

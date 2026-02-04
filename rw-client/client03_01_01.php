@@ -214,7 +214,7 @@ print <<<HTML
     <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://rita-work.jp; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">

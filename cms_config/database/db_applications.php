@@ -141,6 +141,12 @@ function searchApplicationsHelper($searchConditions, $options = [])
 	$whereSql = '';
 	$joinSql = '';
 	$sqlParams = [];
+	#LINEユーザーID（任意：指定時は個人に絞り込み）
+	$lineUserId = isset($searchConditions['line_user_id']) ? trim((string)$searchConditions['line_user_id']) : '';
+	if ($lineUserId !== '') {
+		$whereSql .= " AND {$alias}.line_user_id = :line_user_id";
+		$sqlParams[':line_user_id'] = $lineUserId;
+	}
 	#検索モード（ステータス）
 	$searchMode = isset($searchConditions['searchMode']) ? (string)$searchConditions['searchMode'] : '';
 	if ($searchMode === '') {
@@ -287,6 +293,125 @@ function searchApplicationCount($searchConditions)
 	}
 }
 /*
+ * [応募者一覧取得（応募者IDで絞込）]
+ *  引数
+ *   $searchConditions：検索条件配列
+ *   $pageNumber      ：ページ番号
+ *   $displayNumber   ：表示件数
+ */
+function getApplicationJobList($searchConditions, $pageNumber, $displayNumber)
+{
+	global $DB_CONNECT;
+	try {
+		#並び替え（応募日/面接日：2軸 + 主キー）
+		$sortTarget = isset($searchConditions['sortTarget']) ? (string)$searchConditions['sortTarget'] : 'application_at';
+		if ($sortTarget !== 'application_at' && $sortTarget !== 'interview_at') {
+			$sortTarget = 'application_at';
+		}
+		$applicationSortOrder = isset($searchConditions['applicationSortOrder']) ? strtolower((string)$searchConditions['applicationSortOrder']) : '';
+		$interviewSortOrder = isset($searchConditions['interviewSortOrder']) ? strtolower((string)$searchConditions['interviewSortOrder']) : '';
+		if ($applicationSortOrder !== 'asc' && $applicationSortOrder !== 'desc') {
+			$applicationSortOrder = 'desc';
+		}
+		if ($interviewSortOrder !== 'asc' && $interviewSortOrder !== 'desc') {
+			$interviewSortOrder = 'desc';
+		}
+		$applicationSortOrderSql = ($applicationSortOrder === 'asc') ? 'ASC' : 'DESC';
+		$interviewSortOrderSql = ($interviewSortOrder === 'asc') ? 'ASC' : 'DESC';
+		#ページング
+		$pageNumber = (int)$pageNumber;
+		$displayNumber = (int)$displayNumber;
+		if ($pageNumber < 1) {
+			$pageNumber = 1;
+		}
+		if ($displayNumber < 1) {
+			$displayNumber = 10;
+		}
+		$offset = ($pageNumber - 1) * $displayNumber;
+		#SQL定義（1人=複数行：応募求人一覧）
+		$strSQL = "SELECT a.application_id, a.job_id, a.job_category_id, a.facility_id, a.corporation_id, a.line_user_id, a.line_display_name, a.applicant_name, a.status, a.interview_at, a.created_at, a.updated_at\n"
+			. "FROM applications a";
+		list($joinSql, $whereSql, $sqlParams) = searchApplicationsHelper($searchConditions, ['alias' => 'a']);
+		$strSQL .= $joinSql . "\nWHERE 1=1" . $whereSql . "\nORDER BY ";
+		if ($sortTarget === 'interview_at') {
+			#主キー：面接日（NULLは最後）、副キー：応募日
+			$strSQL .= "(a.interview_at IS NULL) ASC, a.interview_at {$interviewSortOrderSql}, a.created_at {$applicationSortOrderSql}, a.application_id DESC\n";
+		} else {
+			#主キー：応募日、副キー：面接日（NULLは最後）
+			$strSQL .= "a.created_at {$applicationSortOrderSql}, (a.interview_at IS NULL) ASC, a.interview_at {$interviewSortOrderSql}, a.application_id DESC\n";
+		}
+		$strSQL .= "LIMIT :limit OFFSET :offset";
+		#プリペアードステートメント作成
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		#変数バインド（検索条件）
+		foreach ($sqlParams as $paramKey => $paramValue) {
+			if ($paramKey === ':facility_id') {
+				$newStmt->bindValue($paramKey, (int)$paramValue, PDO::PARAM_INT);
+				continue;
+			}
+			if ($paramKey === ':line_user_id') {
+				$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+				continue;
+			}
+			if ($paramKey === ':job_category_id') {
+				$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+				continue;
+			}
+			$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+		}
+		$newStmt->bindValue(':limit', $displayNumber, PDO::PARAM_INT);
+		$newStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+		#SQL実行
+		$newStmt->execute();
+		#実行結果取得
+		$applicationList = $newStmt->fetchAll(PDO::FETCH_ASSOC);
+		#ステートメントクローズ
+		$newStmt->closeCursor();
+		#存在しない場合は空配列を返却
+		return $applicationList ?: [];
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
+ * [応募人数取得（検索条件反映：応募者IDで絞込）]
+ *  引数
+ *   $searchConditions：検索条件配列
+ */
+function searchApplicationJobCount($searchConditions)
+{
+	global $DB_CONNECT;
+	try {
+		$strSQL = "SELECT COUNT(*) FROM applications a";
+		list($joinSql, $whereSql, $sqlParams) = searchApplicationsHelper($searchConditions, ['alias' => 'a']);
+		$strSQL .= $joinSql . ' WHERE 1=1' . $whereSql;
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		foreach ($sqlParams as $paramKey => $paramValue) {
+			if ($paramKey === ':facility_id') {
+				$newStmt->bindValue($paramKey, (int)$paramValue, PDO::PARAM_INT);
+				continue;
+			}
+			if ($paramKey === ':line_user_id') {
+				$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+				continue;
+			}
+			if ($paramKey === ':job_category_id') {
+				$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+				continue;
+			}
+			$newStmt->bindValue($paramKey, (string)$paramValue, PDO::PARAM_STR);
+		}
+		$newStmt->execute();
+		$cnt = (int)$newStmt->fetchColumn();
+		$newStmt->closeCursor();
+		return $cnt;
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
  * [応募中の求人一覧取得]
  *  引数
  *   $lineUserId：LINEユーザーID
@@ -394,15 +519,36 @@ function getAllAppliedJobs($lineUserId)
 /*
  * [応募者詳細取得]
  *  引数
- *   $applicationId：application_id
+ *   $lineUserId：LINEユーザーID
  */
-function getApplicationById($applicationId)
+function getApplicationBylineUserId($lineUserId)
 {
 	global $DB_CONNECT;
 	try {
-		$strSQL = 'SELECT * FROM applications WHERE application_id = :application_id LIMIT 1';
+		$strSQL = 'SELECT * FROM applications WHERE line_user_id = :line_user_id ORDER BY application_id DESC LIMIT 1';
 		$newStmt = $DB_CONNECT->prepare($strSQL);
-		$newStmt->bindValue(':application_id', (int)$applicationId, PDO::PARAM_INT);
+		$newStmt->bindValue(':line_user_id', (string)$lineUserId, PDO::PARAM_STR);
+		$newStmt->execute();
+		$application = $newStmt->fetch(PDO::FETCH_ASSOC);
+		$newStmt->closeCursor();
+		return is_array($application) ? $application : null;
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
+ * [応募者メモ取得]
+ *  引数
+ *   $lineUserId：LINEユーザーID
+ */
+function getApplicationMemoBylineUserId($lineUserId)
+{
+	global $DB_CONNECT;
+	try {
+		$strSQL = 'SELECT * FROM applicants_memo WHERE line_user_id = :line_user_id ORDER BY applicant_id DESC LIMIT 1';
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		$newStmt->bindValue(':line_user_id', (string)$lineUserId, PDO::PARAM_STR);
 		$newStmt->execute();
 		$application = $newStmt->fetch(PDO::FETCH_ASSOC);
 		$newStmt->closeCursor();

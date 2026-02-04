@@ -20,7 +20,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
 #PW再設定後のメッセージ表示
 #eMailNote = 'rita@rita-work.jp';
 #$pwNote = 'afact-rita';
-#echo password_hash("afact-rita", PASSWORD_BCRYPT) . PHP_EOL;
+#echo password_hash("demo-ritawork", PASSWORD_BCRYPT) . PHP_EOL;
 #exit();
 
 #=============#

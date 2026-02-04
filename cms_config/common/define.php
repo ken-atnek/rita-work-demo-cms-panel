@@ -15,6 +15,8 @@ define('DEFINE_DEBUGFLG', 0);
 #define('DOMAIN_NAME', 'https://cms-panel.rita-work.jp');
 #define('DOMAIN_NAME', 'https://rita5258.xbiz.jp');
 define('DOMAIN_NAME', '../../2604/public');
+#define('DOMAIN_NAME_DEMO', 'https://rita5258.xbiz.jp');
+
 
 #ドキュメントルート定義
 define('DOCUMENT_ROOT_PATH', dirname(__DIR__) . '/../');

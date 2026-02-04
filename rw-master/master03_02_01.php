@@ -266,7 +266,7 @@ print <<<HTML
         <nav>
           <a href="./master03_01_01.php?method=edit&facId={$facId}">事業所情報</a>
           <a href="./master03_02.php?facId={$facId}" class="is-active">求人カード一覧</a>
-          <a href="#">パスワード設定</a>
+          <a href="./master03_03.php?facId={$facId}">パスワード設定</a>
         </nav>
       </section>
       <section class="container-job-card-register">

@@ -563,7 +563,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
     );
     print <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle}>
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$application['line_user_id']}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 

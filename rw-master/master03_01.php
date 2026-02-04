@@ -25,27 +25,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
-#===================================#
-# フロント側マスタ定義JSONファイル取得
-#-----------------------------------#
-#取得項目一覧
-$jsonMasters = [];
-try {
-  $jsonMasters = getJson_FrontEndMaster_many([
-    'jobCategories',
-    'contractPlans'
-  ]);
-} catch (Throwable $e) {
-  if (function_exists('makeLog')) {
-    makeLog('[master03_01] master JSON load failed: ' . $e->getMessage());
-  }
-  $jsonMasters = [];
-}
-#募集職種マスタ
-$jobCategories = $jsonMasters['jobCategories'] ?? [];
-#契約プランマスタ
-$contractPlans = $jsonMasters['contractPlans'] ?? [];
-
 #================#
 # SESSIONチェック
 #----------------#
@@ -72,6 +51,28 @@ if ($_SESSION[$noUpDateKey]['masterKey'] < 1) {
   header("Location: ./logout.php");
   exit;
 }
+
+#===================================#
+# フロント側マスタ定義JSONファイル取得
+#-----------------------------------#
+#取得項目一覧
+$jsonMasters = [];
+try {
+  $jsonMasters = getJson_FrontEndMaster_many([
+    'jobCategories',
+    'contractPlans'
+  ]);
+} catch (Throwable $e) {
+  if (function_exists('makeLog')) {
+    makeLog('[master03_01] master JSON load failed: ' . $e->getMessage());
+  }
+  $jsonMasters = [];
+}
+#募集職種マスタ
+$jobCategories = $jsonMasters['jobCategories'] ?? [];
+#契約プランマスタ
+$contractPlans = $jsonMasters['contractPlans'] ?? [];
+
 #-------------#
 #検索・絞り込み条件保持用セッションチェック
 $searchConditions = array();

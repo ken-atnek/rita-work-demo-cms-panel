@@ -1,0 +1,306 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/master05.css" />
+  </head>
+
+  <body>
+    <!--#include virtual="./inc_header.html"-->
+    <main class="inner-05-01-01">
+      <section class="page-nav">
+        <h2>運営管理</h2>
+        <nav>
+          <a href="#" class="is-active">転職のヒント</a>
+          <a href="#">&emsp;ー&emsp;TOP表示設定</a>
+          <a href="#">事業所へのお知らせ</a>
+        </nav>
+      </section>
+      <section class="container-applicant-list">
+        <h2>転職のヒント</h2>
+        <form class="block-search">
+          <button
+            type="button"
+            id="btnSwitchSearch"
+            class="btn-switch"
+            aria-controls="innerSearch"
+            aria-expanded="false"
+          ></button>
+          <h3>条件で検索</h3>
+          <article id="innerSearch">
+            <div class="blockGrid">
+              <ul class="box-search-items">
+                <li class="item-last-update">
+                  <h4>最終更新日</h4>
+                  <div class="wrap-period">
+                    <input type="date" name="searchStartDay" />
+                    <span>〜</span>
+                    <input type="date" name="searchEndDay" />
+                  </div>
+                </li>
+              </ul>
+              <div class="box-btn">
+                <button type="button" class="item-clear">条件をクリア</button>
+                <button type="button" class="item-search">条件で検索</button>
+              </div>
+            </div>
+          </article>
+        </form>
+
+        <article class="block-search-results">
+          <div class="box-head">
+            <p class="announce-results">条件に<span>123件</span>が該当</p>
+            <div class="list-display" data-selectbox>
+              <button type="button" class="selectbox__head" aria-expanded="false">
+                <input type="hidden" name="display" value="10" data-selectbox-hidden />
+                <span class="selectbox__value" data-selectbox-value>10</span>
+              </button>
+              <div class="list-wrapper">
+                <ul class="selectbox__panel">
+                  <li>
+                    <input type="radio" name="display" id="display01" value="10" checked />
+                    <label for="display01">10</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="display" id="display02" value="20" />
+                    <label for="display02">20</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="display" id="display03" value="30" />
+                    <label for="display03">30</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="display" id="display04" value="50" />
+                    <label for="display04">50</label>
+                  </li>
+                  <li>
+                    <input type="radio" name="display" id="display05" value="100" />
+                    <label for="display05">100</label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <ul class="list-search-results">
+            <li>
+              <div>
+                番号<span class="wrap-sort-btn"
+                  ><button type="button" class="arrow-top"></button
+                  ><button type="button" class="arrow-bottom is-active"></button
+                ></span>
+              </div>
+              <div>サムネイル</div>
+              <div>記事</div>
+              <div>ステータス</div>
+
+              <div>
+                最終更新日<span class="wrap-sort-btn"
+                  ><button type="button" class="arrow-top"></button
+                  ><button type="button" class="arrow-bottom is-active"></button
+                ></span>
+              </div>
+            </li>
+            <!-- NOTE  インラインでz-indexを付与 -->
+            <li style="z-index: 10">
+              <div class="item-number">25</div>
+              <div class="item-image">
+                <picture>
+                  <source src="../assets/images/_dummy/hint01.jpg" />
+                  <img src="../assets/images/_dummy/hint01.jpg" />
+                </picture>
+              </div>
+              <div class="item-details">
+                <p class="title">転職でよくありがちな落とし穴</p>
+                <p class="contents">
+                  焦って転職先を決めた結果、仕事内容や職場の雰囲気が合わず早期退職に。条件だけで選ばず、自分に合う環境を見極めることが大切です。ああああああああああああああああああ
+                </p>
+              </div>
+              <div class="box-status">
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
+                    <input
+                      type="hidden"
+                      name="list01statusMethod"
+                      value="1"
+                      data-selectbox-hidden
+                    />
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    <i></i>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
+                      <li>
+                        <input
+                          type="radio"
+                          name="list01statusMethod"
+                          value="1"
+                          id="list01-status01"
+                          checked
+                        />
+                        <label for="list01-status01" class="status-draft">下書き中</label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="list01statusMethod"
+                          value="2"
+                          id="list01-status02"
+                        />
+                        <label for="list01-status02" class="status-published">公開中</label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="item-date">2025/10/30</div>
+            </li>
+            <li style="z-index: 9">
+              <div class="item-number">184</div>
+              <div class="item-image">
+                <picture>
+                  <source src="../assets/images/_dummy/hint01.jpg" />
+                  <img src="../assets/images/_dummy/hint01.jpg" />
+                </picture>
+              </div>
+              <div class="item-details">
+                <p class="title">転職でよくありがちな落とし穴</p>
+                <p class="contents">
+                  焦って転職先を決めた結果、仕事内容や職場の雰囲気が合わず早期退職に。条件だけで選ばず、自分に合う環境を見極めることが大切です。ああああああああああああああああああ
+                </p>
+              </div>
+              <div class="box-status">
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
+                    <input
+                      type="hidden"
+                      name="list02statusMethod"
+                      value="21"
+                      data-selectbox-hidden
+                    />
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    <i></i>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
+                      <li>
+                        <input
+                          type="radio"
+                          name="list02statusMethod"
+                          value="21"
+                          id="list02-status01"
+                        />
+                        <label for="list02-status01" class="status-draft">下書き中</label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="list02statusMethod"
+                          value="22"
+                          id="list02-status02"
+                          checked
+                        />
+                        <label for="list02-status02" class="status-published">公開中</label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="item-date">2025/10/30</div>
+            </li>
+            <li style="z-index: 8">
+              <div class="item-number">7</div>
+              <div class="item-image">
+                <picture>
+                  <source src="../assets/images/_dummy/hint01.jpg" />
+                  <img src="../assets/images/_dummy/hint01.jpg" />
+                </picture>
+              </div>
+              <div class="item-details">
+                <p class="title">転職でよくありがちな落とし穴</p>
+                <p class="contents">
+                  焦って転職先を決めた結果、仕事内容や職場の雰囲気が合わず早期退職に。条件だけで選ばず、自分に合う環境を見極めることが大切です。ああああああああああああああああああ
+                </p>
+              </div>
+              <div class="box-status">
+                <div class="select-status" data-selectbox>
+                  <button type="button" class="selectbox__head" aria-expanded="false">
+                    <input
+                      type="hidden"
+                      name="list03statusMethod"
+                      value="31"
+                      data-selectbox-hidden
+                    />
+                    <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                    <i></i>
+                  </button>
+                  <div class="list-wrapper">
+                    <ul class="selectbox__panel">
+                      <li>
+                        <input
+                          type="radio"
+                          name="list03statusMethod"
+                          value="31"
+                          id="list03-status01"
+                        />
+                        <label for="list03-status01" class="status-draft">下書き中</label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="list03statusMethod"
+                          value="32"
+                          id="list03-status02"
+                          checked
+                        />
+                        <label for="list03-status02" class="status-published">公開中</label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="item-date">2025/10/30</div>
+            </li>
+          </ul>
+          <div class="box-pager">
+            <div class="box_number">
+              <nav>
+                <a href="#" class="is-active"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"></a>
+              </nav>
+              <button type="button" class="btn_next"></button>
+            </div>
+            <div class="box_input">
+              <input type="text" placeholder="1/16513" />
+            </div>
+          </div>
+        </article>
+        <div class="bottom-box-btn">
+          <button type="button" class="item-register"><span>新規記事登録</span></button>
+        </div>
+      </section>
+      <!--#include virtual="./inc_page-top.html"-->
+    </main>
+    <script src="../assets/js/common.js" defer></script>
+  </body>
+</html>

@@ -117,7 +117,7 @@ print <<<HTML
     <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://rita-work.jp; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
@@ -162,27 +162,27 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
     #ステータス判定
     $isActiveClass = '';
     #プレビューリンクURLパラメータ
-    $previewUrlParam = '/details/?id=' . $jobCard['job_code'];
+    $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'];
     switch ($jobCard['is_active']) {
       #下書き中：draft
       case 1:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
       #公開中：public
       case 2:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'];
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'];
         break;
       #掲載停止中：private
       case 99:
         $isActiveClass = 'class="is-inactive"';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
       #デフォルト：下書き中
       default:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
     }
     #募集職種
@@ -314,7 +314,7 @@ HTML;
               </div>
               <div class="box-btn">
                 <div class="box-btn-inner">
-                  <button type="button" class="btn-preview" onclick="location.href='{$previewUrlParam}'">プレビュー</button>
+                  <button type="button" class="btn-preview" onclick="openPreviewPage('{$previewUrlParam}')">プレビュー</button>
                   <button type="button" class="btn-contact" onclick="location.href='./client08_01.php?title=plan&facId={$jobCard['facility_id']}&jobId={$jobCard['job_id']}'">お問い合わせ</button>
                 </div>
               </div>

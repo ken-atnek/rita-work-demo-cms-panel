@@ -535,7 +535,7 @@ $sortModeValueJsAttr = htmlspecialchars((string)$sortModeValueJs, ENT_QUOTES, 'U
 
 #***** タグ生成開始 *****#
 $makeTag['tag'] .= <<<HTML
-	<article class="block-search-results" data-current-sort-mode="{$sortModeValueEsc}">
+        <article class="block-search-results" data-current-sort-mode="{$sortModeValueEsc}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$applicationCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>
@@ -564,7 +564,7 @@ foreach ($displayNumberList as $number) {
 	$checked = ($number === (int)$searchConditions['displayNumber']) ? ' checked' : '';
 	$makeTag['tag'] .= <<<HTML
                   <li>
-								<input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none',{$sortModeValueJsAttr})">
+                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none',{$sortModeValueJsAttr})">
                     <label for="display{$number}">{$number}</label>
                   </li>
 
@@ -584,15 +584,15 @@ $makeTag['tag'] .= <<<HTML
               <div>
                 応募日
                 <span class="wrap-sort-btn">
-									<button type="button" class="arrow-top {$sortApplicationsAscActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortApplicationsDate_asc')"></button>
-									<button type="button" class="arrow-bottom {$sortApplicationsDescActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortApplicationsDate_desc')"></button>
+                  <button type="button" class="arrow-top {$sortApplicationsAscActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortApplicationsDate_asc')"></button>
+                  <button type="button" class="arrow-bottom {$sortApplicationsDescActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortApplicationsDate_desc')"></button>
                 </span>
               </div>
               <div>
                 面接日
                 <span class="wrap-sort-btn">
-									<button type="button" class="arrow-top {$sortInterviewDateAscActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortInterviewDate_asc')"></button>
-									<button type="button" class="arrow-bottom {$sortInterviewDateDescActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortInterviewDate_desc')"></button>
+                  <button type="button" class="arrow-top {$sortInterviewDateAscActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortInterviewDate_asc')"></button>
+                  <button type="button" class="arrow-bottom {$sortInterviewDateDescActive}" onclick="searchConditions('search',{$searchModeJsAttr},'sortInterviewDate_desc')"></button>
                 </span>
               </div>
             </li>
@@ -633,7 +633,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 		);
 		$makeTag['tag'] .= <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle} onclick="location.href='./master01_01_01.php?application_id={$application['application_id']}'">
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?appId={$application['application_id']}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 

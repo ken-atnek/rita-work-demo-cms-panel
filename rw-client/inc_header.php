@@ -8,6 +8,8 @@
  *  2026.1.22
  */
 
+$previewUrl = DOMAIN_NAME_DEMO;
+
 #***** タグ生成開始 *****#
 print <<<HTML
 <header class="area-client" id="Header">
@@ -17,7 +19,7 @@ print <<<HTML
     </span>
   </div>
   <div class="box-head">
-    <a href="#" class="page-check"><span>サイトを確認</span></a>
+    <a href="{$previewUrl}" target="_blank" rel="noopener" class="page-check"><span>サイトを確認</span></a>
     <h1>
       <span>{$facilityData['name']}</span>
       <button type="button" onclick="location.href='./logout.php'">ログアウト</button>

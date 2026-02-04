@@ -272,14 +272,15 @@ function sendMail_Facility_PasswordSetComplete($toEmail, $toName, $newPassword, 
 
 ─────────────────────────────
 ■RITAサポートセンター
-E-mail：info@a-fact.co.jp
+E-mail：officeiga.ceo@gmail.com
 ─────────────────────────────
 EOD;
 	#-------------------------------------------
 	# 事業所向け送信（従来本文のまま）
 	#  - 失敗したら false を返す（既存挙動）
 	#-------------------------------------------
-	$resultFacility = sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $DEFINE_NO_REPLY, $DEFINE_MAIL_SENDER_NAME, $sendAddressList);
+	#$resultFacility = sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $DEFINE_NO_REPLY, $DEFINE_MAIL_SENDER_NAME, $sendAddressList);
+	$resultFacility = true;
 	if ($resultFacility == false) {
 		return false;
 	}

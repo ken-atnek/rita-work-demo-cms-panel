@@ -8,6 +8,8 @@
  *  2025.12.15
  */
 
+$previewUrl = DOMAIN_NAME_DEMO;
+
 #***** タグ生成開始 *****#
 print <<<HTML
 <header class="area-master" id="Header">
@@ -17,7 +19,7 @@ print <<<HTML
     </span>
   </div>
   <div class="box-head">
-    <a href="#" class="page-check"><span>サイトを確認</span></a>
+    <a href="{$previewUrl}" target="_blank" rel="noopener" class="page-check"><span>サイトを確認</span></a>
     <h1>
       <span>マスターアカウント</span>
       <button type="button" onclick="location.href='./logout.php'">ログアウト</button>

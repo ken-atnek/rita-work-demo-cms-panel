@@ -111,7 +111,7 @@ HTML;
 								# 1 = BEGIN／ 2 = COMMIT／ 3 = ROLLBACK
 								DB_Transaction(2);
 								#パスワード再設定用URL生成
-								$resetUrl = DOMAIN_NAME . "/demo-cms-panel/rw-master/resetPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
+								$resetUrl = $CMS_PANEL_URL . "/rw-master/resetPassword.php?selector=" . $selector . "&validator=" . bin2hex($token);
 								#メール送信処理
 								$sendResult = sendResetPassword($userEmail, $resetUrl);
 								#メール送信失敗

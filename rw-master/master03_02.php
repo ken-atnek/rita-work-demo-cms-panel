@@ -163,27 +163,27 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
     #ステータス判定
     $isActiveClass = '';
     #プレビューリンクURLパラメータ
-    $previewUrlParam = '/details/?id=' . $jobCard['job_code'];
+    $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'];
     switch ($jobCard['is_active']) {
       #下書き中：draft
       case 1:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
       #公開中：public
       case 2:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'];
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'];
         break;
       #掲載停止中：private
       case 99:
         $isActiveClass = 'class="is-inactive"';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
       #デフォルト：下書き中
       default:
         $isActiveClass = '';
-        $previewUrlParam = '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
+        $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
     }
     #募集職種
@@ -315,7 +315,7 @@ HTML;
               </div>
               <div class="box-btn">
                 <div class="box-btn-inner">
-                  <button type="button" class="btn-preview" onclick="location.href='{$previewUrlParam}'">プレビュー</button>
+                  <button type="button" class="btn-preview" onclick="openPreviewPage('{$previewUrlParam}')">プレビュー</button>
                   <button type="button" class="btn-change-plan" onclick="location.href='./master03_02_01.php?method=edit&planAction=change&facId={$jobCard['facility_id']}&jobId={$jobCard['job_id']}#targetSelectPlan'">プラン変更</button>
                 </div>
                 <div class="box-btn-inner">
