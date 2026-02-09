@@ -21,7 +21,8 @@ require(__DIR__ . '/../../database/db_jobs.php');
 #POSTチェック
 #$facId = $argv[1];
 #デバッグ用
-#$facId = '1';
+#
+$facId = '1';
 #-------------------------------------------#
 #求人カード情報を取得
 $jobsCardData = getJobList();
@@ -186,5 +187,17 @@ function makeJson($saveDir, $makeJson)
 		#パーミッション変更
 		@chmod($saveDir . '/' . $makeJson, octdec("0666"));
 	}
+}
+#===========================================#
+
+
+#===========================================#
+#全JSON生成が完了した「最後」に実行
+if (defined('DEFINE_JSON_MIRROR_ENABLE') && DEFINE_JSON_MIRROR_ENABLE) {
+	mirrorDbSelectiveMasterByRsync(
+		(string)DEFINE_JSON_MIRROR_SRC_DB_DIR,         #初期ドメイン側 /db
+		(string)DEFINE_JSON_MIRROR_DEST_DB_DIR,        #正式ドメイン側 /db
+		(string)DEFINE_JSON_MIRROR_MASTER_ONLY_FILE    #corporations.json
+	);
 }
 #===========================================#

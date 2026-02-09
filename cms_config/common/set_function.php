@@ -227,6 +227,79 @@ function sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $fromEmail, $
 
 
 
+/**
+ * db/ は同期するが、db/master/ は corporations.json のみ同期する
+ * 1) master除外で db/ を同期（--delete あり）
+ * 2) master/corporations.json のみ同期（上書き）
+ */
+function mirrorDbSelectiveMasterByRsync(string $srcDbDir, string $destDbDir, string $masterOnlyFile): void
+{
+	$srcDbDir  = rtrim($srcDbDir, "/\\");
+	$destDbDir = rtrim($destDbDir, "/\\");
+	if ($srcDbDir === '' || $destDbDir === '' || $srcDbDir === $destDbDir) {
+		return;
+	}
+	if (!is_dir($srcDbDir)) {
+		return;
+	}
+	if (!is_dir($destDbDir)) {
+		@mkdir($destDbDir, 0777, true);
+	}
+	#同時実行対策（src側でロック）
+	$lockFp = @fopen($srcDbDir . '/.mirror_rsync.lock', 'c');
+	if ($lockFp === false) {
+		return;
+	}
+	if (!flock($lockFp, LOCK_EX)) {
+		fclose($lockFp);
+		return;
+	}
+	try {
+		$rsync = defined('DEFINE_RSYNC_BIN') ? (string)DEFINE_RSYNC_BIN : 'rsync';
+		# 1) db/ 全体同期（master配下は除外）
+		#    ※--delete しても、除外対象(master)は削除されない（masterは触らない）
+		$cmd1 = escapeshellcmd($rsync)
+			. ' -a --delete'
+			. ' --exclude=' . escapeshellarg('.mirror_rsync.lock')
+			. ' --exclude=' . escapeshellarg('master/')
+			. ' --exclude=' . escapeshellarg('master/**')
+			. ' ' . escapeshellarg($srcDbDir . '/')
+			. ' ' . escapeshellarg($destDbDir . '/')
+			. ' 2>&1';
+		$out1 = [];
+		$code1 = 0;
+		@exec($cmd1, $out1, $code1);
+		if ($code1 !== 0) {
+			error_log('[json-mirror] rsync failed (cmd1) code=' . $code1 . ' cmd=' . $cmd1 . ' out=' . implode("\n", $out1));
+		}
+		# 2) master/corporations.json だけ同期
+		$srcMasterFile = $srcDbDir . '/master/' . $masterOnlyFile;
+		if (is_file($srcMasterFile)) {
+			$destMasterDir = $destDbDir . '/master';
+			if (!is_dir($destMasterDir)) {
+				@mkdir($destMasterDir, 0777, true);
+			}
+			$cmd2 = escapeshellcmd($rsync)
+				. ' -a'
+				. ' ' . escapeshellarg($srcMasterFile)
+				. ' ' . escapeshellarg($destMasterDir . '/' . $masterOnlyFile)
+				. ' 2>&1';
+			$out2 = [];
+			$code2 = 0;
+			@exec($cmd2, $out2, $code2);
+			if ($code2 !== 0) {
+				error_log('[json-mirror] rsync failed (cmd2) code=' . $code2 . ' cmd=' . $cmd2 . ' out=' . implode("\n", $out2));
+			}
+		}
+		# 必要なら $code1/$code2 と $out1/$out2 を makeLog() 等で記録してください
+	} finally {
+		flock($lockFp, LOCK_UN);
+		fclose($lockFp);
+	}
+}
+
+
+
 /*
  * [データ処理関数定義]
  */

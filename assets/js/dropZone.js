@@ -59,7 +59,13 @@ function initDropZone(options) {
   try {
     const sendPHP = getHiddenValue('send_php', '');
     const areaName = inputArea && inputArea.value ? String(inputArea.value) : '';
-    const discardTargets = ['proc_master03_02_01.php', 'proc_master03_01_01.php'];
+    const discardTargets = [
+      'proc_client02_01.php',
+      'proc_client03_01_01.php',
+      'proc_master03_01_01.php',
+      'proc_master03_02_01.php',
+      'proc_master05_01_02.php',
+    ];
     if (discardTargets.includes(sendPHP) && areaName) {
       if (!window.__rwUploadDraftDiscard) {
         window.__rwUploadDraftDiscard = { sendPHP: sendPHP, areas: [] };

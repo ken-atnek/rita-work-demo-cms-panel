@@ -15,7 +15,7 @@ define('DEFINE_DEBUGFLG', 0);
 #define('DOMAIN_NAME', 'https://cms-panel.rita-work.jp');
 #define('DOMAIN_NAME', 'https://rita5258.xbiz.jp');
 define('DOMAIN_NAME', '../../2604/public');
-#define('DOMAIN_NAME_DEMO', 'https://rita5258.xbiz.jp');
+define('DOMAIN_NAME_DEMO', 'https://rita5258.xbiz.jp');
 
 
 #ドキュメントルート定義
@@ -50,7 +50,7 @@ define('DEFINE_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db');
 define('DEFINE_MASTER_JSON_DIR_PATH', DEFINE_FRONTEND_DIR_PATH . '/db/master');
 
 #プレビュー画像保存パス
-define('DEFINE_PREVIEW_IMAGE_DIR_PATH', '../tmp_upload');
+define('DEFINE_PREVIEW_IMAGE_DIR_PATH', '../../../tmp_upload');
 
 #事業所登録画像ファイル保存パス
 define('DEFINE_FILE_DIR_PATH', DEFINE_JSON_DIR_PATH . '/images');
