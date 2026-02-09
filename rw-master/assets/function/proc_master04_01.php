@@ -683,7 +683,7 @@ HTML;
 				if (isset($db_applicationStatus) && $db_applicationStatus != '' && $db_applicationStatus != 'friend_only') {
 					$makeTag['tag'] .= <<<HTML
                   <div class="wrap-apply-status">
-                    <!--NOTE  連番注意 list01-status- -->
+                    <!--NOTE 連番注意 list01-status- -->
                     <div class="apply-status" data-selectbox>
                       <button type="button" class="selectbox__head" aria-expanded="false">
 

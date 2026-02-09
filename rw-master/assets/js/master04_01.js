@@ -3,6 +3,101 @@
  *
  */
 const requestURL = './assets/function/proc_master04_01.php';
+
+/**
+ * 応募状況変更：キャンセル時に元に戻す
+ * - initSelectBox() が radio click で hidden/value を即更新するため、
+ *  「変更前」を click の capture フェーズで退避しておく。
+ */
+const __appStatusPrevByGroupName = Object.create(null);
+let __appStatusPending = null;
+let __appStatusLastGroupName = null;
+function __getAppStatusParts(groupName) {
+  const name = String(groupName || '');
+  if (!name) return { box: null, head: null, valueEl: null, hiddenEl: null, radios: [] };
+  const hiddenEl = document.querySelector(
+    `input[data-selectbox-hidden][name="${CSS.escape(name)}"]`
+  );
+  const box = hiddenEl ? hiddenEl.closest('[data-selectbox]') : null;
+  const head = box ? box.querySelector('.selectbox__head') : null;
+  const valueEl = box ? box.querySelector('[data-selectbox-value]') : null;
+  const radios = box
+    ? Array.from(box.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`))
+    : [];
+  return { box, head, valueEl, hiddenEl, radios };
+}
+function __syncHeadStatusClass(head, label) {
+  if (!head) return;
+  Array.from(head.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.remove(c);
+  });
+  if (!label) return;
+  Array.from(label.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.add(c);
+  });
+}
+function __applyAppStatusToUi(groupName, statusValue) {
+  const { box, head, valueEl, hiddenEl, radios } = __getAppStatusParts(groupName);
+  if (!box || !hiddenEl || !valueEl) return;
+  const next = String(statusValue || '').trim();
+  if (!next) return;
+  const radio = radios.find((r) => String(r.value) === next);
+  if (radio) radio.checked = true;
+  hiddenEl.value = next;
+  const label = radio ? box.querySelector(`label[for="${CSS.escape(radio.id)}"]`) : null;
+  if (label) valueEl.textContent = String(label.textContent || '').trim();
+  __syncHeadStatusClass(head, label);
+  box.classList.remove('is-open');
+  if (head) head.setAttribute('aria-expanded', 'false');
+}
+function __getModalCloseButton() {
+  const blockModal = document.getElementById('modalBlock');
+  return blockModal?.querySelector('.box-title button') || null;
+}
+function __setModalCloseToCancel() {
+  const btn = __getModalCloseButton();
+  if (!btn) return;
+  if (!btn.dataset.__defaultOnclick) {
+    btn.dataset.__defaultOnclick = btn.getAttribute('onclick') || 'closeModal()';
+  }
+  btn.setAttribute('onclick', 'cancelApplicationStatusChange();');
+}
+function __restoreModalCloseDefault() {
+  const btn = __getModalCloseButton();
+  if (!btn) return;
+  const def = btn.dataset.__defaultOnclick || 'closeModal()';
+  btn.setAttribute('onclick', def);
+}
+
+function cancelApplicationStatusChange() {
+  try {
+    if (__appStatusPending && __appStatusPending.groupName) {
+      const prev = String(__appStatusPending.prevValue || '').trim();
+      if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+    }
+  } finally {
+    __appStatusPending = null;
+    __restoreModalCloseDefault();
+    if (typeof closeModal === 'function') closeModal();
+  }
+}
+window.cancelApplicationStatusChange = cancelApplicationStatusChange;
+//capture: radio click の前に hidden の現状（=変更前）を退避
+document.addEventListener(
+  'click',
+  (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement)) return;
+    if (t.type !== 'radio') return;
+    const name = String(t.name || '');
+    if (!name.startsWith('application_status')) return;
+    const { hiddenEl } = __getAppStatusParts(name);
+    const prev = hiddenEl ? String(hiddenEl.value || '').trim() : '';
+    if (prev) __appStatusPrevByGroupName[name] = prev;
+    __appStatusLastGroupName = name;
+  },
+  true
+);
 /**
  * 応募状況ボタン切替
  *
@@ -230,6 +325,16 @@ function checkApplicationStatus(
   searchMode,
   sortMode
 ) {
+  const groupName = __appStatusLastGroupName;
+  const prevValue = groupName
+    ? __appStatusPrevByGroupName[groupName] || __getAppStatusParts(groupName).hiddenEl?.value || ''
+    : '';
+  __appStatusPending = {
+    groupName: groupName,
+    prevValue: String(prevValue || ''),
+    nextValue: String(status || ''),
+  };
+  __setModalCloseToCancel();
   const blockModal = document.getElementById('modalBlock');
   if (!blockModal) return;
   const boxTitleP = blockModal.querySelector('.box-title p');
@@ -259,7 +364,7 @@ function checkApplicationStatus(
   cancelBtn.className = 'btn-cancel';
   cancelBtn.textContent = 'キャンセル';
   cancelBtn.addEventListener('click', () => {
-    if (typeof closeModal === 'function') closeModal();
+    cancelApplicationStatusChange();
   });
   btnWrap.appendChild(cancelBtn);
   //登録ボタン生成
@@ -319,6 +424,8 @@ async function changeApplicationStatus(
       body: cFd,
     });
     if (!response.ok) throw new Error('Network response was not ok');
+    __appStatusPending = null;
+    __restoreModalCloseDefault();
     const blockModal = document.getElementById('modalBlock');
     if (blockModal) {
       blockModal.classList.remove('is-active');
@@ -328,6 +435,13 @@ async function changeApplicationStatus(
     document.documentElement.style.overflow = '';
     const list = await response.json();
     if (list && list.status === 'error') {
+      //サーバ側で失敗した場合もUIを戻す
+      if (__appStatusPending && __appStatusPending.groupName) {
+        const prev = String(__appStatusPending.prevValue || '').trim();
+        if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+      }
+      __appStatusPending = null;
+      __restoreModalCloseDefault();
       alert(list.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
       location.href = './master04_01.php';
       return;
@@ -382,6 +496,13 @@ async function changeApplicationStatus(
     if (areaMaster) areaMaster.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
+    //通信失敗時もUIを戻す
+    if (__appStatusPending && __appStatusPending.groupName) {
+      const prev = String(__appStatusPending.prevValue || '').trim();
+      if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+    }
+    __appStatusPending = null;
+    __restoreModalCloseDefault();
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
   }
 }

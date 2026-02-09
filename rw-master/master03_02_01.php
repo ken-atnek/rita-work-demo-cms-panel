@@ -637,7 +637,7 @@ HTML;
 }
 print <<<HTML
                     </label>
-                    <!--NOTE  賞与有りの場合表示 -->
+                    <!--NOTE 賞与有りの場合表示 -->
                     <input type="text" name="bonus_note" id="bonusAmount" value="{$jobData['bonus_note']}" style="display: none;">
                   </div>
                 </div>

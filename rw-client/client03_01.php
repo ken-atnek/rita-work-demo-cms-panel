@@ -142,7 +142,7 @@ print <<<HTML
         <h2>求人カード一覧</h2>
         <article class="block-card-list">
           <p class="announce-results"><span>{$jobCardCount}件</span>が登録中</p>
-          <!--NOTE  特別バナー契約時のみ表示 -->
+          <!--NOTE 特別バナー契約時のみ表示 -->
 
 HTML;
 if (isset($facilityDetailsJson['specialBanner']['enabled']) && $facilityDetailsJson['specialBanner']['enabled'] == true) {
@@ -258,7 +258,7 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
                     <img src="{$heroImagePath}" alt="PR画像">
                   </picture>
                 </div>
-                <!--NOTE  連番注意 list01-status- -->
+                <!--NOTE 連番注意 list01-status- -->
                 <div class="select-status is-client" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input type="hidden" name="{$statusName}" value="{$valueNum}" data-selectbox-hidden>

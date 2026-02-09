@@ -44,7 +44,6 @@ if (function_exists('getJson_FrontEndMaster_many')) {
       'areas',
     ]);
     $facilityTypes = $jsonMasters['facilityTypes'] ?? [];
-
     #募集エリアマスタ（areas.json）をフラットなリストに整形
     $recruitmentArea = $jsonMasters['areas'] ?? [];
     $recruitmentAreaList = [];
@@ -629,7 +628,7 @@ HTML;
             break;
           }
         }
-
+        #削除応答
         if ($deleted) {
           $makeTag['status'] = 'success';
         } else {
@@ -637,7 +636,6 @@ HTML;
           $makeTag['title'] = '削除失敗';
           $makeTag['msg'] = '削除対象が見つかりませんでした。';
         }
-
         #空になった場合：DB由来のmaterializedなら空を保持（保存時に全削除を反映）
         if (empty($_SESSION[$targetImageUploadSessionKey])) {
           if ($wasMaterialized) {
@@ -687,6 +685,7 @@ HTML;
           break;
         }
       }
+      #削除応答
       if ($deleted) {
         $makeTag['status'] = 'success';
       } else {
@@ -694,6 +693,7 @@ HTML;
         $makeTag['title'] = '削除失敗';
         $makeTag['msg'] = '削除対象が見つかりませんでした。';
       }
+      #空になった場合：DB由来のmaterializedなら空を保持（保存時に全削除を反映）
       if (empty($_SESSION[$targetImageUploadSessionKey])) {
         $_SESSION[$targetImageUploadSessionKey] = [
           ['is_db' => true],

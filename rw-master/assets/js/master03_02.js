@@ -3,6 +3,99 @@
  *
  */
 const requestURL = './assets/function/proc_master03_02.php';
+
+/**
+ * ステータス変更：キャンセル時に元に戻す
+ * - initSelectBox() が radio click で hidden/value を即更新するため、
+ *  「変更前」を click の capture フェーズで退避しておく。
+ */
+const __jobCardStatusPrevByJobId = Object.create(null);
+let __jobCardStatusPending = null;
+function __getJobCardStatusParts(jobCardId) {
+  const name = `list_status${jobCardId}`;
+  const hiddenEl = document.querySelector(
+    `input[data-selectbox-hidden][name="${CSS.escape(name)}"]`
+  );
+  const box = hiddenEl ? hiddenEl.closest('[data-selectbox]') : null;
+  const head = box ? box.querySelector('.selectbox__head') : null;
+  const valueEl = box ? box.querySelector('[data-selectbox-value]') : null;
+  const radios = box ? Array.from(box.querySelectorAll('input[type="radio"]')) : [];
+  return { box, head, valueEl, hiddenEl, radios, name };
+}
+function __syncHeadStatusClass(head, label) {
+  if (!head) return;
+  Array.from(head.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.remove(c);
+  });
+  if (!label) return;
+  Array.from(label.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.add(c);
+  });
+}
+function __applyJobCardStatusToUi(jobCardId, statusValue) {
+  const { box, head, valueEl, hiddenEl, radios } = __getJobCardStatusParts(jobCardId);
+  if (!box || !hiddenEl || !valueEl) return;
+  const next = String(statusValue || '').trim();
+  if (!next) return;
+  const radio = radios.find((r) => String(r.value) === next);
+  if (radio) radio.checked = true;
+  hiddenEl.value = next;
+  const label = radio ? box.querySelector(`label[for="${CSS.escape(radio.id)}"]`) : null;
+  if (label) valueEl.textContent = String(label.textContent || '').trim();
+  __syncHeadStatusClass(head, label);
+  box.classList.remove('is-open');
+  if (head) head.setAttribute('aria-expanded', 'false');
+}
+function __getModalCloseButton() {
+  const blockModal = document.getElementById('modalBlock');
+  return blockModal?.querySelector('.box-title button') || null;
+}
+function __setModalCloseToCancel() {
+  const btn = __getModalCloseButton();
+  if (!btn) return;
+  if (!btn.dataset.__defaultOnclick) {
+    btn.dataset.__defaultOnclick = btn.getAttribute('onclick') || 'closeModal()';
+  }
+  btn.setAttribute('onclick', 'cancelJobCardStatusChange();');
+}
+function __restoreModalCloseDefault() {
+  const btn = __getModalCloseButton();
+  if (!btn) return;
+  const def = btn.dataset.__defaultOnclick || 'closeModal()';
+  btn.setAttribute('onclick', def);
+}
+function cancelJobCardStatusChange() {
+  try {
+    if (__jobCardStatusPending && __jobCardStatusPending.jobCardId) {
+      const prev = String(__jobCardStatusPending.prevValue || '').trim();
+      if (prev) __applyJobCardStatusToUi(__jobCardStatusPending.jobCardId, prev);
+    }
+  } finally {
+    __jobCardStatusPending = null;
+    __restoreModalCloseDefault();
+    if (typeof closeModal === 'function') closeModal();
+  }
+}
+window.cancelJobCardStatusChange = cancelJobCardStatusChange;
+//capture: radio click の前に hidden の現状（=変更前）を退避
+document.addEventListener(
+  'click',
+  (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement)) return;
+    if (t.type !== 'radio') return;
+    const name = String(t.name || '');
+    if (!name.startsWith('list_status')) return;
+    const m = name.match(/^list_status(\d+)$/);
+    if (!m) return;
+    const jobCardId = parseInt(m[1], 10);
+    if (!Number.isFinite(jobCardId)) return;
+    const { hiddenEl } = __getJobCardStatusParts(jobCardId);
+    const prev = hiddenEl ? String(hiddenEl.value || '').trim() : '';
+    if (prev) __jobCardStatusPrevByJobId[String(jobCardId)] = prev;
+  },
+  true
+);
 /**
  * 新規求人カード登録チェック
  *
@@ -19,6 +112,17 @@ function checkNewJobCard() {
  */
 function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
   let blockModal = document.getElementById('modalBlock');
+  const prevValue =
+    __jobCardStatusPrevByJobId[String(jobCardId)] ||
+    __getJobCardStatusParts(jobCardId).hiddenEl?.value ||
+    '';
+  __jobCardStatusPending = {
+    jobCardId: Number(jobCardId),
+    facId: Number(facId),
+    prevValue: String(prevValue || ''),
+    nextValue: String(status || ''),
+  };
+  __setModalCloseToCancel();
   //ボタンタグを全て取得
   let buttonList = blockModal.querySelector('.box-btn').querySelectorAll('button');
   //ボタンタグを削除
@@ -69,7 +173,7 @@ function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
   }
   //キャンセルボタン生成
   let cancelButton =
-    '<button type="button" class="btn-cancel" onclick="closeModal();">キャンセル</button>';
+    '<button type="button" class="btn-cancel" onclick="cancelJobCardStatusChange();">キャンセル</button>';
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', cancelButton);
   //登録ボタン生成
   let addButton = `<button type="button" class="btn-confirm" onclick="changeJobCardStatus(${facId},'${joCardCode}',${jobCardId},${status},'${execution}');">はい</button>`;
@@ -105,6 +209,13 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
       ElementButton.remove();
     });
     if (list['status'] == 'error') {
+      //失敗時：UIは元に戻す
+      if (__jobCardStatusPending && __jobCardStatusPending.jobCardId) {
+        const prev = String(__jobCardStatusPending.prevValue || '').trim();
+        if (prev) __applyJobCardStatusToUi(__jobCardStatusPending.jobCardId, prev);
+      }
+      __jobCardStatusPending = null;
+      __restoreModalCloseDefault();
       blockModal.classList.add('bg-orange');
       blockModal.querySelector('.box-title p').innerHTML = 'カード状況変更失敗';
       blockModal.querySelector('.box-details p').innerHTML =
@@ -114,6 +225,8 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
         '<button type="button" class="btn-cancel" onclick="closeModal();">閉じる</button>';
       blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', newButton);
     } else {
+      __jobCardStatusPending = null;
+      __restoreModalCloseDefault();
       blockModal.classList.add('bg-black');
       blockModal.querySelector('.box-title p').innerHTML = list['title'];
       blockModal.querySelector('.box-details p').innerHTML = list['msg'];
@@ -130,6 +243,13 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
     document.documentElement.style.overflow = 'hidden';
   } catch (error) {
     console.error('送信エラー:', error);
+    //通信失敗時も元に戻す
+    if (__jobCardStatusPending && __jobCardStatusPending.jobCardId) {
+      const prev = String(__jobCardStatusPending.prevValue || '').trim();
+      if (prev) __applyJobCardStatusToUi(__jobCardStatusPending.jobCardId, prev);
+    }
+    __jobCardStatusPending = null;
+    __restoreModalCloseDefault();
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
   }
 }

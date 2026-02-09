@@ -478,7 +478,7 @@ if (is_array($facilityList) && count($facilityList) > 0) {
               <div class="item-id">{$facCode}</div>
               <div class="item-name">{$facName}</div>
               <div class="item-add"><span>〒{$facZipCode}</span>{$facAddress}</div>
-              <!--NOTE  リストの数をクラスで付与（list-count-**） -->
+              <!--NOTE リストの数をクラスで付与（list-count-**） -->
               <div class="wrap-items list-count-{$jobCardCount}">
                 <ul class="card-list">
 
