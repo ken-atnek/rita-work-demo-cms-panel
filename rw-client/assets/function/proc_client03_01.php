@@ -29,12 +29,13 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_job_card_write_helper
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
-$makeTag['facId'] = '';
+$makeTag = array(
+  'tag' => '',
+  'status' => '',
+  'title' => '',
+  'msg' => '',
+  'facId' => '',
+);
 
 #===================================#
 # フロント側マスタ定義JSONファイル取得
@@ -529,9 +530,9 @@ function createJobIndex_JSON($jobsIndexJsonSaveDir, $jobsIndexJson, $facId, $fac
     $workLocation = $facilityData['prefecture'] . $facilityData['city'] . $facilityData['address_line'];
     foreach ($jobCardList as $jobCard) {
       #ステータス判定
-      if ($jobCard['is_active'] != 2) {
-        continue;
-      }
+      #if ($jobCard['is_active'] != 2) {
+      #  continue;
+      #}
       #契約日
       $contractDate = date("Y/m/d", strtotime($jobCard['published_start']));
       #時給／月給により生成するデータを変更

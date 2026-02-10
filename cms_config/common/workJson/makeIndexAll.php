@@ -145,9 +145,9 @@ if ((is_array($jobsCardData) && count($jobsCardData) > 0) && (is_array($jobsCard
 	$writeData = [];
 	foreach ($jobsCardData as $jobCard) {
 		#公開中のみ処理
-		if ($jobCard['is_active'] != 2) {
-			continue;
-		}
+		#if ($jobCard['is_active'] != 2) {
+		#	continue;
+		#}
 		#事業所情報取得
 		$facilityData = getFacility_FindById($jobCard['facility_id']);
 		#基本情報jsonファイルまでのパス
