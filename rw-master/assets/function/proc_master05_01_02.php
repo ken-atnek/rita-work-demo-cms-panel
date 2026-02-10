@@ -695,6 +695,7 @@ function writeTipsIndexJson()
 			if ((int)($row['is_top'] ?? 0) === 1) {
 				$itemTop = $item;
 				$itemTop['top_sort'] = (int)($row['top_sort'] ?? 0);
+				$itemTop['_article_id'] = (int)($row['article_id'] ?? 0);
 				$topOut['items'][] = $itemTop;
 			}
 		}
@@ -705,8 +706,8 @@ function writeTipsIndexJson()
 			$as = (int)($a['top_sort'] ?? 0);
 			$bs = (int)($b['top_sort'] ?? 0);
 			if ($as !== $bs) return $as <=> $bs;
-			$ai = (int)($a['id'] ?? 0);
-			$bi = (int)($b['id'] ?? 0);
+			$ai = (int)($a['_article_id'] ?? 0);
+			$bi = (int)($b['_article_id'] ?? 0);
 			return $bi <=> $ai;
 		});
 	}
@@ -718,6 +719,9 @@ function writeTipsIndexJson()
 		foreach ($topOut['items'] as &$it) {
 			if (is_array($it) && array_key_exists('top_sort', $it)) {
 				unset($it['top_sort']);
+			}
+			if (is_array($it) && array_key_exists('_article_id', $it)) {
+				unset($it['_article_id']);
 			}
 		}
 		unset($it);
@@ -1209,7 +1213,7 @@ HTML;
 	#***** 入力チェック *****#
 	case 'checkInput': {
 			$titleEsc = htmlspecialchars((string)$title, ENT_QUOTES, 'UTF-8');
-			$isTopLabel = $isTop ? 'する' : 'しない';
+			$isTopChecked = (int)($isTop ?? 0) === 1 ? ' checked' : '';
 			#本文jsonデコード
 			$decoded = json_decode($body_json, true);
 			#本文json→html変換
@@ -1277,8 +1281,16 @@ HTML;
         <h2>転職のヒント<span>入力内容確認</span></h2>
         <div class="block-confirm">
           <div class="confirm-meta">
-            <p>TOP表示：{$isTopLabel}</p>
+            <div class="item-switch">
+              <span>TOPページに表示</span>
+              <div class="wrap-toggle-button">
+                <label class="toggle-button">
+                  <input type="checkbox" name="is_top" value="1" {$isTopChecked}>
+                </label>
+              </div>
+            </div>
             {$periodRow}
+            <div class="status-draft">下書き中</div>
           </div>
           <h3 class="title-confirm">{$titleEsc}</h3>
           <div class="box-image">{$previewImageTag}</div>
@@ -1437,10 +1449,24 @@ HTML;
 								$articleIdInt = (int)$newArticleId;
 								#記事登録完了後に画像系処理を実行する
 								if ($dbSuccessFlg == 1) {
-									#top_sort を「自分自身の article_id」で更新
+									#top_sort を更新
+									# - 既存仕様：新規作成時は「自分自身の article_id」
+									# - is_top=1 の場合は TOP表示順衝突を避けるため、末尾（max+1）へ付与
 									if ($articleIdInt > 0) {
+										$topSortValue = $articleIdInt;
+										if ($isTopInt === 1) {
+											$maxSort = 0;
+											$stmtMax = $DB_CONNECT->prepare("SELECT MAX(top_sort) AS max_sort FROM tips_articles WHERE is_top = 1");
+											$stmtMax->execute();
+											$rowMax = $stmtMax->fetch(PDO::FETCH_ASSOC);
+											$stmtMax->closeCursor();
+											if (is_array($rowMax) && isset($rowMax['max_sort'])) {
+												$maxSort = (int)$rowMax['max_sort'];
+											}
+											$topSortValue = $maxSort + 1;
+										}
 										$dbFiledDataTop = array(
-											'top_sort' => array(':top_sort', $articleIdInt, 1),
+											'top_sort' => array(':top_sort', $topSortValue, 1),
 										);
 										$dbWhereTop = array(
 											'article_id' => array(':article_id', $articleIdInt, 1),
@@ -1513,6 +1539,19 @@ HTML;
 								$dbFiledData = array();
 								#登録情報セット
 								$dbFiledData['is_top'] = array(':is_top', $isTopInt, 1);
+								#is_top を OFF→ON にした場合は、TOP表示順衝突を避けるため末尾へ付与
+								$wasTopInt = (int)($articleData['is_top'] ?? 0);
+								if ($wasTopInt !== 1 && $isTopInt === 1) {
+									$maxSort = 0;
+									$stmtMax = $DB_CONNECT->prepare("SELECT MAX(top_sort) AS max_sort FROM tips_articles WHERE is_top = 1");
+									$stmtMax->execute();
+									$rowMax = $stmtMax->fetch(PDO::FETCH_ASSOC);
+									$stmtMax->closeCursor();
+									if (is_array($rowMax) && isset($rowMax['max_sort'])) {
+										$maxSort = (int)$rowMax['max_sort'];
+									}
+									$dbFiledData['top_sort'] = array(':top_sort', $maxSort + 1, 1);
+								}
 								$dbFiledData['title'] = array(':title', $title, 0);
 								$dbFiledData['body_text'] = array(':body_text', $bodyPlainText, 0);
 								$dbFiledData['body_json'] = array(':body_json', $bodyJsonForDb, 0);

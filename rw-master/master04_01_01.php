@@ -204,7 +204,6 @@ if ($searchConditions['sortTarget'] === 'interview_at') {
 } else {
   $sortMode = 'sortApplicationsDate_' . strtolower($applicationSortOrder);
 }
-
 #inline JS（onclick等）用
 $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 $searchModeJs = json_encode((string)($searchConditions['searchMode'] ?? ''), $jsonHex);

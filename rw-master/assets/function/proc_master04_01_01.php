@@ -27,28 +27,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
-#===================================#
-# フロント側マスタ定義JSONファイル取得
-#-----------------------------------#
-#取得項目一覧
-$jsonMasters = [];
-try {
-	$jsonMasters = getJson_FrontEndMaster_many([
-		'jobCategories',
-		'contractPlans'
-	]);
-} catch (Throwable $e) {
-	if (function_exists('makeLog')) {
-		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
-	}
-	$jsonMasters = [];
-}
-#募集職種マスタ
-$jobCategories = $jsonMasters['jobCategories'] ?? [];
-
-#JS文脈用のjson_encodeフラグ
-$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
-
 #==============#
 # 事業所一覧取得
 #--------------#
@@ -57,20 +35,20 @@ $facilityList = getFacilityList();
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
-
-//新規作成直後のハイライト対象
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
+#新規作成直後のハイライト対象
 $highlightApplicationId = 0;
 
 #=============#
 # POSTチェック
 #-------------#
 #セッションキー
-$noUpDateKey = isset($_POST['noUpDateKey']) ? $_POST['noUpDateKey'] : '';
+$noUpDateKey = isset($_POST['noUpDateKey']) ? (string)$_POST['noUpDateKey'] : '';
 #noUpDateKey は「画面インスタンス識別用」。
 #画面遷移/マルチタブ等でキーが更新されている場合があるため、
 #POSTキーが無効ならセッション側の現行キーへフォールバックする。
@@ -91,6 +69,28 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 }
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
+
+#===================================#
+# フロント側マスタ定義JSONファイル取得
+#-----------------------------------#
+#取得項目一覧
+$jsonMasters = [];
+try {
+	$jsonMasters = getJson_FrontEndMaster_many([
+		'jobCategories',
+		'contractPlans'
+	]);
+} catch (Throwable $e) {
+	if (function_exists('makeLog')) {
+		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
+	}
+	$jsonMasters = [];
+}
+#募集職種マスタ
+$jobCategories = $jsonMasters['jobCategories'] ?? [];
+#JS文脈用のjson_encodeフラグ
+$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
 #-------------#
 #検索・ステータス変更
 $action = isset($_POST['action']) ? $_POST['action'] : '';
@@ -104,9 +104,9 @@ $facId = isset($_POST['facility_id']) ? (int)$_POST['facility_id'] : 0;
 $lineUserId = isset($_POST['lineId']) ? (string)$_POST['lineId'] : '';
 #-------------#
 
-//-----------------------------
-// 応募者プロフィール（名前/メモ）更新
-//-----------------------------
+#==================================#
+# 応募者プロフィール（名前/メモ）更新
+#----------------------------------#
 if ($action === 'updateApplicantProfile') {
 	if ($lineUserId === '') {
 		header('Content-Type: application/json; charset=UTF-8');
@@ -116,7 +116,6 @@ if ($action === 'updateApplicantProfile') {
 		echo json_encode($makeTag);
 		exit;
 	}
-
 	$applicantNameRaw = isset($_POST['applicantName']) ? (string)$_POST['applicantName'] : '';
 	$memoRaw = isset($_POST['memo']) ? (string)$_POST['memo'] : '';
 	$applicantNameTrim = trim($applicantNameRaw);
@@ -124,19 +123,17 @@ if ($action === 'updateApplicantProfile') {
 	$applicantName = ($applicantNameTrim === '') ? null : $applicantNameRaw;
 	$memo = ($memoTrim === '') ? null : $memoRaw;
 	$now = date('Y-m-d H:i:s');
-
 	try {
 		$result = DB_Transaction(1);
 		if ($result == false) {
 			$makeTag['status'] = 'error';
 			$makeTag['title'] = '登録エラー';
 			$makeTag['msg'] = 'トランザクション開始に失敗しました。';
-			header('Content-Type: application/json');
+			header('Content-Type: application/json; charset=UTF-8');
 			echo json_encode($makeTag);
 			exit;
 		}
-
-		// applicants_memo へUPSERT（line_user_id UNIQUE前提）
+		#applicants_memo へUPSERT（line_user_id UNIQUE前提）
 		$strSQL = "INSERT INTO applicants_memo (line_user_id, applicant_name, memo, created_at, updated_at)\n"
 			. "VALUES (:line_user_id, :applicant_name, :memo, :created_at, :updated_at)\n"
 			. "ON DUPLICATE KEY UPDATE applicant_name = VALUES(applicant_name), memo = VALUES(memo), updated_at = VALUES(updated_at)";
@@ -156,8 +153,7 @@ if ($action === 'updateApplicantProfile') {
 		$stmt->bindValue(':updated_at', (string)$now, PDO::PARAM_STR);
 		$stmt->execute();
 		$stmt->closeCursor();
-
-		// applications 側の applicant_name も同期（一覧表示・更新モーダルの名前表示用）
+		#applications 側の applicant_name も同期（一覧表示・更新モーダルの名前表示用）
 		$upd = $DB_CONNECT->prepare('UPDATE applications SET applicant_name = :applicant_name, updated_at = :updated_at WHERE line_user_id = :line_user_id');
 		$upd->bindValue(':line_user_id', (string)$lineUserId, PDO::PARAM_STR);
 		if ($applicantName === null) {
@@ -168,7 +164,6 @@ if ($action === 'updateApplicantProfile') {
 		$upd->bindValue(':updated_at', (string)$now, PDO::PARAM_STR);
 		$upd->execute();
 		$upd->closeCursor();
-
 		DB_Transaction(2);
 		$makeTag['status'] = 'success';
 		$makeTag['title'] = '登録';
@@ -184,9 +179,9 @@ if ($action === 'updateApplicantProfile') {
 	}
 }
 
-//-----------------------------
-// 新規：空の応募行を作成
-//-----------------------------
+#======================#
+# 新規：空の応募行を作成
+#----------------------#
 if ($action === 'createDraftApplication') {
 	if ($lineUserId === '') {
 		header('Content-Type: application/json; charset=UTF-8');
@@ -196,8 +191,7 @@ if ($action === 'createDraftApplication') {
 		echo json_encode($makeTag);
 		exit;
 	}
-
-	//応募者情報（名前など）は最新応募から引き継ぐ
+	#応募者情報（名前など）は最新応募から引き継ぐ
 	$latest = getApplicationBylineUserId($lineUserId);
 	$lineDisplayName = is_array($latest) ? ($latest['line_display_name'] ?? null) : null;
 	$applicantName = is_array($latest) ? ($latest['applicant_name'] ?? null) : null;
@@ -210,8 +204,7 @@ if ($action === 'createDraftApplication') {
 	#	echo json_encode($makeTag);
 	#	exit;
 	#}
-
-	//draft用 job_id を生成（UNIQUE(job_id, line_user_id) を満たすため）
+	#draft用 job_id を生成（UNIQUE(job_id, line_user_id) を満たすため）
 	$now = date('Y-m-d H:i:s');
 	$inserted = false;
 	try {
@@ -224,12 +217,11 @@ if ($action === 'createDraftApplication') {
 			echo json_encode($makeTag);
 			exit;
 		}
-
 		for ($attempt = 0; $attempt < 10; $attempt++) {
 			$dbFiledData = array();
-			// applications の job_id / facility_id / corporation_id / updated_at は NOT NULL。
-			// 「空行」として扱うため、job_id はダミー値（同一line_user_id内で一意）を採番し、他は0/空で登録する。
-			// job_id は SQL_Process 側で PDO::PARAM_INT バインドされるため、32bit 範囲に収める。
+			#applications の job_id / facility_id / corporation_id / updated_at は NOT NULL。
+			#「空行」として扱うため、job_id はダミー値（同一line_user_id内で一意）を採番し、他は0/空で登録する。
+			#job_id は SQL_Process 側で PDO::PARAM_INT バインドされるため、32bit 範囲に収める。
 			$draftJobId = random_int(1000000000, 1999999999);
 			$chk = $DB_CONNECT->prepare('SELECT COUNT(*) FROM applications WHERE line_user_id = :line_user_id AND job_id = :job_id');
 			$chk->bindValue(':line_user_id', (string)$lineUserId, PDO::PARAM_STR);
@@ -241,9 +233,8 @@ if ($action === 'createDraftApplication') {
 				continue;
 			}
 			$dbFiledData['job_id'] = array(':job_id', $draftJobId, 1);
-			// job_id_uq は求人の一意コードだが、空行では未設定（0を空扱い）
+			# job_id_uq は求人の一意コードだが、空行では未設定（0を空扱い）
 			$dbFiledData['job_id_uq'] = array(':job_id_uq', 0, 1);
-
 			$dbFiledData['job_category_id'] = array(':job_category_id', null, 2);
 			$dbFiledData['facility_id'] = array(':facility_id', 0, 1);
 			$dbFiledData['corporation_id'] = array(':corporation_id', 0, 1);
@@ -255,10 +246,9 @@ if ($action === 'createDraftApplication') {
 			$dbFiledData['memo'] = array(':memo', null, 2);
 			$dbFiledData['created_at'] = array(':created_at', $now, 0);
 			$dbFiledData['updated_at'] = array(':updated_at', $now, 0);
-
-			//処理モード：[1].新規追加｜[2].更新｜[3].削除
+			#処理モード：[1].新規追加｜[2].更新｜[3].削除
 			$processFlg = 1;
-			//実行モード：[1].トランザクション｜[2].即実行
+			#実行モード：[1].トランザクション｜[2].即実行
 			$exeFlg = 2;
 			$dbSuccessFlg = SQL_Process($DB_CONNECT, 'applications', $dbFiledData, array(), $processFlg, $exeFlg);
 			if ($dbSuccessFlg == 1) {
@@ -267,7 +257,6 @@ if ($action === 'createDraftApplication') {
 				break;
 			}
 		}
-
 		if ($inserted) {
 			DB_Transaction(2);
 			$makeTag['status'] = 'success';
@@ -304,7 +293,7 @@ $pageNumber = isset($_POST['pageNumber']) ? intval($_POST['pageNumber']) : 1;
 $updateActions = ['changeStatus', 'changeJobCategory', 'changeFacility', 'setInterviewAt', 'deleteApplication'];
 if (in_array($action, $updateActions, true)) {
 	#=============#
-	# POSTチェック（共通キー）
+	# POSTチェック
 	#-------------#
 	#応募ID（PK）
 	$applicationId = isset($_POST['applicationId']) ? (int)$_POST['applicationId'] : 0;
@@ -319,7 +308,6 @@ if (in_array($action, $updateActions, true)) {
 	$jobCategoryId = isset($_POST['jobCategoryId']) ? trim((string)$_POST['jobCategoryId']) : '';
 	$newFacId = isset($_POST['newFacId']) ? (int)$_POST['newFacId'] : 0;
 	$interviewAt = isset($_POST['interviewAt']) ? (string)$_POST['interviewAt'] : '';
-
 	#更新対象の特定は application_id を優先（未確定データでも更新できるようにする）
 	$usePkUpdate = ($applicationId > 0);
 	if ($lineUserId === '' || ($usePkUpdate === false && ($jobId < 1 || $appliedJobsFacId < 1))) {
@@ -330,7 +318,6 @@ if (in_array($action, $updateActions, true)) {
 		echo json_encode($makeTag);
 		exit;
 	}
-
 	#アクション別バリデーション
 	$interviewAtSqlType = 0;
 	$newFacilityCorpId = 0;
@@ -398,7 +385,7 @@ if (in_array($action, $updateActions, true)) {
 		case 'setInterviewAt': {
 				$interviewAt = trim($interviewAt);
 				if ($interviewAt === '') {
-					$interviewAtSqlType = 2; //NULL
+					$interviewAtSqlType = 2; #NULL
 				} else {
 					if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $interviewAt)) {
 						header('Content-Type: application/json; charset=UTF-8');
@@ -434,7 +421,6 @@ if (in_array($action, $updateActions, true)) {
 		default:
 			break;
 	}
-
 	try {
 		#トランザクション開始
 		# 1 = BEGIN／ 2 = COMMIT／ 3 = ROLLBACK
@@ -796,8 +782,7 @@ if ($pageNumber < 1) {
 }
 #応募者一覧取得（LIMIT/OFFSET）
 $applicationJobList = getApplicationJobList($searchConditions, $pageNumber, $displayNumber);
-
-//新規作成直後：対象行を必ず先頭に寄せる（面接日ソート時でも最上段に表示）
+#新規作成直後：対象行を必ず先頭に寄せる（面接日ソート時でも最上段に表示）
 if ($highlightApplicationId > 0 && is_array($applicationJobList)) {
 	$targetIdx = null;
 	foreach ($applicationJobList as $idx => $row) {
@@ -812,7 +797,7 @@ if ($highlightApplicationId > 0 && is_array($applicationJobList)) {
 		array_unshift($applicationJobList, $targetRow);
 	} else {
 		try {
-			//現在の検索条件で落ちた場合でも、作成した行は先頭に表示したい
+			#現在の検索条件で落ちた場合でも、作成した行は先頭に表示したい
 			$strSQL = "SELECT application_id, job_id, job_category_id, facility_id, corporation_id, line_user_id, line_display_name, applicant_name, status, interview_at, created_at, updated_at FROM applications WHERE application_id = :application_id AND line_user_id = :line_user_id LIMIT 1";
 			$stmt = $DB_CONNECT->prepare($strSQL);
 			$stmt->bindValue(':application_id', (int)$highlightApplicationId, PDO::PARAM_INT);
@@ -822,13 +807,13 @@ if ($highlightApplicationId > 0 && is_array($applicationJobList)) {
 			$stmt->closeCursor();
 			if (is_array($targetRow)) {
 				array_unshift($applicationJobList, $targetRow);
-				//表示件数を超えたら末尾を落とす（ページング整合）
+				#表示件数を超えたら末尾を落とす（ページング整合）
 				if (count($applicationJobList) > (int)$displayNumber) {
 					$applicationJobList = array_slice($applicationJobList, 0, (int)$displayNumber);
 				}
 			}
 		} catch (Throwable $e) {
-			//表示優先：ここで失敗しても一覧生成は継続
+			#表示優先：ここで失敗しても一覧生成は継続
 		}
 	}
 }
@@ -955,7 +940,6 @@ if (is_array($applicationJobList) && count($applicationJobList) > 0) {
 		$sendStatusChangeNameJsAttr = htmlspecialchars((string)$sendStatusChangeNameJs, ENT_QUOTES, 'UTF-8');
 		$searchModeJsAttr = htmlspecialchars((string)$searchModeJs, ENT_QUOTES, 'UTF-8');
 		$sortModeJsAttr = htmlspecialchars((string)$sortModeJs, ENT_QUOTES, 'UTF-8');
-
 		#更新（onchange）用：キー
 		$applicationIdInt = (int)($application['application_id'] ?? 0);
 		$appliedJobsFacIdInt = (int)$appliedJobsFacId;
@@ -1184,7 +1168,7 @@ $makeTag['tag'] .= <<<HTML
 HTML;
 #-------------------------------------------#
 #json 応答
-//ハイライト対象があれば返却（postAndRedraw側で枠線ハイライト）
+#ハイライト対象があれば返却（postAndRedraw側で枠線ハイライト）
 if ($highlightApplicationId > 0 && !isset($makeTag['highlightApplicationId'])) {
 	$makeTag['highlightApplicationId'] = $highlightApplicationId;
 }

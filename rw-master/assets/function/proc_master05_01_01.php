@@ -24,11 +24,12 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_tips_articles.php';
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
 
 #=============#
 # POSTチェック
@@ -397,6 +398,7 @@ function writeTipsIndexJson()
 			if ((int)($row['is_top'] ?? 0) === 1) {
 				$itemTop = $item;
 				$itemTop['top_sort'] = (int)($row['top_sort'] ?? 0);
+				$itemTop['_article_id'] = (int)($row['article_id'] ?? 0);
 				$topOut['items'][] = $itemTop;
 			}
 		}
@@ -407,8 +409,8 @@ function writeTipsIndexJson()
 			$as = (int)($a['top_sort'] ?? 0);
 			$bs = (int)($b['top_sort'] ?? 0);
 			if ($as !== $bs) return $as <=> $bs;
-			$ai = (int)($a['id'] ?? 0);
-			$bi = (int)($b['id'] ?? 0);
+			$ai = (int)($a['_article_id'] ?? 0);
+			$bi = (int)($b['_article_id'] ?? 0);
 			return $bi <=> $ai;
 		});
 	}
@@ -420,6 +422,9 @@ function writeTipsIndexJson()
 		foreach ($topOut['items'] as &$it) {
 			if (is_array($it) && array_key_exists('top_sort', $it)) {
 				unset($it['top_sort']);
+			}
+			if (is_array($it) && array_key_exists('_article_id', $it)) {
+				unset($it['_article_id']);
 			}
 		}
 		unset($it);

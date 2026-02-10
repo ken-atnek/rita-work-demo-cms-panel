@@ -30,13 +30,14 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
-$makeTag['applicationCounts'] = array();
-$makeTag['activeButtons'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+	'applicationCounts' => array(),
+	'activeButtons' => '',
+);
 
 #=============#
 # POSTチェック

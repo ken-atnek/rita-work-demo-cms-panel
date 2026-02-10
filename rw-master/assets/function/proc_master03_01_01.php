@@ -26,11 +26,12 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+  'tag' => '',
+  'status' => '',
+  'title' => '',
+  'msg' => '',
+);
 
 #===================================#
 # フロント側マスタ定義JSONファイル取得（無ければ空）

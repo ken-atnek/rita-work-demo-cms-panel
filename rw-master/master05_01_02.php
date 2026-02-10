@@ -21,51 +21,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
 #転職のヒント
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_tips_articles.php';
 
-function tipsDbRelFromStoredPath_local($path)
-{
-  $path = (string)$path;
-  if ($path === '') return '';
-  $parsedPath = parse_url($path, PHP_URL_PATH);
-  if (is_string($parsedPath) && $parsedPath !== '') {
-    $path = $parsedPath;
-  }
-  $path = str_replace('\\', '/', $path);
-  $pos = strpos($path, '/db/');
-  if ($pos !== false) {
-    return ltrim(substr($path, $pos + 4), '/');
-  }
-  if (strpos($path, 'db/') === 0) {
-    return substr($path, 3);
-  }
-  return ltrim($path, '/');
-}
-
-function tipsStoredPathToAdminUrl_local($path)
-{
-  $rel = tipsDbRelFromStoredPath_local($path);
-  if ($rel === '') return '';
-  $base = rtrim((string)DOMAIN_NAME, '/');
-  return $base . '/db/' . ltrim($rel, '/');
-}
-
-function rewriteTiptapJsonImageSrcsToAdminUrl_local(&$node)
-{
-  if (!is_array($node)) return;
-  if (isset($node['type']) && $node['type'] === 'image') {
-    if (isset($node['attrs']) && is_array($node['attrs']) && isset($node['attrs']['src'])) {
-      $src = (string)$node['attrs']['src'];
-      if ($src !== '' && !preg_match('/^https?:\/\//i', $src) && strpos($src, (string)DEFINE_PREVIEW_IMAGE_DIR_PATH) !== 0) {
-        $node['attrs']['src'] = tipsStoredPathToAdminUrl_local($src);
-      }
-    }
-  }
-  if (isset($node['content']) && is_array($node['content'])) {
-    foreach ($node['content'] as $i => $child) {
-      rewriteTiptapJsonImageSrcsToAdminUrl_local($node['content'][$i]);
-    }
-  }
-}
-
 #================#
 # SESSIONチェック
 #----------------#
@@ -152,7 +107,7 @@ $initialBodyJson = null;
 if (isset($articleData['body_json']) && (string)$articleData['body_json'] !== '') {
   $decoded = json_decode((string)$articleData['body_json'], true);
   if (json_last_error() === JSON_ERROR_NONE) {
-    // 新形式: { editor: <tiptap-json>, period: {type,from,to} }
+    #新形式: { editor: <tiptap-json>, period: {type,from,to} }
     if (is_array($decoded) && isset($decoded['editor']) && is_array($decoded['editor'])) {
       $initialBodyJson = $decoded['editor'];
       if ($periodFeatureEnabled && isset($decoded['period']) && is_array($decoded['period'])) {
@@ -161,21 +116,103 @@ if (isset($articleData['body_json']) && (string)$articleData['body_json'] !== ''
         $initialPeriodTo = isset($decoded['period']['to']) ? (string)$decoded['period']['to'] : '';
       }
     } else {
-      // 旧形式: tiptap-json そのもの
+      #旧形式: tiptap-json そのもの
       $initialBodyJson = $decoded;
     }
   }
 }
 
-if (is_array($initialBodyJson)) {
-  rewriteTiptapJsonImageSrcsToAdminUrl_local($initialBodyJson);
+#-------------#
+/**
+ * tips画像のパス/URLを、DB保存用の「/db を含まない相対パス」へ正規化する（ローカル版）
+ *
+ * 目的:
+ * - 編集画面で TipTap に渡す初期JSONは「管理画面で参照できるURL（DOMAIN_NAME + /db/...）」へ変換する。
+ * - その変換の前段として、DBに入っている値が
+ *   - tips/...（DB相対）
+ *   - /db/tips/...（フロント相対）
+ *   - https://.../db/tips/...（ドメイン付き）
+ *   のいずれでも同じ形式に寄せられるようにする。
+ *
+ * 入力例:
+ * - 'tips/tips_0001/image1.jpg'
+ * - '/db/tips/tips_0001/image1.jpg'
+ * - 'https://example.com/db/tips/tips_0001/image1.jpg'
+ *
+ * 返り値:
+ * - 'tips/tips_0001/image1.jpg' のようなDB相対パス（空/不正は ''）
+ */
+function tipsDbRelFromStoredPath($path)
+{
+  $path = (string)$path;
+  if ($path === '') return '';
+  $parsedPath = parse_url($path, PHP_URL_PATH);
+  if (is_string($parsedPath) && $parsedPath !== '') {
+    $path = $parsedPath;
+  }
+  $path = str_replace('\\', '/', $path);
+  $pos = strpos($path, '/db/');
+  if ($pos !== false) {
+    return ltrim(substr($path, $pos + 4), '/');
+  }
+  if (strpos($path, 'db/') === 0) {
+    return substr($path, 3);
+  }
+  return ltrim($path, '/');
+}
+/**
+ * tips画像のパス/URLを、管理画面プレビュー用URLへ変換する（ローカル版）
+ *
+ * - 返り値は DOMAIN_NAME + '/db/' + <DB相対> の形式
+ * - src属性にそのまま渡せる URL を作るために使用
+ */
+function tipsStoredPathToAdminUrl($path)
+{
+  $rel = tipsDbRelFromStoredPath($path);
+  if ($rel === '') return '';
+  $base = rtrim((string)DOMAIN_NAME, '/');
+  return $base . '/db/' . ltrim($rel, '/');
+}
+/**
+ * TipTap JSON の image.attrs.src を再帰的に書き換え、管理画面で表示できるURLに変換する（ローカル版）
+ *
+ * 仕様:
+ * - http(s) の外部URLはここでは触らない（そのまま表示させる）
+ * - tmp_upload 配下（プレビュー用/ドラフト用）のURLもここでは触らない
+ * - DB相対や /db 相対の src は DOMAIN_NAME + /db/... に変換してプレビューできるようにする
+ *
+ * 注意:
+ * - 保存時（AJAX側）では、管理画面URLをDB相対へ戻す正規化が別途行われる前提。
+ */
+function rewriteTiptapJsonImageSrcsToAdminUrl(&$node)
+{
+  if (!is_array($node)) return;
+  if (isset($node['type']) && $node['type'] === 'image') {
+    if (isset($node['attrs']) && is_array($node['attrs']) && isset($node['attrs']['src'])) {
+      $src = (string)$node['attrs']['src'];
+      if ($src !== '' && !preg_match('/^https?:\/\//i', $src) && strpos($src, (string)DEFINE_PREVIEW_IMAGE_DIR_PATH) !== 0) {
+        $node['attrs']['src'] = tipsStoredPathToAdminUrl($src);
+      }
+    }
+  }
+  if (isset($node['content']) && is_array($node['content'])) {
+    foreach ($node['content'] as $i => $child) {
+      rewriteTiptapJsonImageSrcsToAdminUrl($node['content'][$i]);
+    }
+  }
 }
 
+#-------------#
+#initialBodyJson画像パス書き換え
+if (is_array($initialBodyJson)) {
+  rewriteTiptapJsonImageSrcsToAdminUrl($initialBodyJson);
+}
+#initialBodyHtml生成
 $initialBodyHtml = '';
 if (isset($articleData['body_text']) && (string)$articleData['body_text'] !== '') {
   $initialBodyHtml = (string)$articleData['body_text'];
 }
-
+#inline JS（onclick等）用
 $jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
 $rwTipsConfigJs = json_encode([
   'noUpDateKey' => (string)$noUpDateKey,
@@ -335,7 +372,7 @@ if (isset($articleData['tips_image_path']) && $articleData['tips_image_path'] !=
     $tipsImagePath = $tipsImageJsonDecoded[0];
   }
   if ($tipsImagePath === '') {
-    // 画像情報が壊れている/空の場合はプレビュー無し扱い
+    #画像情報が壊れている/空の場合はプレビュー無し扱い
     print <<<HTML
               <ul class="selected-image-list" id="js-previewBlock-tipsImage" style="display: none;"></ul>
 
@@ -357,7 +394,7 @@ HTML;
         $mimeType = '';
         break;
     }
-    $previewPath = tipsStoredPathToAdminUrl_local($tipsImagePath);
+    $previewPath = tipsStoredPathToAdminUrl($tipsImagePath);
     print <<<HTML
               <ul class="selected-image-list" id="js-previewBlock-tipsImage">
                 <li>
@@ -462,7 +499,7 @@ print <<<HTML
         let inputArea = document.getElementById('js-uploadImageArea-' + area);
         let preview = document.getElementById('js-previewBlock-' + area);
         let error = document.getElementById('js-fileError-' + area);
-        // 1枚登録モード時はドラッグ＆ドロップエリアを非表示
+        //1枚登録モード時はドラッグ＆ドロップエリアを非表示
         if (inputMode && inputMode.value === 'only' && drop) {
             const liCount = preview.querySelectorAll('li').length;
             if (liCount >= 1) {

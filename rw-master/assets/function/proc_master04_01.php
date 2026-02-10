@@ -27,42 +27,21 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
-#===================================#
-# フロント側マスタ定義JSONファイル取得
-#-----------------------------------#
-#取得項目一覧
-$jsonMasters = [];
-try {
-	$jsonMasters = getJson_FrontEndMaster_many([
-		'jobCategories',
-		'contractPlans'
-	]);
-} catch (Throwable $e) {
-	if (function_exists('makeLog')) {
-		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
-	}
-	$jsonMasters = [];
-}
-#募集職種マスタ
-$jobCategories = $jsonMasters['jobCategories'] ?? [];
-
-#JS文脈用のjson_encodeフラグ
-$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
-
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
 
 #=============#
 # POSTチェック
 #-------------#
 #セッションキー
-$noUpDateKey = isset($_POST['noUpDateKey']) ? $_POST['noUpDateKey'] : '';
+$noUpDateKey = isset($_POST['noUpDateKey']) ? (string)$_POST['noUpDateKey'] : '';
 #noUpDateKey は「画面インスタンス識別用」。
 #画面遷移/マルチタブ等でキーが更新されている場合があるため、
 #POSTキーが無効ならセッション側の現行キーへフォールバックする。
@@ -83,6 +62,28 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 }
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
+
+#===================================#
+# フロント側マスタ定義JSONファイル取得
+#-----------------------------------#
+#取得項目一覧
+$jsonMasters = [];
+try {
+	$jsonMasters = getJson_FrontEndMaster_many([
+		'jobCategories',
+		'contractPlans'
+	]);
+} catch (Throwable $e) {
+	if (function_exists('makeLog')) {
+		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
+	}
+	$jsonMasters = [];
+}
+#募集職種マスタ
+$jobCategories = $jsonMasters['jobCategories'] ?? [];
+#JS文脈用のjson_encodeフラグ
+$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
 #-------------#
 #検索・ステータス変更
 $action = isset($_POST['action']) ? $_POST['action'] : '';

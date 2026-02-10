@@ -21,33 +21,6 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
 #転職のヒント
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_tips_articles.php';
 
-function tipsDbRelFromStoredPath_local($path)
-{
-  $path = (string)$path;
-  if ($path === '') return '';
-  $parsedPath = parse_url($path, PHP_URL_PATH);
-  if (is_string($parsedPath) && $parsedPath !== '') {
-    $path = $parsedPath;
-  }
-  $path = str_replace('\\', '/', $path);
-  $pos = strpos($path, '/db/');
-  if ($pos !== false) {
-    return ltrim(substr($path, $pos + 4), '/');
-  }
-  if (strpos($path, 'db/') === 0) {
-    return substr($path, 3);
-  }
-  return ltrim($path, '/');
-}
-
-function tipsStoredPathToAdminUrl_local($path)
-{
-  $rel = tipsDbRelFromStoredPath_local($path);
-  if ($rel === '') return '';
-  $base = rtrim((string)DOMAIN_NAME, '/');
-  return $base . '/db/' . ltrim($rel, '/');
-}
-
 #================#
 # SESSIONチェック
 #----------------#
@@ -177,6 +150,41 @@ if ($searchConditions['sortTarget'] === 'updated_at') {
   $sortMode = 'sortUpdateDate_' . strtolower($updateDateSortOrder);
 } else {
   $sortMode = 'sortId_' . strtolower($idSortOrder);
+}
+
+#-------------#
+/**
+ * サムネイル画像パスをDB保存形式から相対パスに変換
+ * @param string $path ファイルパス
+ */
+function tipsDbRelFromStoredPath($path)
+{
+  $path = (string)$path;
+  if ($path === '') return '';
+  $parsedPath = parse_url($path, PHP_URL_PATH);
+  if (is_string($parsedPath) && $parsedPath !== '') {
+    $path = $parsedPath;
+  }
+  $path = str_replace('\\', '/', $path);
+  $pos = strpos($path, '/db/');
+  if ($pos !== false) {
+    return ltrim(substr($path, $pos + 4), '/');
+  }
+  if (strpos($path, 'db/') === 0) {
+    return substr($path, 3);
+  }
+  return ltrim($path, '/');
+}
+/**
+ * サムネイル画像パスを管理画面用URLに変換
+ * @param string $path ファイルパス
+ */
+function tipsStoredPathToAdminUrl($path)
+{
+  $rel = tipsDbRelFromStoredPath($path);
+  if ($rel === '') return '';
+  $base = rtrim((string)DOMAIN_NAME, '/');
+  return $base . '/db/' . ltrim($rel, '/');
 }
 
 #***** タグ生成開始 *****#
@@ -328,7 +336,7 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
     if (isset($article['tips_image_path']) && $article['tips_image_path'] != null) {
       $tipsImageJsonDecoded = json_decode($article['tips_image_path'], true);
       if (is_array($tipsImageJsonDecoded) && isset($tipsImageJsonDecoded[0]) && is_string($tipsImageJsonDecoded[0])) {
-        $tipsImagePath = tipsStoredPathToAdminUrl_local($tipsImageJsonDecoded[0]);
+        $tipsImagePath = tipsStoredPathToAdminUrl($tipsImageJsonDecoded[0]);
       }
     }
     #公開ステータス「name」属性連番対応
@@ -344,13 +352,13 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
             <li {$zIndexStyle} onclick="location.href='./master05_01_02.php?method=edit&articleId={$articleId}'">
               <div class="item-number">{$articleId}</div>
               <div class="item-image">
-                
+
 HTML;
     if ($tipsImagePath !== '') {
       print <<<HTML
                 <picture>
-                  <source src="{$tipsImagePath}" />
-                  <img src="{$tipsImagePath}" alt="サムネイル" />
+                  <source src="{$tipsImagePath}">
+                  <img src="{$tipsImagePath}" alt="サムネイル">
                 </picture>
 
 HTML;
@@ -359,9 +367,7 @@ HTML;
               </div>
               <div class="item-details">
                 <p class="title">{$articleTitle}</p>
-                <p class="contents">
-                  {$articleBodyText}
-                </p>
+                <p class="contents">{$articleBodyText}</p>
               </div>
               <div class="box-status" onclick="event.stopPropagation();">
                 <div class="select-status" data-selectbox>
