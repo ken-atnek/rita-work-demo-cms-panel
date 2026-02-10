@@ -25,6 +25,30 @@ function getLastTipsId()
 	}
 }
 /*
+ * [転職のヒント：トップページ表示設定一覧取得]
+ */
+function getTipsArticlesTopList()
+{
+	global $DB_CONNECT;
+	try {
+		#SQL定義
+		$strSQL = "SELECT article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start,updated_at FROM tips_articles WHERE is_top = 1 AND status = 'public' ORDER BY top_sort ASC, article_id DESC";
+		#プリペアードステートメント作成
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		#SQL実行
+		$newStmt->execute();
+		#実行結果取得
+		$tipsArticles = $newStmt->fetchAll(PDO::FETCH_ASSOC);
+		#ステートメントクローズ
+		$newStmt->closeCursor();
+		#存在しない場合は空配列を返却
+		return $tipsArticles ?: [];
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
  * [転職のヒント一覧取得]
  */
 function getTipsArticlesList()

@@ -381,9 +381,48 @@
             flex-direction: column;
             align-items: center;
             @include drop-shadow;
-            gap: 2.4rem 0;
+            gap: 4rem 0;
             .confirm-meta {
-                font-size: FZ(16);
+                font-size: inherit;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                .item-switch {
+                    font-size: inherit;
+                    display: flex;
+                    align-items: center;
+                    gap: 0 1rem;
+                    span {
+                        font-size: FZ(16);
+                    }
+                    .wrap-toggle-button {
+                        pointer-events: none;
+                        font-size: inherit;
+                        display: flex;
+                        align-items: center;
+                        font-size: FZ(14);
+                        gap: 0 8px;
+                        .toggle-button {
+                            @include toggle-button("無効", "有効");
+                        }
+                    }
+                }
+                .status-draft {
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: auto;
+                    width: 12rem;
+                    height: 3rem;
+                    font-size: max(12px, 0.875em);
+                    font-weight: 300;
+                    border-radius: 100vmax;
+                    color: #fff;
+                    background-color: #ababab;
+                }
             }
             h3 {
                 font-size: FZ(24);
@@ -522,6 +561,16 @@
             .list-search-results {
                 margin-block: 1.4rem;
                 @include layout-table-list(auto auto 1fr auto auto auto auto, 7);
+                &.is-dnd-dragging {
+                    .is-drop-target {
+                        outline: 2px solid #f29400;
+                        outline-offset: -2px;
+                        &::before {
+                            opacity: 1;
+                            background-color: #f1e7d7;
+                        }
+                    }
+                }
                 & > li {
                     & > div {
                         &:not(:last-of-type) {
