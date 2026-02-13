@@ -13,6 +13,8 @@ require_once dirname(__DIR__) . '/../../cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
+#***** TipTapレンダラーファイル：インクルード *****#
+require_once DOCUMENT_ROOT_PATH . '/assets/lib/TipTap/tiptap_renderer.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
@@ -26,6 +28,8 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_applications.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
+#事業所へのお知らせ
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facility_notifications.php';
 
 #================#
 # 応答用タグ初期化
@@ -65,6 +69,73 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
 
+/**
+ * notification画像パスを「/db」配下の相対パスへ正規化する
+ *  - DB保存用: 例) 'notification/notification_0001/image1.jpg'
+ *  - 既存互換: '/db/notification/...' や DOMAIN_NAME 付きも許容
+ */
+function facilityNotificationsDbRelFromStoredPath($path)
+{
+	$path = (string)$path;
+	if ($path === '') return '';
+	$parsedPath = parse_url($path, PHP_URL_PATH);
+	if (is_string($parsedPath) && $parsedPath !== '') {
+		$path = $parsedPath;
+	}
+	$path = str_replace('\\', '/', $path);
+	$pos = strpos($path, '/db/');
+	if ($pos !== false) {
+		return ltrim(substr($path, $pos + 4), '/');
+	}
+	if (strpos($path, 'db/') === 0) {
+		return substr($path, 3);
+	}
+	return ltrim($path, '/');
+}
+/**
+ * notification画像パスを管理画面表示用URL（DOMAIN_NAME + /db/...）へ変換する
+ * - 入力は DB相対（notification/...）/「/db/...」/ドメイン付きURL いずれも許容
+ *
+ * @param mixed $path
+ * @return string 例) 'https://example.com/db/notification/...'（不正/空なら ''）
+ */
+function notificationStoredPathToAdminUrl($path)
+{
+	$rel = facilityNotificationsDbRelFromStoredPath($path);
+	if ($rel === '') return '';
+	$base = defined('DOMAIN_NAME') ? (string)DOMAIN_NAME : '';
+	$base = rtrim($base, '/');
+	return $base . '/db/' . ltrim($rel, '/');
+}
+/**
+ * TipTap JSON の image.attrs.src を再帰的に書き換え、管理画面で表示できるURLに変換する（ローカル版）
+ *
+ * 仕様:
+ * - http(s) の外部URLはここでは触らない（そのまま表示させる）
+ * - tmp_upload 配下（プレビュー用/ドラフト用）のURLもここでは触らない
+ * - DB相対や /db 相対の src は DOMAIN_NAME + /db/... に変換してプレビューできるようにする
+ *
+ * 注意:
+ * - 保存時（AJAX側）では、管理画面URLをDB相対へ戻す正規化が別途行われる前提。
+ */
+function rewriteTiptapJsonImageSrcsToAdminUrl(&$node)
+{
+	if (!is_array($node)) return;
+	if (isset($node['type']) && $node['type'] === 'image') {
+		if (isset($node['attrs']) && is_array($node['attrs']) && isset($node['attrs']['src'])) {
+			$src = (string)$node['attrs']['src'];
+			if ($src !== '' && !preg_match('/^https?:\/\//i', $src) && strpos($src, (string)DEFINE_PREVIEW_IMAGE_DIR_PATH) !== 0) {
+				$node['attrs']['src'] = notificationStoredPathToAdminUrl($src);
+			}
+		}
+	}
+	if (isset($node['content']) && is_array($node['content'])) {
+		foreach ($node['content'] as $i => $child) {
+			rewriteTiptapJsonImageSrcsToAdminUrl($node['content'][$i]);
+		}
+	}
+}
+
 #===================================#
 # フロント側マスタ定義JSONファイル取得
 #-----------------------------------#
@@ -99,7 +170,7 @@ $displayNumber = isset($_POST['displayNumber']) ? intval($_POST['displayNumber']
 #ページ番号
 $pageNumber = isset($_POST['pageNumber']) ? intval($_POST['pageNumber']) : 1;
 #-------------#
-#応募状況ステータス変更
+#応募状況ステータス変更／お知らせモーダル表示
 if ($action == 'changeStatus') {
 	#=============#
 	# POSTチェック
@@ -225,6 +296,126 @@ if ($action == 'changeStatus') {
 		$makeTag['title'] = '応募状況変更エラー';
 		$makeTag['msg'] = 'トランザクション開始に失敗しました。';
 	}
+} elseif ($action == 'openModal') {
+	header('Content-Type: application/json; charset=UTF-8');
+	#=============#
+	# POSTチェック
+	#-------------#
+	#お知らせID
+	$notificationsId = isset($_POST['notificationsId']) ? (int)$_POST['notificationsId'] : 0;
+	if ($notificationsId !== 0) {
+		#お知らせ情報取得
+		$notificationData = getFacilityNotifications_FindById($notificationsId);
+		if (is_array($notificationData) && count($notificationData) > 0) {
+			$titleEsc = htmlspecialchars((string)$notificationData['title'], ENT_QUOTES, 'UTF-8');
+			#本文jsonデコード
+			$decoded = json_decode((string)($notificationData['body_json'] ?? ''), true);
+			#本文json→html変換
+			$body_html = '';
+			if (is_array($decoded)) {
+				#保存形式（推奨）: { editor: <doc-json> }
+				if (isset($decoded['editor']) && is_array($decoded['editor'])) {
+					#decodedのJson画像パス書き換え（TipTap doc 内の image.src を管理画面URLに変換）
+					rewriteTiptapJsonImageSrcsToAdminUrl($decoded['editor']);
+					$body_html = (string)tt_render_article($decoded);
+				} elseif (($decoded['type'] ?? '') === 'doc') {
+					#互換: doc JSON 直保存（editorラップ無し）
+					rewriteTiptapJsonImageSrcsToAdminUrl($decoded);
+					$body_html = (string)tt_render_doc($decoded);
+				}
+			}
+			$bodyHtmlOut = ($body_html !== '' ? $body_html : '');
+			$previewImagePath = '';
+			$imageHtml = '';
+			#サムネイル画像
+			if (isset($notificationData['notification_image_path']) && $notificationData['notification_image_path'] != null) {
+				$notificationImageJsonDecoded = json_decode((string)$notificationData['notification_image_path'], true);
+				$storedPath = '';
+				if (is_array($notificationImageJsonDecoded)) {
+					$storedPath = (string)($notificationImageJsonDecoded[0] ?? '');
+				} elseif (is_string($notificationImageJsonDecoded)) {
+					$storedPath = $notificationImageJsonDecoded;
+				}
+				$frontUrl = notificationStoredPathToAdminUrl($storedPath);
+				$previewImagePath = htmlspecialchars((string)$frontUrl, ENT_QUOTES, 'UTF-8');
+				if ($previewImagePath !== '') {
+					$imageHtml = <<<HTML
+            <div class="item-image">
+              <picture>
+                <source src="{$previewImagePath}">
+                <img src="{$previewImagePath}" alt="サムネイル画像">
+              </picture>
+            </div>
+
+HTML;
+				}
+			}
+			#公開日
+			$confirmDate = isset($notificationData['published_start']) ? date('Y/m/d', strtotime($notificationData['published_start'])) : date('Y/m/d');
+			$confirmDateEsc = htmlspecialchars((string)$confirmDate, ENT_QUOTES, 'UTF-8');
+			$makeTag['status'] = 'success';
+			$makeTag['tag'] .= <<<HTML
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>{$titleEsc}</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <div class="wrap-details">
+            <span class="item-date">{$confirmDateEsc}</span>
+            {$imageHtml}
+            <div class="item-text">
+              {$bodyHtmlOut}
+            </div>
+          </div>
+          <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
+        </div>
+      </div>
+
+HTML;
+		} else {
+			$makeTag['status'] = 'error';
+			$makeTag['tag'] .= <<<HTML
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>お知らせ取得エラー</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <div class="wrap-details">
+            <div class="item-text">
+              <p>お知らせ情報の取得に失敗しました。</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
+        </div>
+      </div>
+
+HTML;
+		}
+	} else {
+		$makeTag['status'] = 'error';
+		$makeTag['tag'] .= <<<HTML
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>お知らせ取得エラー</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <div class="wrap-details">
+            <div class="item-text">
+              <p>お知らせ情報の取得に失敗しました。</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
+        </div>
+      </div>
+
+HTML;
+	}
+	#json 応答
+	echo json_encode($makeTag);
+	exit;
 }
 #-------------#
 #前回の状態維持

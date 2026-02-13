@@ -441,7 +441,7 @@ if ($method === 'edit') {
   $noUpDateKeyJsAttr = htmlspecialchars((string)$noUpDateKeyJs, ENT_QUOTES, 'UTF-8');
   print <<<HTML
         <!--NOTE 修正画面のみ表示 -->
-    <button type="button" class="btn-delate-item" onclick="checkDeleteTips({$articleIdJsAttr}, {$noUpDateKeyJsAttr})">削除する</button>
+        <button type="button" class="btn-delate-item" onclick="checkDeleteTips({$articleIdJsAttr}, {$noUpDateKeyJsAttr})">削除する</button>
 
 HTML;
 }

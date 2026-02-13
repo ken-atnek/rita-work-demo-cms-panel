@@ -127,7 +127,6 @@ if (isset($notificationData['body_json']) && (string)$notificationData['body_jso
     }
   }
 }
-
 #-------------#
 /**
  * notification画像のパス/URLを、DB保存用の「/db を含まない相対パス」へ正規化する（ローカル版）
@@ -207,7 +206,6 @@ function rewriteTiptapJsonImageSrcsToAdminUrl(&$node)
     }
   }
 }
-
 #-------------#
 #initialBodyJson画像パス書き換え
 if (is_array($initialBodyJson)) {

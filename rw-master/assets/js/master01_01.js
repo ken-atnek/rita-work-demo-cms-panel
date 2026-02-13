@@ -437,9 +437,44 @@ async function movePage(pageNumber) {
  * お知らせモーダル作成
  *
  */
-function makeNewsModal() {
-  let blockModal = document.getElementById('modalBlock');
-  blockModal.classList.add('bg-orange');
-  blockModal.classList.add('is-active');
-  document.documentElement.style.overflow = 'hidden';
+async function makeNotificationsModal(action, notificationsId) {
+  const sFd = new FormData();
+  const noUpDateKeyEl = document.querySelector('input[name="noUpDateKey"]');
+  if (noUpDateKeyEl && noUpDateKeyEl.value) {
+    sFd.append('noUpDateKey', noUpDateKeyEl.value);
+  }
+  sFd.append('action', action);
+  sFd.append('notificationsId', String(notificationsId || ''));
+  try {
+    const response = await fetch(requestURL, {
+      method: 'POST',
+      body: sFd,
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data && data.noUpDateKey && noUpDateKeyEl) {
+      noUpDateKeyEl.value = String(data.noUpDateKey);
+    }
+    if (data && data.status === 'error' && !data.tag) {
+      alert(data.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
+      location.href = './master01_01.php';
+      return;
+    }
+    //表示中の情報入替
+    const currentInner = document.querySelector('.modal-article .inner-modal');
+    if (currentInner) currentInner.remove();
+    //ページ表示
+    const modalArticle = document.querySelector('.modal-article');
+    if (modalArticle && data && data.tag) {
+      modalArticle.insertAdjacentHTML('afterbegin', data.tag);
+    }
+    const blockModal = document.getElementById('modalBlock');
+    if (!blockModal) return;
+    blockModal.classList.add('bg-orange');
+    blockModal.classList.add('is-active');
+    document.documentElement.style.overflow = 'hidden';
+  } catch (error) {
+    console.error('送信エラー:', error);
+    alert('通信エラーが発生しました。ページを再読み込みしてください。');
+  }
 }

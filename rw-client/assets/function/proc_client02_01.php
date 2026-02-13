@@ -1556,14 +1556,13 @@ HTML;
 HTML;
         }
       }
-
+      #JSONエスケープ処理
       $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
       $facilityNameJs = json_encode((string)$facility_name, $jsonHex);
       $facilityCodeJs = json_encode((string)$facCode, $jsonHex);
       $facilityNameJsAttr = htmlspecialchars((string)$facilityNameJs, ENT_QUOTES, 'UTF-8');
       $facilityCodeJsAttr = htmlspecialchars((string)$facilityCodeJs, ENT_QUOTES, 'UTF-8');
       $facIdInt = (int)$facId;
-
       $makeTag['tag'] .= <<<HTML
                     </ul>
                   </div>

@@ -43,8 +43,10 @@ function getFacilityNotificationsList($whereParam = 'all')
 		if ($whereParam === 'public') {
 			$strSQL .= " WHERE status = :status AND (published_start IS NULL OR published_start <= NOW())";
 			$sqlParams[':status'] = 'public';
+			$strSQL .= " ORDER BY notification_id DESC LIMIT 5";
+		} else {
+			$strSQL .= " ORDER BY notification_id DESC";
 		}
-		$strSQL .= " ORDER BY notification_id DESC";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -54,11 +56,11 @@ function getFacilityNotificationsList($whereParam = 'all')
 		#SQL実行
 		$newStmt->execute();
 		#実行結果取得
-		$tipsArticles = $newStmt->fetchAll(PDO::FETCH_ASSOC);
+		$facilityNotifications = $newStmt->fetchAll(PDO::FETCH_ASSOC);
 		#ステートメントクローズ
 		$newStmt->closeCursor();
 		#存在しない場合は空配列を返却
-		return $tipsArticles ?: [];
+		return $facilityNotifications ?: [];
 	} catch (PDOException $e) {
 		echo $e->getMessage();
 		exit;
@@ -211,6 +213,35 @@ function getFacilityNotifications_FindById($notificationId = null)
 		$newStmt->closeCursor();
 		#存在しない場合はnullを返却
 		return $corporation ?: null;
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
+ * [事業所へのお知らせを開封済みか取得（ID指定）]
+ *  引数
+ *   $facilityId    ：事業所ID
+ *   $notificationId：事業所へのお知らせID
+ */
+function isFacilityNotificationOpened($facilityId = null, $notificationId = null)
+{
+	global $DB_CONNECT;
+	try {
+		#「$facilityId」「$notificationId」で検索
+		$strSQL = "SELECT COUNT(*) AS cnt FROM facility_notification_reads WHERE facility_id = :facilityId AND notification_id = :notificationId";
+		#プリペアードステートメント作成
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		#変数バインド
+		$newStmt->bindValue(':facilityId', $facilityId, PDO::PARAM_INT);
+		$newStmt->bindValue(':notificationId', $notificationId, PDO::PARAM_INT);
+		#SQL実行
+		$newStmt->execute();
+		#実行結果取得
+		$row = $newStmt->fetch(PDO::FETCH_ASSOC);
+		#ステートメントクローズ
+		$newStmt->closeCursor();
+		return isset($row['cnt']) && (int)$row['cnt'] > 0;
 	} catch (PDOException $e) {
 		echo $e->getMessage();
 		exit;

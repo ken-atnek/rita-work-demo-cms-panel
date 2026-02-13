@@ -81,8 +81,6 @@ $targetImageUploadSessionKey = $imageUploadSessionKey[0] ?? '';
 $title = isset($_POST['title']) ? (string)$_POST['title'] : '';
 #本文
 $body_json = isset($_POST['body_json']) ? (string)$_POST['body_json'] : '';
-#Topページ表示
-$isTop = isset($_POST['is_top']) ? $_POST['is_top'] : 0;
 
 /**
  * 画像MIMEタイプから拡張子を推測
@@ -1009,7 +1007,6 @@ HTML;
 	#***** 入力チェック *****#
 	case 'checkInput': {
 			$titleEsc = htmlspecialchars((string)$title, ENT_QUOTES, 'UTF-8');
-			$isTopChecked = (int)($isTop ?? 0) === 1 ? ' checked' : '';
 			#本文jsonデコード
 			$decoded = json_decode($body_json, true);
 			#本文json→html変換
@@ -1120,7 +1117,6 @@ HTML;
 					$dbCompleteFlg = true;
 					#POST整形
 					$notificationIdInt = (int)($notificationId ?? 0);
-					$isTopInt = (int)$isTop;
 					#本文（wrapper/editor 対応）
 					$decodedBody = json_decode($body_json, true);
 					$editorJson = $decodedBody;
