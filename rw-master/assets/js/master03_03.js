@@ -18,9 +18,19 @@ function checkPasswordSetting(facId, accountStatus) {
   const confirmPassword = pwForm.querySelector('input[name="confirmNewPassword"]').value;
   //入力チェック
   let checkFlag = true;
+  let errorType = '';
+  //パスワード未入力チェック
+  if (newPassword == '' || newPassword == null) {
+    checkFlag = false;
+    errorType = 'newPassword_none';
+  } else if (confirmPassword == '' || confirmPassword == null) {
+    checkFlag = false;
+    errorType = 'confirmPassword_none';
+  }
   //確認用パスワード入力チェック
   if (newPassword !== confirmPassword) {
     checkFlag = false;
+    errorType = 'password_check';
   }
   let blockModal = document.getElementById('modalBlock');
   //ボタンタグを全て取得
@@ -52,9 +62,30 @@ function checkPasswordSetting(facId, accountStatus) {
       '\');">はい</button>';
     blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
   } else {
-    blockModal.querySelector('.box-title p').innerHTML = 'パスワード設定';
-    blockModal.querySelector('.box-details p').innerHTML =
-      '新しいパスワードと確認用パスワードが一致しません。';
+    blockModal.querySelector('.box-title p').innerHTML = 'パスワード設定失敗';
+    switch (errorType) {
+      //新しいパスワード未入力
+      case 'newPassword_none':
+        {
+          blockModal.querySelector('.box-details p').innerHTML =
+            '新しいパスワードを入力して下さい。';
+        }
+        break;
+      //確認用パスワード未入力
+      case 'confirmPassword_none':
+        {
+          blockModal.querySelector('.box-details p').innerHTML =
+            '確認用パスワードを入力して下さい。';
+        }
+        break;
+      //新しいパスワード・確認用パスワードチェックエラー
+      case 'password_check':
+        {
+          blockModal.querySelector('.box-details p').innerHTML =
+            '新しいパスワードと確認用パスワードが一致しません。';
+        }
+        break;
+    }
     //ボタン生成
     let newButton =
       '<button type="button" class="btn-cancel" onclick="closeModal();">閉じる</button>';

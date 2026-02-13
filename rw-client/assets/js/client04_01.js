@@ -419,7 +419,6 @@ async function changeApplicationStatus(
       body: cFd,
     });
     if (!response.ok) throw new Error('Network response was not ok');
-    __appStatusPending = null;
     __restoreModalCloseDefault();
     const blockModal = document.getElementById('modalBlock');
     if (blockModal) {
@@ -488,6 +487,8 @@ async function changeApplicationStatus(
     //ページの上端までスクロール
     const areaClient = document.querySelector('.area-client');
     if (areaClient) areaClient.scrollIntoView(true);
+    //ここまで来たら画面状態は成功として確定
+    __appStatusPending = null;
   } catch (error) {
     console.error('送信エラー:', error);
     if (__appStatusPending && __appStatusPending.groupName) {

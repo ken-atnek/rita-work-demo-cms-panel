@@ -2910,6 +2910,10 @@ foreach ($jobOptionTextData as $jobOptionText) {
     break;
   }
 }
+#JSONエスケープ処理
+$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+$methodJs = json_encode((string)$method, $jsonHex);
+$methodJsAttr = htmlspecialchars((string)$methodJs, ENT_QUOTES, 'UTF-8');
 print <<<HTML
                 </ul>
                 <textarea name="access_notice">{$accessNotice}</textarea>
@@ -2925,7 +2929,7 @@ print <<<HTML
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back" onclick="location.href='./master03_02.php?facId={$facId}'">戻る</button>
-          <button type="button" class="item-check" onclick="checkInput('{$method}')">登録する</button>
+          <button type="button" class="item-check" onclick="checkInput({$methodJsAttr})">登録する</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
 
@@ -2954,7 +2958,7 @@ print <<<HTML
           <p>新規求人カード情報を登録します。よろしいですか？</p>
           <div class="box-btn">
             <button type="button" class="btn-cancel" onclick="closeModal()">キャンセル</button>
-            <button type="button" class="btn-confirm" onclick="sendInput('{$method}');">はい</button>
+            <button type="button" class="btn-confirm" onclick="sendInput({$methodJsAttr});">はい</button>
           </div>
         </div>
       </div>

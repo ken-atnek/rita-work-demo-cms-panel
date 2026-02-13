@@ -683,9 +683,15 @@ print <<<HTML
 
 HTML;
 if ($method === 'edit') {
+  $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+  $facilityNameJs = json_encode((string)($facilityData['name'] ?? ''), $jsonHex);
+  $facilityCodeJs = json_encode((string)($facilityData['facility_code'] ?? ''), $jsonHex);
+  $facilityNameJsAttr = htmlspecialchars((string)$facilityNameJs, ENT_QUOTES, 'UTF-8');
+  $facilityCodeJsAttr = htmlspecialchars((string)$facilityCodeJs, ENT_QUOTES, 'UTF-8');
+  $facIdInt = (int)$facId;
   print <<<HTML
         <!--NOTE 修正画面のみ表示 -->
-        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility('{$facId}','{$facilityData['name']}','{$facilityData['facility_code']}')">削除する</button>
+        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility({$facIdInt}, {$facilityNameJsAttr}, {$facilityCodeJsAttr})">削除する</button>
 
 HTML;
 }

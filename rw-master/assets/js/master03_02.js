@@ -116,6 +116,10 @@ function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
     __jobCardStatusPrevByJobId[String(jobCardId)] ||
     __getJobCardStatusParts(jobCardId).hiddenEl?.value ||
     '';
+  //変更が無い場合は何もしない（同一値選択での無駄なモーダル抑止）
+  if (String(prevValue || '') === String(status || '')) {
+    return;
+  }
   __jobCardStatusPending = {
     jobCardId: Number(jobCardId),
     facId: Number(facId),
@@ -176,7 +180,17 @@ function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
     '<button type="button" class="btn-cancel" onclick="cancelJobCardStatusChange();">キャンセル</button>';
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', cancelButton);
   //登録ボタン生成
-  let addButton = `<button type="button" class="btn-confirm" onclick="changeJobCardStatus(${facId},'${joCardCode}',${jobCardId},${status},'${execution}');">はい</button>`;
+  const safeJobCardCode = String(joCardCode)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n');
+  const safeExecution = String(execution)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n');
+  let addButton = `<button type="button" class="btn-confirm" onclick="changeJobCardStatus(${facId},'${safeJobCardCode}',${jobCardId},${status},'${safeExecution}');">はい</button>`;
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
@@ -237,7 +251,7 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
       blockModal
         .querySelector('.box-title')
         .querySelector('button')
-        .setAttribute('onclick', "closeModalToPage('master03_02.php')");
+        .setAttribute('onclick', `closeModalToPage('master03_02.php?facId=${list['facId']}')`);
     }
     blockModal.classList.add('is-active');
     document.documentElement.style.overflow = 'hidden';

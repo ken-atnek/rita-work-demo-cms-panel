@@ -472,7 +472,7 @@ foreach ($displayNumberList as $number) {
 	$checked = ($number === (int)$searchConditions['displayNumber']) ? ' checked' : '';
 	$makeTag['tag'] .= <<<HTML
                   <li>
-										<input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none','{$sortModeValue}')">
+                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none','{$sortModeValue}')">
                     <label for="display{$number}">{$number}</label>
                   </li>
 
@@ -625,10 +625,22 @@ HTML;
 							if ($appStatusKey === 'registered') {
 								$zIndexStyleStatus = 'style="z-index:2;"';
 							}
+							#inline JS用エスケープ（属性崩壊・注入対策）
+							$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+							$lineUserIdJs = json_encode((string)($application['line_user_id'] ?? ''), $jsonHex);
+							$sendStatusChangeNameJs = json_encode((string)$sendStatusChangeName, $jsonHex);
+							$searchModeJs = json_encode((string)$searchMode, $jsonHex);
+							$sortModeJs = json_encode((string)$sortModeValue, $jsonHex);
+							$lineUserIdJsAttr = htmlspecialchars((string)$lineUserIdJs, ENT_QUOTES, 'UTF-8');
+							$sendStatusChangeNameJsAttr = htmlspecialchars((string)$sendStatusChangeNameJs, ENT_QUOTES, 'UTF-8');
+							$searchModeJsAttr = htmlspecialchars((string)$searchModeJs, ENT_QUOTES, 'UTF-8');
+							$sortModeJsAttr = htmlspecialchars((string)$sortModeJs, ENT_QUOTES, 'UTF-8');
+							$appliedJobsFacIdInt = (int)$appliedJobsFacId;
+							$jobIdInt = (int)($jobData['job_id'] ?? 0);
 							$makeTag['tag'] .= <<<HTML
                           <!-- NOTE  インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
-                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, '{$application['line_user_id']}', '{$sendStatusChangeName}', {$jobData['job_id']}, this.value, '{$searchMode}', '{$sortModeValue}');">
+                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="checkApplicationStatus({$appliedJobsFacIdInt}, {$lineUserIdJsAttr}, {$sendStatusChangeNameJsAttr}, {$jobIdInt}, this.value, {$searchModeJsAttr}, {$sortModeJsAttr});">
                             <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
                           </li>
 

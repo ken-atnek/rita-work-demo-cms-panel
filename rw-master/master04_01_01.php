@@ -242,7 +242,7 @@ print <<<HTML
       </section>
       <section class="container-applicant-details">
         <h2>求職者情報<span>{$viewTitleName}</span></h2>
-        <a href="javascript:history.back()" class="link-page-back">戻る</a>
+        <a href="./master04_01.php" class="link-page-back">戻る</a>
         <div class="inner-applicant-details">
           <!-- NOTE 応募者情報フォーム -->
           <form name="searchForm" style="display:none;">

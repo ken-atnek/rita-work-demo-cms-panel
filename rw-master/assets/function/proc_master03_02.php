@@ -198,6 +198,80 @@ switch ($action) {
   #***** ステータス変更 *****#
   case 'changeStatus': {
       try {
+        #===========================#
+        # 入力バリデーション（最小）
+        #---------------------------#
+        $facIdInt = filter_var($facId, FILTER_VALIDATE_INT);
+        $jobIdInt = filter_var($jobId, FILTER_VALIDATE_INT);
+        $jobCardCodeStr = is_string($jobCardCode) ? trim($jobCardCode) : '';
+        $changeStatusStr = is_scalar($change_status) ? (string)$change_status : '';
+        $executionStr = is_scalar($execution) ? (string)$execution : '';
+        $allowedStatuses = ['0', '1', '2', '99'];
+        $allowedExecutions = ['', 'delete', 'restore'];
+        if ($facIdInt === false || $jobIdInt === false) {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '不正なリクエストです。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        if (empty($facilityData) || !is_array($facilityData) || empty($facilityData['facility_code'])) {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '事業所情報を取得できませんでした。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        if (!in_array($changeStatusStr, $allowedStatuses, true)) {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '不正なステータスです。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        if (!in_array($executionStr, $allowedExecutions, true)) {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '不正な実行種別です。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        #job_code (=jobCardCode) はJSON/画像パスに使うため形式を限定
+        if ($jobCardCodeStr === '' || strlen($jobCardCodeStr) > 64 || !preg_match('/\Ajob_\d{1,20}\z/', $jobCardCodeStr)) {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '求人IDが不正です。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        #execution と status の整合
+        if ($executionStr === 'delete' && $changeStatusStr !== '0') {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '不正な削除リクエストです。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        if ($executionStr === 'restore' && $changeStatusStr !== '2') {
+          $makeTag['status'] = 'error';
+          $makeTag['title'] = '入力エラー';
+          $makeTag['msg'] = '不正な再掲載リクエストです。';
+          header('Content-Type: application/json');
+          echo json_encode($makeTag);
+          exit;
+        }
+        #正規化（以降は安全な型で扱う）
+        $facId = (string)$facIdInt;
+        $jobId = (string)$jobIdInt;
+        $jobCardCode = $jobCardCodeStr;
+        $change_status = $changeStatusStr;
+        $execution = $executionStr;
         #トランザクション開始
         # 1 = BEGIN／ 2 = COMMIT／ 3 = ROLLBACK
         $result = DB_Transaction(1);

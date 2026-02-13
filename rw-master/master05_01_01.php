@@ -272,7 +272,7 @@ foreach ($displayNumberList as $number) {
   $checked = ($number === (int)$searchConditions['displayNumber']) ? ' checked' : '';
   print <<<HTML
                   <li>
-                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}"{$checked} onchange="searchConditions('search','none')">
+                    <input type="radio" name="displayNumber" id="display{$number}" value="{$number}" {$checked} onchange="searchConditions('search','none')">
                     <label for="display{$number}">{$number}</label>
                   </li>
 
@@ -314,7 +314,8 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
     #記事ID
     $articleId = isset($article['article_id']) ? intval($article['article_id']) : 0;
     #記事コード
-    $articleCode = isset($article['code']) ? htmlspecialchars($article['code'], ENT_QUOTES, 'UTF-8') : '';
+    $articleCode = isset($article['code']) ? (string)$article['code'] : '';
+    $articleCodeAttr = htmlspecialchars($articleCode, ENT_QUOTES, 'UTF-8');
     #記事タイトル
     $articleTitle = isset($article['title']) ? htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') : '';
     #記事本文プレーンテキスト
@@ -339,6 +340,7 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
         $tipsImagePath = tipsStoredPathToAdminUrl($tipsImageJsonDecoded[0]);
       }
     }
+    $tipsImagePathEsc = htmlspecialchars((string)$tipsImagePath, ENT_QUOTES, 'UTF-8');
     #公開ステータス「name」属性連番対応
     $statusName = 'list_status' . $articleId;
     #checked判定
@@ -357,8 +359,8 @@ HTML;
     if ($tipsImagePath !== '') {
       print <<<HTML
                 <picture>
-                  <source src="{$tipsImagePath}">
-                  <img src="{$tipsImagePath}" alt="サムネイル">
+                  <source src="{$tipsImagePathEsc}">
+                  <img src="{$tipsImagePathEsc}" alt="サムネイル">
                 </picture>
 
 HTML;
@@ -379,11 +381,11 @@ HTML;
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
-                        <input type="radio" name="{$statusName}" value="draft" id="list{$articleId}-status01" {$checkedDraft} onchange="checkTipsStatus({$articleId}, '{$articleCode}',this.value,'');">
+                        <input type="radio" name="{$statusName}" value="draft" id="list{$articleId}-status01" {$checkedDraft} data-article-code="{$articleCodeAttr}" onchange="checkTipsStatus({$articleId}, this.getAttribute('data-article-code'), this.value);">
                         <label for="list{$articleId}-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
-                        <input type="radio" name="{$statusName}" value="public" id="list{$articleId}-status02" {$checkedPublic} onchange="checkTipsStatus({$articleId}, '{$articleCode}',this.value,'');">
+                        <input type="radio" name="{$statusName}" value="public" id="list{$articleId}-status02" {$checkedPublic} data-article-code="{$articleCodeAttr}" onchange="checkTipsStatus({$articleId}, this.getAttribute('data-article-code'), this.value);">
                         <label for="list{$articleId}-status02" class="status-published">公開中</label>
                       </li>
                     </ul>

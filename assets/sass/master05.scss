@@ -381,7 +381,7 @@
             flex-direction: column;
             align-items: center;
             @include drop-shadow;
-            gap: 4rem 0;
+            gap: 2rem 0;
             .confirm-meta {
                 font-size: inherit;
                 display: flex;
@@ -444,6 +444,7 @@
                 font-size: inherit;
                 display: flex;
                 flex-direction: column;
+                width: 100%;
                 margin-bottom: 5rem;
                 margin-top: 1.6rem;
                 gap: 1rem 0;
@@ -539,6 +540,25 @@
                         }
                     }
                 }
+            }
+        }
+    }
+}
+.inner-05-03-02 {
+    .container-confirm {
+        .block-confirm {
+            gap: 1rem 0;
+            h3 {
+                align-self: flex-start;
+                margin-bottom: 1em;
+            }
+            .box-image {
+                padding: 0 2em;
+            }
+            .box-time,
+            .box-body {
+                padding: 0 1.2em;
+                color: #403726;
             }
         }
     }

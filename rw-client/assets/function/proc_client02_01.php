@@ -1556,6 +1556,14 @@ HTML;
 HTML;
         }
       }
+
+      $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+      $facilityNameJs = json_encode((string)$facility_name, $jsonHex);
+      $facilityCodeJs = json_encode((string)$facCode, $jsonHex);
+      $facilityNameJsAttr = htmlspecialchars((string)$facilityNameJs, ENT_QUOTES, 'UTF-8');
+      $facilityCodeJsAttr = htmlspecialchars((string)$facilityCodeJs, ENT_QUOTES, 'UTF-8');
+      $facIdInt = (int)$facId;
+
       $makeTag['tag'] .= <<<HTML
                     </ul>
                   </div>
@@ -1569,7 +1577,7 @@ HTML;
           <button type="button" class="item-check" onclick="checkInput()">入力を確認する</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
-        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility('{$facId}','{$facility_name}','{$facCode}')">削除する</button>
+        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility({$facIdInt}, {$facilityNameJsAttr}, {$facilityCodeJsAttr})">削除する</button>
       </section>
 
 HTML;

@@ -424,7 +424,6 @@ async function changeApplicationStatus(
       body: cFd,
     });
     if (!response.ok) throw new Error('Network response was not ok');
-    __appStatusPending = null;
     __restoreModalCloseDefault();
     const blockModal = document.getElementById('modalBlock');
     if (blockModal) {
@@ -494,6 +493,8 @@ async function changeApplicationStatus(
     //ページの上端までスクロール
     const areaMaster = document.querySelector('.area-master');
     if (areaMaster) areaMaster.scrollIntoView(true);
+    //ここまで来たら画面状態は成功として確定
+    __appStatusPending = null;
   } catch (error) {
     console.error('送信エラー:', error);
     //通信失敗時もUIを戻す

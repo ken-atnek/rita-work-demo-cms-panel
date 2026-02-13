@@ -5,7 +5,7 @@
  *  運営管理：転職のヒント登録／編集
  *
  * [初版]
- *  2026.02.04
+ *  2026.02.10
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -342,7 +342,7 @@ print <<<HTML
             <dd class="dd-editor"><div class="editor" id="TipTapEditor"></div><!--<textarea name="body_text"></textarea>--></dd>
           </dl>
           <dl>
-            <dt class="is-required position-top">サムネイル<br />画像</dt>
+            <dt class="is-required position-top">サムネイル<br>画像</dt>
             <dd class="edit-image">
               <!-- NOTE 画像登録時は [is-active]付与 -->
               <div class="select-image" id="js-dragDrop-tipsImage">
@@ -404,7 +404,7 @@ HTML;
                   </div>
                   <picture>
                     <source src="{$previewPath}" type="{$mimeType}">
-                    <img src="{$previewPath}" alt="ロゴ画像プレビュー">
+                    <img src="{$previewPath}" alt="サムネイル画像プレビュー">
                   </picture>
                 </li>
               </ul>
@@ -434,9 +434,14 @@ print <<<HTML
 
 HTML;
 if ($method === 'edit') {
+  $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+  $articleIdJs = json_encode((string)$articleId, $jsonHex);
+  $noUpDateKeyJs = json_encode((string)$noUpDateKey, $jsonHex);
+  $articleIdJsAttr = htmlspecialchars((string)$articleIdJs, ENT_QUOTES, 'UTF-8');
+  $noUpDateKeyJsAttr = htmlspecialchars((string)$noUpDateKeyJs, ENT_QUOTES, 'UTF-8');
   print <<<HTML
         <!--NOTE 修正画面のみ表示 -->
-        <button type="button" class="btn-delate-item" onclick="checkDeleteTips('{$articleId}','{$noUpDateKey}')">削除する</button>
+    <button type="button" class="btn-delate-item" onclick="checkDeleteTips({$articleIdJsAttr}, {$noUpDateKeyJsAttr})">削除する</button>
 
 HTML;
 }
@@ -457,7 +462,7 @@ print <<<HTML
         <div class="box-details">
           <p>登録が完了しました。</p>
           <div class="box-btn">
-            <button type="button" class="btn-cancel">一覧に戻る</button>
+            <button type="button" class="btn-cancel" onclick="location.href='master05_01_01.php'">一覧に戻る</button>
           </div>
         </div>
       </div>
@@ -474,7 +479,7 @@ print <<<HTML
         <div class="dropzone-actions">
           <button type="button" id="dropzonePick">ファイルを選択</button>
         </div>
-        <div class="dropzone-note">対応形式：jpg / png / gif / webp（最大 5MB）</div>
+        <div class="dropzone-note">対応形式：JPG / PNG / GIF（最大 5MB）</div>
       </div>
     </article>
     <script src="../assets/js/common.js" defer></script>

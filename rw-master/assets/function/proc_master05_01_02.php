@@ -4,10 +4,8 @@
  *  - 管理画面 -
  *  運営管理：転職のヒント 登録／編集（AJAX）
  *
- * action:
- *  - saveArticle
- *  - deleteArticle
- *  - uploadInlineImage
+ * [初版]
+ *  2026.02.10
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -22,6 +20,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
+#転職のヒント
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_tips_articles.php';
 
 #================#
@@ -94,7 +93,6 @@ function guessImageExtFromMime($mime)
 	if ($mime === 'image/jpeg' || $mime === 'image/jpg') return 'jpg';
 	if ($mime === 'image/png') return 'png';
 	if ($mime === 'image/gif') return 'gif';
-	if ($mime === 'image/webp') return 'webp';
 	return null;
 }
 /**
@@ -359,7 +357,7 @@ function cleanupOrphanedTipsArticleImages($articleIdInt, $articleCode)
 	foreach ($items as $name) {
 		if (!is_string($name) || $name === '' || $name === '.' || $name === '..') continue;
 		$ext = strtolower((string)pathinfo($name, PATHINFO_EXTENSION));
-		if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true)) continue;
+		if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif'], true)) continue;
 		if (isset($keepBasenames[$name])) continue;
 		$full = $dir . '/' . $name;
 		if (is_file($full)) {
@@ -1411,7 +1409,6 @@ HTML;
 							return is_string($x) && $x !== '';
 						}));
 					}
-					#DB登録情報準備
 					#DB登録情報準備
 					switch ($method) {
 						#***** 新規登録 *****#

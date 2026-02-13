@@ -3,6 +3,88 @@
  *
  */
 const requestURL = './assets/function/proc_master01_01.php';
+
+//応募状況変更：キャンセル時にUIを戻すための退避
+const __appStatusPrevByGroupName = Object.create(null);
+let __appStatusLastGroupName = '';
+let __appStatusPending = null;
+let __closeModalOriginal = null;
+function __getAppStatusParts(groupName) {
+  const radios = document.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+  const hiddenEl = document.querySelector(`input[data-selectbox-hidden][name="${groupName}"]`);
+  const box =
+    (hiddenEl && hiddenEl.closest('[data-selectbox]')) ||
+    (radios[0] && radios[0].closest('[data-selectbox]'));
+  const valueEl = box ? box.querySelector('[data-selectbox-value]') : null;
+  return { box, valueEl, hiddenEl, radios };
+}
+function __applyAppStatusToUi(groupName, value) {
+  const { valueEl, hiddenEl, radios } = __getAppStatusParts(groupName);
+  const targetValue = String(value || '');
+  let labelText = '';
+  radios.forEach((r) => {
+    const isTarget = String(r.value) === targetValue;
+    r.checked = isTarget;
+    if (isTarget && r.id) {
+      const label = document.querySelector(`label[for="${r.id}"]`);
+      if (label) labelText = label.textContent || '';
+    }
+  });
+  if (hiddenEl) hiddenEl.value = targetValue;
+  if (valueEl && labelText) valueEl.textContent = labelText;
+}
+function __captureAppStatusPrevValue() {
+  document.addEventListener(
+    'click',
+    (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLInputElement)) return;
+      if (el.type !== 'radio') return;
+      if (!el.name || !String(el.name).startsWith('application_status')) return;
+      const groupName = String(el.name);
+      __appStatusLastGroupName = groupName;
+      const { hiddenEl } = __getAppStatusParts(groupName);
+      const checked = document.querySelector(`input[type="radio"][name="${groupName}"]:checked`);
+      const prev = (hiddenEl && hiddenEl.value) || (checked && checked.value) || '';
+      if (prev) __appStatusPrevByGroupName[groupName] = String(prev);
+    },
+    true
+  );
+}
+function __setModalCloseToCancel() {
+  if (__closeModalOriginal === null && typeof window.closeModal === 'function') {
+    __closeModalOriginal = window.closeModal;
+  }
+  if (typeof window.closeModal === 'function') {
+    window.closeModal = () => {
+      cancelApplicationStatusChange();
+    };
+  }
+}
+function __restoreModalCloseDefault() {
+  if (__closeModalOriginal && typeof __closeModalOriginal === 'function') {
+    window.closeModal = __closeModalOriginal;
+  }
+  __closeModalOriginal = null;
+}
+function cancelApplicationStatusChange() {
+  if (__appStatusPending && __appStatusPending.groupName) {
+    const prev = String(__appStatusPending.prevValue || '').trim();
+    if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+  }
+  __appStatusPending = null;
+  const orig = __closeModalOriginal;
+  __restoreModalCloseDefault();
+  if (typeof orig === 'function') {
+    orig();
+  } else {
+    const modal = document.getElementById('modalBlock');
+    if (modal) modal.classList.remove('is-active');
+  }
+  document.documentElement.style.overflow = '';
+}
+window.cancelApplicationStatusChange = cancelApplicationStatusChange;
+__captureAppStatusPrevValue();
 /**
  * 応募状況ボタン切替
  *
@@ -160,6 +242,16 @@ function checkApplicationStatus(
   searchMode,
   sortMode
 ) {
+  const groupName = __appStatusLastGroupName;
+  const prevValue = groupName
+    ? __appStatusPrevByGroupName[groupName] || __getAppStatusParts(groupName).hiddenEl?.value || ''
+    : '';
+  __appStatusPending = {
+    groupName: groupName,
+    prevValue: String(prevValue || ''),
+    nextValue: String(status || ''),
+  };
+  __setModalCloseToCancel();
   const blockModal = document.getElementById('modalBlock');
   if (!blockModal) return;
   const boxTitleP = blockModal.querySelector('.box-title p');
@@ -189,7 +281,7 @@ function checkApplicationStatus(
   cancelBtn.className = 'btn-cancel';
   cancelBtn.textContent = 'キャンセル';
   cancelBtn.addEventListener('click', () => {
-    if (typeof closeModal === 'function') closeModal();
+    cancelApplicationStatusChange();
   });
   btnWrap.appendChild(cancelBtn);
   //登録ボタン生成
@@ -251,8 +343,22 @@ async function changeApplicationStatus(
       body: cFd,
     });
     if (!response.ok) throw new Error('Network response was not ok');
+    __restoreModalCloseDefault();
+    const blockModal = document.getElementById('modalBlock');
+    if (blockModal) {
+      blockModal.classList.remove('is-active');
+      blockModal.classList.remove('bg-orange');
+      blockModal.classList.remove('bg-black');
+    }
+    document.documentElement.style.overflow = '';
     const list = await response.json();
     if (list && list.status === 'error') {
+      if (__appStatusPending && __appStatusPending.groupName) {
+        const prev = String(__appStatusPending.prevValue || '').trim();
+        if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+      }
+      __appStatusPending = null;
+      __restoreModalCloseDefault();
       alert(list.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
       location.href = './master01_01.php';
       return;
@@ -288,8 +394,16 @@ async function changeApplicationStatus(
     //ページの上端までスクロール
     const areaMaster = document.querySelector('.area-master');
     if (areaMaster) areaMaster.scrollIntoView(true);
+    //ここまで来たら画面状態は成功として確定
+    __appStatusPending = null;
   } catch (error) {
     console.error('送信エラー:', error);
+    if (__appStatusPending && __appStatusPending.groupName) {
+      const prev = String(__appStatusPending.prevValue || '').trim();
+      if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+    }
+    __appStatusPending = null;
+    __restoreModalCloseDefault();
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
   }
 }

@@ -614,6 +614,9 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 	foreach ($applicationsList as $applicationKey => $application) {
 		#Liのz-index設定
 		$zIndexStyle = 'style="z-index:' . ($zIndexNo - $applicationKey) . ';"';
+		#詳細ページ遷移用（onclick属性向けに安全化）
+		$lineUserIdRaw = isset($application['line_user_id']) ? (string)$application['line_user_id'] : '';
+		$lineUserIdUrlEsc = htmlspecialchars(rawurlencode($lineUserIdRaw), ENT_QUOTES, 'UTF-8');
 		#ライン表示名
 		$lineDisplayName = isset($application['line_display_name']) ? (string)$application['line_display_name'] : '';
 		$lineDisplayNameEsc = htmlspecialchars($lineDisplayName, ENT_QUOTES, 'UTF-8');
@@ -634,7 +637,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 		);
 		$makeTag['tag'] .= <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?appId={$application['application_id']}'">
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$lineUserIdUrlEsc}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 

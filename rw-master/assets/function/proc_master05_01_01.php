@@ -106,7 +106,6 @@ foreach ($requiredKeys as $requiredKey) {
 		break;
 	}
 }
-
 $prevSortTarget = isset($prevSearchConditions['sortTarget']) ? (string)$prevSearchConditions['sortTarget'] : 'article_id';
 $prevIdSortOrder = strtolower((string)($prevSearchConditions['idSortOrder'] ?? 'desc'));
 $prevUpdateDateSortOrder = strtolower((string)($prevSearchConditions['updateDateSortOrder'] ?? 'desc'));
@@ -116,11 +115,9 @@ if ($prevIdSortOrder !== 'asc' && $prevIdSortOrder !== 'desc') {
 if ($prevUpdateDateSortOrder !== 'asc' && $prevUpdateDateSortOrder !== 'desc') {
 	$prevUpdateDateSortOrder = 'desc';
 }
-
 $sortTarget = $prevSortTarget;
 $idSortOrder = $prevIdSortOrder;
 $updateDateSortOrder = $prevUpdateDateSortOrder;
-
 if ($sortMode !== '' && $sortMode !== 'none') {
 	switch ($sortMode) {
 		#--------------
@@ -156,7 +153,6 @@ if ($sortMode !== '' && $sortMode !== 'none') {
 			break;
 	}
 }
-
 #ソートモードのアクティブ判定（番号・契約日 両方に付与）
 $sortIdAscActive = '';
 $sortIdDescActive = '';
@@ -171,7 +167,6 @@ if ($sortTarget === 'updated_at') {
 	$sortIdAscActive = (strtolower((string)$idSortOrder) === 'asc') ? 'is-active' : '';
 	$sortIdDescActive = (strtolower((string)$idSortOrder) === 'asc') ? '' : 'is-active';
 }
-
 #表示側へ渡すソートモード文字列（主ソート：ページ移動等で維持する）
 $sortModeValue = 'none';
 if ($sortTarget === 'updated_at') {
@@ -500,12 +495,42 @@ switch ($action) {
 					$changeArticleCode = isset($_POST['changeArticleCode']) ? trim((string)$_POST['changeArticleCode']) : '';
 					#変更後ステータス
 					$change_status = isset($_POST['changeStatus']) ? trim((string)$_POST['changeStatus']) : 'draft';
+					#入力バリデーション（最小）
+					if ($changeArticleId <= 0) {
+						DB_Transaction(3);
+						$makeTag['status'] = 'error';
+						$makeTag['title'] = '入力エラー';
+						$makeTag['msg'] = '不正なリクエストです。';
+						header('Content-Type: application/json');
+						echo json_encode($makeTag);
+						exit;
+					}
+					if ($changeArticleCode === '' || strlen($changeArticleCode) > 64 || !preg_match('/\Atips_\d{1,20}\z/', $changeArticleCode)) {
+						DB_Transaction(3);
+						$makeTag['status'] = 'error';
+						$makeTag['title'] = '入力エラー';
+						$makeTag['msg'] = '記事コードが不正です。';
+						header('Content-Type: application/json');
+						echo json_encode($makeTag);
+						exit;
+					}
+					if (!in_array($change_status, ['draft', 'public'], true)) {
+						DB_Transaction(3);
+						$makeTag['status'] = 'error';
+						$makeTag['title'] = '入力エラー';
+						$makeTag['msg'] = 'ステータスが不正です。';
+						header('Content-Type: application/json');
+						echo json_encode($makeTag);
+						exit;
+					}
 					#登録用配列：初期化
 					$dbFiledData = array();
 					#登録情報セット
 					$dbFiledData['status'] = array(':status', $change_status, 1);
 					if ($change_status === 'public') {
 						$dbFiledData['published_start'] = array(':published_start', date("Y-m-d H:i:s"), 0);
+					} else {
+						$dbFiledData['published_start'] = array(':published_start', null, 1);
 					}
 					$dbFiledData['updated_at'] = array(':updated_at', date("Y-m-d H:i:s"), 0);
 					#更新用キー：初期化
@@ -716,13 +741,16 @@ $makeTag['tag'] .= <<<HTML
 
 HTML;
 #表示可能リストあればループで差し込む
-#表示可能リストあればループで差し込む
 if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
 	$zIndexNo = count($tipsArticlesList);
 	foreach ($tipsArticlesList as $articleKey => $article) {
 		#Liのz-index設定
 		$zIndexStyle = 'style="z-index:' . ($zIndexNo - $articleKey) . ';"';
+		#記事ID
 		$articleId = isset($article['article_id']) ? intval($article['article_id']) : 0;
+		#記事コード（JS送信用）
+		$articleCode = isset($article['code']) ? (string)$article['code'] : '';
+		$articleCodeAttr = htmlspecialchars($articleCode, ENT_QUOTES, 'UTF-8');
 		#記事タイトル
 		$articleTitle = isset($article['title']) ? htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') : '';
 		#記事本文プレーンテキスト
@@ -750,6 +778,7 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
 				}
 			}
 		}
+		$tipsImagePathEsc = htmlspecialchars((string)$tipsImagePath, ENT_QUOTES, 'UTF-8');
 		#公開ステータス「name」属性連番対応
 		$statusName = 'list_status' . $articleId;
 		#checked判定
@@ -764,8 +793,8 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
               <div class="item-number">{$articleId}</div>
               <div class="item-image">
                 <picture>
-                  <source src="{$tipsImagePath}" />
-                  <img src="{$tipsImagePath}" />
+                  <source src="{$tipsImagePathEsc}">
+                  <img src="{$tipsImagePathEsc}">
                 </picture>
               </div>
               <div class="item-details">
@@ -774,7 +803,7 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
                   {$articleBodyText}
                 </p>
               </div>
-              <div class="box-status">
+              <div class="box-status" onclick="event.stopPropagation();">
                 <div class="select-status" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input type="hidden" name="{$statusName}" value="{$valueName}" data-selectbox-hidden>
@@ -784,11 +813,11 @@ if (is_array($tipsArticlesList) && count($tipsArticlesList) > 0) {
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
-                        <input type="radio" name="{$statusName}" value="draft" id="list{$articleId}-status01" {$checkedDraft}>
+                        <input type="radio" name="{$statusName}" value="draft" id="list{$articleId}-status01" {$checkedDraft} data-article-code="{$articleCodeAttr}" onchange="checkTipsStatus({$articleId}, this.getAttribute('data-article-code'), this.value);">
                         <label for="list{$articleId}-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
-                        <input type="radio" name="{$statusName}" value="public" id="list{$articleId}-status02" {$checkedPublic}>
+                        <input type="radio" name="{$statusName}" value="public" id="list{$articleId}-status02" {$checkedPublic} data-article-code="{$articleCodeAttr}" onchange="checkTipsStatus({$articleId}, this.getAttribute('data-article-code'), this.value);">
                         <label for="list{$articleId}-status02" class="status-published">公開中</label>
                       </li>
                     </ul>

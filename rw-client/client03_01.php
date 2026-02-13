@@ -157,6 +157,7 @@ print <<<HTML
 HTML;
 #表示可能リストあればループ処理
 if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
+  $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
   foreach ($jobCardList as $jobCard) {
     #ステータス判定
     $isActiveClass = '';
@@ -184,6 +185,11 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
         $previewUrlParam = DOMAIN_NAME_DEMO . '/details/?id=' . $jobCard['job_code'] . '&preview=preview_9f3a7c';
         break;
     }
+    #JSONエスケープ処理
+    $jobCodeJs = json_encode((string)$jobCard['job_code'], $jsonHex);
+    $jobCodeJsAttr = htmlspecialchars((string)$jobCodeJs, ENT_QUOTES, 'UTF-8');
+    $previewUrlParamJs = json_encode((string)$previewUrlParam, $jsonHex);
+    $previewUrlParamJsAttr = htmlspecialchars((string)$previewUrlParamJs, ENT_QUOTES, 'UTF-8');
     #募集職種
     foreach ($jobCategories as $jobCategory) {
       if ($jobCategory['id'] == $jobCard['job_category_id']) {
@@ -268,11 +274,11 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
-                        <input type="radio" name="{$statusName}" value="1" id="list{$jobCard['job_id']}-status01" {$checkedDraft} onchange="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, this.value,'');">
+                        <input type="radio" name="{$statusName}" value="1" id="list{$jobCard['job_id']}-status01" {$checkedDraft} onchange="checkJobCardStatus({$facId}, {$jobCodeJsAttr}, {$jobCard['job_id']}, this.value,'');">
                         <label for="list{$jobCard['job_id']}-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
-                        <input type="radio" name="{$statusName}" value="2" id="list{$jobCard['job_id']}-status02" {$checkedPublic} onchange="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, this.value,'');">
+                        <input type="radio" name="{$statusName}" value="2" id="list{$jobCard['job_id']}-status02" {$checkedPublic} onchange="checkJobCardStatus({$facId}, {$jobCodeJsAttr}, {$jobCard['job_id']}, this.value,'');">
                         <label for="list{$jobCard['job_id']}-status02" class="status-published">公開中</label>
                       </li>
                     </ul>
@@ -313,7 +319,7 @@ HTML;
               </div>
               <div class="box-btn">
                 <div class="box-btn-inner">
-                  <button type="button" class="btn-preview" onclick="openPreviewPage('{$previewUrlParam}')">プレビュー</button>
+                  <button type="button" class="btn-preview" onclick="openPreviewPage({$previewUrlParamJsAttr})">プレビュー</button>
                   <button type="button" class="btn-contact" onclick="location.href='./client08_01.php?title=plan&facId={$jobCard['facility_id']}&jobId={$jobCard['job_id']}'">お問い合わせ</button>
                 </div>
               </div>

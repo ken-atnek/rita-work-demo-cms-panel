@@ -238,6 +238,10 @@ function checkTipsStatus(articleId, articleCode, status) {
     __tipsStatusPrevByArticleId[String(articleId)] ||
     __getStatusSelectBoxParts(articleId).hiddenEl?.value ||
     '';
+  //同じ値を選んだだけなら何もしない（modalが出続けるのを防ぐ）
+  if (String(prevValue || '').trim() === String(status || '').trim()) {
+    return;
+  }
   __tipsStatusPending = {
     articleId: Number(articleId),
     articleCode: String(articleCode || ''),
@@ -273,14 +277,19 @@ function checkTipsStatus(articleId, articleCode, status) {
     '<button type="button" class="btn-cancel" onclick="cancelTipsStatusChange();">キャンセル</button>';
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', cancelButton);
   //登録ボタン生成
-  let addButton = `<button type="button" class="btn-confirm" onclick="changeTipsStatus(${articleId},'${articleCode}','${status}');">はい</button>`;
+  const safeCode = String(articleCode)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n');
+  let addButton = `<button type="button" class="btn-confirm" onclick="changeTipsStatus(${articleId},'${safeCode}','${status}');">はい</button>`;
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
   document.documentElement.style.overflow = 'hidden';
 }
 /**
- * 求人カード状態変更
+ * 記事公開状態変更
  *
  */
 async function changeTipsStatus(articleId, articleCode, status) {
@@ -315,9 +324,9 @@ async function changeTipsStatus(articleId, articleCode, status) {
       __tipsStatusPending = null;
       __restoreModalCloseDefault();
       blockModal.classList.add('bg-orange');
-      blockModal.querySelector('.box-title p').innerHTML = 'カード状況変更失敗';
+      blockModal.querySelector('.box-title p').innerHTML = 'ステータス変更失敗';
       blockModal.querySelector('.box-details p').innerHTML =
-        'カード状況の変更に失敗しました。<br>お手数ですが最初からやり直してください。';
+        'ステータスの変更に失敗しました。<br>お手数ですが最初からやり直してください。';
       //ボタン生成
       let newButton =
         '<button type="button" class="btn-cancel" onclick="closeModal();">閉じる</button>';

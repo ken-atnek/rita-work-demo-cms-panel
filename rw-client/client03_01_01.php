@@ -231,7 +231,7 @@ print <<<HTML
       <section class="page-nav">
         <h2>求人カード管理</h2>
         <nav>
-          <a href="javascript:void(0);" class="is-active">求人カード一覧</a>
+          <a href="./client03_01.php" class="is-active">求人カード一覧</a>
         </nav>
       </section>
       <section class="container-job-card-register">

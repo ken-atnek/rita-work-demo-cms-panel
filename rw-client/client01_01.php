@@ -388,6 +388,17 @@ HTML;
         #面接日
         $interviewAtDate = !empty($jobData['interview_at']) ? date('Y/m/d', strtotime($jobData['interview_at'])) : 'ー';
         $interviewAtDateEsc = htmlspecialchars((string)$interviewAtDate, ENT_QUOTES, 'UTF-8');
+        #inline JS用エスケープ（属性崩壊・注入対策）
+        $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+        $lineUserIdJs = json_encode((string)($application['line_user_id'] ?? ''), $jsonHex);
+        $sendStatusChangeNameJs = json_encode((string)$sendStatusChangeName, $jsonHex);
+        $searchModeJs = json_encode((string)($searchConditions['searchMode'] ?? ''), $jsonHex);
+        $sortModeJs = json_encode((string)$sortMode, $jsonHex);
+        $lineUserIdJsAttr = htmlspecialchars((string)$lineUserIdJs, ENT_QUOTES, 'UTF-8');
+        $sendStatusChangeNameJsAttr = htmlspecialchars((string)$sendStatusChangeNameJs, ENT_QUOTES, 'UTF-8');
+        $searchModeJsAttr = htmlspecialchars((string)$searchModeJs, ENT_QUOTES, 'UTF-8');
+        $sortModeJsAttr = htmlspecialchars((string)$sortModeJs, ENT_QUOTES, 'UTF-8');
+        $jobIdInt = (int)($jobData['job_id'] ?? 0);
         print <<<HTML
                 <li>
                   <div class="item-job"><span>{$jobCategoryNameEsc}</span></div>
@@ -442,7 +453,7 @@ HTML;
               print <<<HTML
                           <!-- NOTE インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
-                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, '{$application['line_user_id']}', '{$sendStatusChangeName}', {$jobData['job_id']}, this.value,'{$searchConditions['searchMode']}','{$sortMode}');">
+                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, {$lineUserIdJsAttr}, {$sendStatusChangeNameJsAttr}, {$jobIdInt}, this.value, {$searchModeJsAttr}, {$sortModeJsAttr});">
                             <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
                           </li>
 

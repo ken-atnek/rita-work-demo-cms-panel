@@ -229,21 +229,18 @@ TipTap Editor
 /* 画像ギャラリー（X風の横並び：最大4枚をグリッド表示） */
 .image-gallery {
     margin: 0.5em 0 1em;
+    .image-gallery__inner {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0;
+    }
 }
-.image-gallery__inner {
-    display: grid;
-    gap: 8px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin: 0;
-}
+
 .image-gallery[data-count="1"] .image-gallery__inner {
     grid-template-columns: 1fr;
 }
-/* 画像ノードがギャラリー内に入る場合の余白を調整 */
-.image-gallery .image-node {
-    width: 100%;
-    display: block;
-}
+
 /* 3枚のとき：上段に2枚、下段に1枚（横長で2カラム分） */
 .image-gallery[data-count="3"] .image-gallery__inner {
     grid-template-columns: 1fr 1fr;
@@ -252,6 +249,11 @@ TipTap Editor
 }
 .image-gallery[data-count="3"] .image-gallery__inner > :nth-child(3) {
     grid-column: 1 / -1; /* 下段は横に伸ばす */
+}
+/* 画像ノードがギャラリー内に入る場合の余白を調整 */
+.image-gallery .image-node {
+    width: 100%;
+    display: block;
 }
 /* ギャラリー内の画像はタイルにフィット（トリミング） */
 .image-gallery .image-node {
@@ -282,6 +284,7 @@ TipTap Editor
 .image-node {
     position: relative;
     display: inline-block;
+    width: fit-content;
     max-width: 100%;
 }
 .image-node > img {

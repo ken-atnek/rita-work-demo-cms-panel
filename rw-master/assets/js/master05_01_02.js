@@ -8,31 +8,25 @@ const requestURL = './assets/function/proc_master05_01_02.php';
 function $(sel) {
   return document.querySelector(sel);
 }
-
 function getForm() {
   return document.querySelector('form[name=inputForm]');
 }
-
 function getInputValue(id, fallback = '') {
   const el = document.getElementById(id);
   if (!el) return fallback;
   return String(el.value ?? fallback);
 }
-
 function setInputValue(id, value) {
   const el = document.getElementById(id);
   if (el) el.value = String(value ?? '');
 }
-
 function syncNoUpDateKey(nextKey) {
   if (!nextKey) return;
   setInputValue('noUpDateKey', nextKey);
 }
-
 function getEditor() {
   return window.RW_TIPTAP_EDITOR || null;
 }
-
 async function postFormData(fd) {
   const res = await fetch(requestURL, { method: 'POST', body: fd });
   const response = await res.json().catch(() => null);
@@ -45,7 +39,6 @@ async function postFormData(fd) {
   }
   return response;
 }
-
 /**
  * TipTap から呼ばれる画像アップロードhook
  *  window.rwTipTapUploadImage(file) => Promise<string(url)>
@@ -53,12 +46,11 @@ async function postFormData(fd) {
 window.rwTipTapUploadImage = async (file) => {
   const fd = new FormData();
   fd.append('action', 'uploadInlineImage');
-  // form(hidden) を単一の情報源にする
+  //form(hidden) を単一の情報源にする
   fd.append('noUpDateKey', getInputValue('noUpDateKey', ''));
   fd.append('method', getInputValue('method', 'new'));
   fd.append('articleId', getInputValue('articleId', '0'));
   fd.append('file', file);
-
   const json = await postFormData(fd);
   if (!json.url) throw new Error('画像URLの取得に失敗しました');
   return String(json.url);
@@ -106,8 +98,6 @@ function openErrorModal(title, message) {
   blockModal.classList.add('is-active');
   document.documentElement.style.overflow = 'hidden';
 }
-
-//
 function ensureEditorContentFromConfig() {
   const editor = getEditor();
   if (!editor) return false;
@@ -150,7 +140,6 @@ async function checkInput() {
     const periodUiExists = !!document.querySelector('input[name="periodType"]');
     const periodEnabled =
       periodFeatureEnabled && periodUiExists && String(initCfg.initialPeriodType || '') !== 'none';
-
     let periodType = 'none';
     let from = '';
     let to = '';
@@ -257,7 +246,6 @@ async function sendInput() {
     const periodUiExists = !!document.querySelector('input[name="periodType"]');
     const periodEnabled =
       periodFeatureEnabled && periodUiExists && String(initCfg.initialPeriodType || '') !== 'none';
-
     let periodType = 'none';
     let from = '';
     let to = '';
@@ -495,13 +483,13 @@ document.addEventListener('DOMContentLoaded', () => {
       periodTo.value = '';
     }
   }
-  // 機能無効化時はUIもイベントも触らない
+  //機能無効化時はUIもイベントも触らない
   if (
     !periodFeatureEnabled ||
     String(initCfg.initialPeriodType || '') === 'none' ||
     periodRadios.length === 0
   ) {
-    // no-op
+    //no-op
   } else {
     //初期値反映
     try {
@@ -522,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (periodFrom) periodFrom.value = initFrom;
       if (periodTo) periodTo.value = initTo;
     } catch {
-      // no-op
+      //no-op
     }
     applyPeriodState();
     periodRadios.forEach((r) => r.addEventListener('change', applyPeriodState));
