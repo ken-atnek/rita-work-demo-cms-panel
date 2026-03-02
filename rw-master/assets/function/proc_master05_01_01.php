@@ -505,7 +505,7 @@ switch ($action) {
 						echo json_encode($makeTag);
 						exit;
 					}
-					if ($changeArticleCode === '' || strlen($changeArticleCode) > 64 || !preg_match('/\Atips_\d{1,20}\z/', $changeArticleCode)) {
+					if ($changeArticleCode === '' || strlen($changeArticleCode) > 64 || !preg_match('/\Atips\d{1,20}\z/', $changeArticleCode)) {
 						DB_Transaction(3);
 						$makeTag['status'] = 'error';
 						$makeTag['title'] = '入力エラー';

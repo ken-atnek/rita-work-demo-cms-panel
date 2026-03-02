@@ -245,7 +245,7 @@ print <<<HTML
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico">
     <link rel="stylesheet" href="../assets/css/tiptap_app.css">
-    <link rel="stylesheet" href="../assets/css/master05.css">
+    <link rel="stylesheet" href="../assets/css/master05.css?59092102032026">
   </head>
 
   <body>
@@ -484,7 +484,7 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/form.js" defer></script>
-    <script src="../assets/js/dropZone.js" defer></script>
+    <script src="../assets/js/dropZone.js?12071902032026" defer></script>
     <script src="../assets/js/modal.js" defer></script>
     <script nonce="{$cspNonceEsc}">
     window.RW_MASTER05_01_02 = {$rwTipsConfigJs};

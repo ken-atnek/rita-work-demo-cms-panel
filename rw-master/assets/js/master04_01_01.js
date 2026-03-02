@@ -99,7 +99,7 @@ async function postAndRedraw({ action, extraFields, searchMode, sortMode, pageNu
       highlightApplicationRow(highlightId);
     });
   }
-  scrollToTop();
+  // scrollToTop();
   return data;
 }
 function normalizeTextForCompare(value) {

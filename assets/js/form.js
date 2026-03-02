@@ -9,7 +9,7 @@ let validationForm = document.querySelector('form[name=inputForm]');
 let requiredItem = document.querySelectorAll('.required-item');
 const sendBtn = document.querySelector('.item-check');
 //ロード時はボタン「確認画面へ」無効化
-if (sendBtn) {
+if (sendBtn && validationForm) {
   let inputMethod = validationForm.querySelector('input[name="method"]').value;
   if (inputMethod == 'new') {
     sendBtn.disabled = false;
@@ -28,6 +28,8 @@ if (validationForm != null) {
   validationForm.addEventListener('input', checkValue);
   validationForm.addEventListener('change', checkValue);
   function checkValue() {
+    // この画面に制御対象ボタンが無い場合は何もしない
+    if (!sendBtn) return;
     //未入力時はボタン無効化
     const isRequired = validationForm.checkValidity();
     if (isRequired) {
@@ -36,6 +38,31 @@ if (validationForm != null) {
       sendBtn.disabled = true;
     }
   }
+}
+/**
+ * Enterキーによる暗黙submitの抑止（オプトイン）
+ *
+ * 対象formに data-prevent-enter-submit="true" が付いている場合のみ有効。
+ * textarea内のEnter（改行）は許可。
+ */
+if (validationForm && validationForm.dataset.preventEnterSubmit === 'true') {
+  validationForm.addEventListener('keydown', (e) => {
+    // IME変換確定などは抑止しない
+    if (e.isComposing) return;
+    if (e.key !== 'Enter') return;
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    // textareaのEnterは改行として許可
+    if (target.tagName === 'TEXTAREA') return;
+    // 明示的なsubmit操作（ボタン等）は阻害しない
+    if (target.tagName === 'BUTTON') return;
+    if (target.tagName === 'INPUT') {
+      const type = (target.getAttribute('type') || 'text').toLowerCase();
+      if (type === 'submit' || type === 'button' || type === 'image') return;
+    }
+    // それ以外のEnterは暗黙submitになり得るため抑止
+    e.preventDefault();
+  });
 }
 /**
  * 入力変更、フォーカスが外れた時の入力チェック
@@ -225,5 +252,7 @@ function createError(elem, errorMessage) {
       break;
   }
   //ボタンを無効化する
-  sendBtn.disabled = true;
+  if (sendBtn) {
+    sendBtn.disabled = true;
+  }
 }

@@ -370,7 +370,7 @@ print <<<HTML
           </div>
         </article>
         <div class="bottom-box-btn">
-          <button type="button" class="item-register" onclick="checkNewJobCard()"><span>新規求人カード登録</span></button>
+          <button type="button" class="item-register" onclick="checkNewJobCard({$facId})"><span>新規求人カード登録</span></button>
         </div>
       </section>
 
@@ -396,7 +396,7 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master03_02.js" defer></script>
+    <script src="./assets/js/master03_02.js?34442102032026" defer></script>
   </body>
 </html>
 

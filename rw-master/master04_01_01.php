@@ -251,7 +251,7 @@ print <<<HTML
             <input type="hidden" name="searchMode" value="{$searchModeEsc}">
             <input type="hidden" name="facility_id" value="0">
           </form>
-          <form name="inputForm" class="block-applicant-details">
+          <form name="inputForm" class="block-applicant-details" data-prevent-enter-submit="true">
             <dl>
               <dt>名前</dt>
               <dd class="dd-top">
@@ -642,7 +642,8 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master04_01_01.js" defer></script>
+    <script src="../assets/js/form.js" defer></script>
+    <script src="./assets/js/master04_01_01.js?36402002032026" defer></script>
   </body>
 </html>
 

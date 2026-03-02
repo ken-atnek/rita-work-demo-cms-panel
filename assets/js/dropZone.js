@@ -118,8 +118,8 @@ function initDropZone(options) {
   } catch {
     //no-op
   }
-  //画像格納変数初期化
-  let keepFiles = null;
+  //アップロード中フラグ（複数ファイル選択時の多重送信防止）
+  let isUploading = false;
   if (alreadyInitialized) {
     //プレビュー内ボタンの再バインドだけ行う（イベント二重登録防止）
     //bindPreviewButtons() はこの後定義される
@@ -237,106 +237,107 @@ function initDropZone(options) {
       };
     });
   }
-  //ファイル選択・ドロップ時の処理
-  function handleFiles(files, mode = 'add', replaceIndex = null) {
-    if (files.length > 0) {
-      //file選択と同様に fileInput 側へも反映して必須判定を通す
-      syncFileInputFiles(files);
-      const file = files[0];
-      keepFiles = files;
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          togglePreview(true, mode, replaceIndex);
-        };
-        reader.readAsDataURL(file);
+  async function uploadSingleFile(file, mode = 'add', replaceIndex = null) {
+    if (!file) return;
+    if (!inputMode || !inputArea) {
+      alert('画像アップロードの設定が正しくありません（inputModeまたはinputAreaが未設定）');
+      return;
+    }
+    let sendPHP = getHiddenValue('send_php', '');
+    let upImageMode = inputMode.value;
+    let upImageArea = inputArea.value;
+    let facId = getHiddenValue('facId', '');
+    let jobId = getHiddenValue('jobId', '');
+    let sFd = new FormData();
+    if (mode === 'replace') {
+      sFd.append('action', 'replaceUploadImage');
+      sFd.append('replace_index', replaceIndex);
+      if (facId !== '') sFd.append('facId', facId);
+      if (jobId !== '') sFd.append('jobId', jobId);
+    } else {
+      sFd.append('action', 'preUploadImage');
+      if (facId !== '') sFd.append('facId', facId);
+      if (jobId !== '') sFd.append('jobId', jobId);
+    }
+    sFd.append('method', 'new_image');
+    sFd.append('up_image_mode', upImageMode);
+    sFd.append('up_image_area[]', upImageArea);
+    sFd.append('images_tmp', file);
+    let requestURL = './assets/function/' + sendPHP;
+    const response = await fetch(requestURL, {
+      method: 'POST',
+      body: sFd,
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    let list = await response.json();
+    if (list['status'] == 'error') {
+      if (fileError) {
+        fileError.style.display = 'flex';
+        fileError.querySelector('h5').innerHTML = list['title'];
+        fileError.querySelector('p').innerHTML = list['msg'];
+      }
+      return;
+    }
+    previewBlock.style.display = 'grid';
+    if (mode === 'replace') {
+      previewBlock.innerHTML = list['tag'];
+    } else {
+      if (upImageMode === 'only') {
+        previewBlock.innerHTML = list['tag'];
       } else {
-        alert('画像ファイルを選択してください。');
+        previewBlock.insertAdjacentHTML('beforeend', list['tag']);
       }
     }
-  }
-  //プレビュー表示の切り替え
-  function togglePreview(show, mode = 'add', replaceIndex = null) {
-    if (show) {
-      if (!inputMode || !inputArea) {
-        alert('画像アップロードの設定が正しくありません（inputModeまたはinputAreaが未設定）');
-        return;
-      }
-      let sendPHP = getHiddenValue('send_php', '');
-      let upImageMode = inputMode.value;
-      let upImageArea = inputArea.value;
-      let facId = getHiddenValue('facId', '');
-      let jobId = getHiddenValue('jobId', '');
-      let sFd = new FormData();
-      if (mode === 'replace') {
-        sFd.append('action', 'replaceUploadImage');
-        sFd.append('replace_index', replaceIndex);
-        if (facId !== '') sFd.append('facId', facId);
-        if (jobId !== '') sFd.append('jobId', jobId);
-      } else {
-        sFd.append('action', 'preUploadImage');
-        if (facId !== '') sFd.append('facId', facId);
-        if (jobId !== '') sFd.append('jobId', jobId);
-      }
-      sFd.append('method', 'new_image');
-      sFd.append('up_image_mode', upImageMode);
-      sFd.append('up_image_area[]', upImageArea);
-      if (keepFiles && keepFiles.length > 0) {
-        sFd.append('images_tmp', keepFiles[0]);
-      }
-      let requestURL = './assets/function/' + sendPHP;
-      (async () => {
-        try {
-          const response = await fetch(requestURL, {
-            method: 'POST',
-            body: sFd,
-          });
-          if (!response.ok) throw new Error('Network response was not ok');
-          let list = await response.json();
-          if (list['status'] == 'error') {
-            if (fileError) {
-              fileError.style.display = 'flex';
-              fileError.querySelector('h5').innerHTML = list['title'];
-              fileError.querySelector('p').innerHTML = list['msg'];
-            }
-          } else {
-            previewBlock.style.display = 'grid';
-            if (mode === 'replace') {
-              previewBlock.innerHTML = list['tag'];
-            } else {
-              if (upImageMode === 'only') {
-                previewBlock.innerHTML = list['tag'];
-              } else {
-                previewBlock.insertAdjacentHTML('beforeend', list['tag']);
-              }
-            }
-            const liCount = previewBlock.querySelectorAll('li').length;
-            if (upImageMode === 'only' && liCount >= 1) {
-              //dropZone.style.display = 'none';
-              dropZone.classList.add('is-active');
-            } else if (upImageMode === 'multiple' && liCount >= 10) {
-              //dropZone.style.display = 'none';
-              dropZone.classList.add('is-active');
-            } else {
-              //dropZone.style.display = '';
-              dropZone.classList.remove('is-active');
-            }
-            bindPreviewButtons();
-          }
-        } catch (error) {
-          console.error(error);
-          alert('通信エラーが発生しました。ページを再読み込みしてください。');
-        }
-      })();
+    const liCount = previewBlock.querySelectorAll('li').length;
+    if (upImageMode === 'only' && liCount >= 1) {
+      dropZone.classList.add('is-active');
+    } else if (upImageMode === 'multiple' && liCount >= 10) {
+      dropZone.classList.add('is-active');
     } else {
-      previewBlock.style.display = 'none';
-      fileInput.value = '';
-      keepFiles = null;
-      let upImageMode = document.querySelector('input[type=hidden][name=upload_image_mode]').value;
-      if (upImageMode === 'only') {
-        //dropZone.style.display = '';
-        dropZone.classList.remove('is-active');
+      dropZone.classList.remove('is-active');
+    }
+    bindPreviewButtons();
+  }
+  //ファイル選択・ドロップ時の処理（複数ファイル対応）
+  async function handleFiles(files, mode = 'add', replaceIndex = null) {
+    if (!files || files.length === 0) return;
+    if (isUploading) return;
+    //画像のみ対象
+    const imageFiles = Array.from(files).filter(
+      (f) => f && typeof f.type === 'string' && f.type.startsWith('image/')
+    );
+    if (imageFiles.length === 0) {
+      alert('画像ファイルを選択してください。');
+      return;
+    }
+    //file選択と同様に fileInput 側へも反映して必須判定を通す（画像のみ）
+    syncFileInputFiles(imageFiles);
+    //only モードは1枚だけに制限
+    const upImageMode = inputMode ? String(inputMode.value || '') : '';
+    const currentCount = previewBlock ? previewBlock.querySelectorAll('li').length : 0;
+    const maxCount = upImageMode === 'only' ? 1 : 10;
+    const available = Math.max(0, maxCount - currentCount);
+    let targets = imageFiles;
+    if (mode === 'replace') {
+      targets = imageFiles.slice(0, 1);
+    } else if (upImageMode === 'only') {
+      targets = imageFiles.slice(0, 1);
+    } else {
+      targets = imageFiles.slice(0, available);
+    }
+    if (targets.length === 0) return;
+    isUploading = true;
+    try {
+      for (const f of targets) {
+        await uploadSingleFile(f, mode, replaceIndex);
+        //replace は1回で終了
+        if (mode === 'replace') break;
       }
+    } catch (error) {
+      console.error(error);
+      alert('通信エラーが発生しました。ページを再読み込みしてください。');
+    } finally {
+      isUploading = false;
     }
   }
   //初期バインド

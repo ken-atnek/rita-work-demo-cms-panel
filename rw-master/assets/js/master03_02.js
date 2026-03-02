@@ -100,8 +100,30 @@ document.addEventListener(
  * 新規求人カード登録チェック
  *
  */
-function checkNewJobCard() {
+function checkNewJobCard(facId) {
   let blockModal = document.getElementById('modalBlock');
+  if (!blockModal) return;
+  __setModalCloseToCancel();
+  //ボタンタグを全て取得
+  const boxBtn = blockModal.querySelector('.box-btn');
+  if (!boxBtn) return;
+  let buttonList = boxBtn.querySelectorAll('button');
+  //ボタンタグを削除
+  buttonList.forEach((ElementButton) => {
+    ElementButton.remove();
+  });
+  const titleEl = blockModal.querySelector('.box-title p');
+  const detailsEl = blockModal.querySelector('.box-details p');
+  if (titleEl) titleEl.textContent = '新規求人カード';
+  if (detailsEl) detailsEl.textContent = '新しく求人カードを作成します。よろしいですか？';
+  //キャンセルボタン生成
+  let cancelButton =
+    '<button type="button" class="btn-cancel" onclick="cancelJobCardStatusChange();">キャンセル</button>';
+  boxBtn.insertAdjacentHTML('beforeend', cancelButton);
+  //登録ボタン生成
+  let addButton = `<button type="button" class="btn-confirm" onclick="location.href='./master03_02_01.php?method=new&facId=${facId}'">はい</button>`;
+  boxBtn.insertAdjacentHTML('beforeend', addButton);
+  blockModal.classList.remove('bg-black');
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
   document.documentElement.style.overflow = 'hidden';
@@ -112,6 +134,7 @@ function checkNewJobCard() {
  */
 function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
   let blockModal = document.getElementById('modalBlock');
+  if (!blockModal) return;
   const prevValue =
     __jobCardStatusPrevByJobId[String(jobCardId)] ||
     __getJobCardStatusParts(jobCardId).hiddenEl?.value ||
@@ -192,6 +215,7 @@ function checkJobCardStatus(facId, joCardCode, jobCardId, status, execution) {
     .replace(/\n/g, '\\n');
   let addButton = `<button type="button" class="btn-confirm" onclick="changeJobCardStatus(${facId},'${safeJobCardCode}',${jobCardId},${status},'${safeExecution}');">はい</button>`;
   blockModal.querySelector('.box-btn').insertAdjacentHTML('beforeend', addButton);
+  blockModal.classList.remove('bg-black');
   blockModal.classList.add('bg-orange');
   blockModal.classList.add('is-active');
   document.documentElement.style.overflow = 'hidden';
@@ -230,6 +254,7 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
       }
       __jobCardStatusPending = null;
       __restoreModalCloseDefault();
+      blockModal.classList.remove('bg-black');
       blockModal.classList.add('bg-orange');
       blockModal.querySelector('.box-title p').innerHTML = 'カード状況変更失敗';
       blockModal.querySelector('.box-details p').innerHTML =
@@ -241,6 +266,7 @@ async function changeJobCardStatus(facId, joCardCode, jobCardId, status, executi
     } else {
       __jobCardStatusPending = null;
       __restoreModalCloseDefault();
+      blockModal.classList.remove('bg-orange');
       blockModal.classList.add('bg-black');
       blockModal.querySelector('.box-title p').innerHTML = list['title'];
       blockModal.querySelector('.box-details p').innerHTML = list['msg'];
