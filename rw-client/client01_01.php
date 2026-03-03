@@ -463,7 +463,7 @@ HTML;
               print <<<HTML
                           <!-- NOTE インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
-                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, {$lineUserIdJsAttr}, {$sendStatusChangeNameJsAttr}, {$jobIdInt}, this.value, {$searchModeJsAttr}, {$sortModeJsAttr});">
+                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="checkApplicationStatus({$appliedJobsFacId}, {$lineUserIdJsAttr}, {$sendStatusChangeNameJsAttr}, {$jobIdInt}, this.value, {$searchModeJsAttr}, {$sortModeJsAttr});">
                             <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
                           </li>
 
@@ -567,7 +567,7 @@ HTML;
 } else {
   print <<<HTML
           <li class="no-data" style="display:flex;justify-content:center;align-items:center;padding:2em 0;">
-            <div>お知らせはありません。</div>
+            <div style="font-size:max(12px,0.875em);">お知らせはありません。</div>
           </li>
 
 HTML;
@@ -580,6 +580,7 @@ HTML;
 @include './inc_page-top.html';
 print <<<HTML
     </main>
+    <!-- NOTE お知らせモーダル用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
     <article class="modal-article" id="modalBlock">
       <div class="inner-modal">
         <div class="box-title">
@@ -603,9 +604,25 @@ print <<<HTML
         </div>
       </div>
     </article>
+    <!-- NOTE 修正画面用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
+    <article class="modal-alert" id="modalBlockAlert">
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>応募状況変更</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <p>応募状況を変更します。よろしいですか？</p>
+          <div class="box-btn">
+            <button type="button" class="btn-cancel">キャンセル</button>
+            <button type="button" class="btn-confirm">はい</button>
+          </div>
+        </div>
+      </div>
+    </article>
     <script src="../assets/js/common.js" defer></script>
-    <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/client01_01.js" defer></script>
+    <script src="../assets/js/modal.js?49311603032026" defer></script>
+    <script src="./assets/js/client01_01.js?49311603032026" defer></script>
   </body>
 </html>
 

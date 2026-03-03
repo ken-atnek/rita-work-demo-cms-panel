@@ -74,6 +74,39 @@ print <<<HTML
       </article>
     </main>
     <script type="text/javascript" src="./assets/js/login.js"></script>
+    <script>
+      //IDとPWの両方が入力されているときだけログインボタンを有効化する
+      const loginForm = document.forms['loginForm'];
+      const userIdInput = loginForm.elements['userEmail'];
+      const userPasswordInput = loginForm.elements['userPassword'];
+      const submitButton = loginForm.querySelector('button[type="submit"]');
+      function toggleSubmitButton() {
+        const isUserIdFilled = userIdInput.value.trim() !== '';
+        const isUserPasswordFilled = userPasswordInput.value.trim() !== '';
+        submitButton.disabled = !(isUserIdFilled && isUserPasswordFilled);
+      }
+      userIdInput.addEventListener('input', toggleSubmitButton);
+      userPasswordInput.addEventListener('input', toggleSubmitButton);
+      //初期状態はログインボタンを無効化する
+      submitButton.disabled = true;
+      toggleSubmitButton();
+      //Enterキーでの送信を有効化する
+      loginForm.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !submitButton.disabled) {
+          event.preventDefault();
+          submitButton.click();
+        }
+      });
+      //IDとPWにフォーカスがあればエラーメッセージ削除
+      function clearErrorMessage() {
+        const errorMessageElement = document.querySelector('.text-caution');
+        if (errorMessageElement) {
+          errorMessageElement.style.display = 'none';
+        }
+      }
+      userIdInput.addEventListener('input', clearErrorMessage);
+      userPasswordInput.addEventListener('input', clearErrorMessage);
+    </script>
   </body>
 </html>
 

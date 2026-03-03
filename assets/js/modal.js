@@ -8,11 +8,19 @@
  *
  */
 function closeModal() {
-  let blockModal = document.getElementById('modalBlock');
-  if (!blockModal) return;
-  blockModal.classList.remove('is-active');
-  blockModal.classList.remove('bg-orange');
-  blockModal.classList.remove('bg-black');
+  const modals = [
+    document.getElementById('modalBlock'),
+    document.getElementById('modalBlockAlert'),
+  ];
+  let didClose = false;
+  modals.forEach((blockModal) => {
+    if (!blockModal) return;
+    blockModal.classList.remove('is-active');
+    blockModal.classList.remove('bg-orange');
+    blockModal.classList.remove('bg-black');
+    didClose = true;
+  });
+  if (!didClose) return;
   document.documentElement.style.overflow = '';
 }
 /**
@@ -20,12 +28,7 @@ function closeModal() {
  *
  */
 function closeModalToPage(page) {
-  let blockModal = document.getElementById('modalBlock');
-  if (!blockModal) return;
-  blockModal.classList.remove('is-active');
-  blockModal.classList.remove('bg-orange');
-  blockModal.classList.remove('bg-black');
-  document.documentElement.style.overflow = '';
+  closeModal();
   //ページ移動
   location.href = page;
 }

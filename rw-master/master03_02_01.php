@@ -252,7 +252,7 @@ print <<<HTML
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico">
-    <link rel="stylesheet" href="../assets/css/master03-02.css">
+    <link rel="stylesheet" href="../assets/css/master03-02.css?58471903032026">
   </head>
 
   <body>
@@ -2965,7 +2965,7 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/form.js" defer></script>
-    <script src="../assets/js/dropZone.js?12071902032026" defer></script>
+    <script src="../assets/js/dropZone.js?18432003032026" defer></script>
     <script src="../assets/js/modal.js" defer></script>
     <script src="./assets/js/master03_02_01.js" defer></script>
   </body>

@@ -1687,6 +1687,11 @@ HTML;
           $pendingTmpFiles = [];
           $pendingClearSessions = [];
           #DB登録情報準備
+          $mapURLRaw = (!empty($map_url)) ? trim($map_url) : '';
+          $mapLinkURLRaw = (!empty($map_link_url)) ? trim($map_link_url) : '';
+          #URL用：スペース等（半角/全角含むホワイトスペース）を全て削除
+          $mapURL = preg_replace('/[\s　]+/u', '', $mapURLRaw);
+          $mapLinkURL = preg_replace('/[\s　]+/u', '', $mapLinkURLRaw);
           switch ($method) {
             #***** 新規登録 *****#
             case 'new': {
@@ -1714,8 +1719,8 @@ HTML;
                 $dbFiledData['recruitment_area'] = array(':recruitment_area', $recruitment_area, 0);
                 $dbFiledData['phone'] = array(':phone', $phone, 0);
                 $dbFiledData['email'] = array(':email', $email, 0);
-                $dbFiledData['map_url'] = array(':map_url', $map_url, 0);
-                $dbFiledData['map_link_url'] = array(':map_link_url', $map_link_url, 0);
+                $dbFiledData['map_url'] = array(':map_url', $mapURL, 0);
+                $dbFiledData['map_link_url'] = array(':map_link_url', $mapLinkURL, 0);
                 $dbFiledData['is_active'] = array(':is_active', 1, 1);
                 $dbFiledData['created_at'] = array(':created_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
@@ -1925,8 +1930,8 @@ HTML;
                 $dbFiledData['recruitment_area'] = array(':recruitment_area', trim($recruitment_area), 0);
                 $dbFiledData['phone'] = array(':phone', $phone, 0);
                 $dbFiledData['email'] = array(':email', $email, 0);
-                $dbFiledData['map_url'] = array(':map_url', $map_url, 0);
-                $dbFiledData['map_link_url'] = array(':map_link_url', $map_link_url, 0);
+                $dbFiledData['map_url'] = array(':map_url', $mapURL, 0);
+                $dbFiledData['map_link_url'] = array(':map_link_url', $mapLinkURL, 0);
                 $dbFiledData['updated_at'] = array(':updated_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
                 $dbFiledValue = array();

@@ -42,6 +42,41 @@ function initDropZone(options) {
   if (!dropZone || !selectFileButton || !fileInput || !previewBlock) {
     return;
   }
+  //==============================
+  // クライアント側サイズ制限（10MB）
+  //  - 10MB超はアップロードせず、警告用div（fileError）を表示
+  //==============================
+  const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+  const showFileErrorDiv = (params = {}) => {
+    const { title = null, msg = null, overwrite = false, type = null } = params;
+    if (!fileError) {
+      if (title || msg) alert([title, msg].filter(Boolean).join('\n'));
+      return;
+    }
+    fileError.style.display = 'flex';
+    if (type) fileError.dataset.rwFileErrorType = String(type);
+    if (!overwrite) return;
+    const h5 = fileError.querySelector('h5');
+    const p = fileError.querySelector('p');
+    if (h5 && title != null) h5.textContent = String(title);
+    if (p && msg != null) {
+      const text = String(msg);
+      p.textContent = text;
+      p.style.textAlign = 'center';
+      p.style.lineHeight = '1.6em';
+      // 改行（\n）を表示上の改行として扱う
+      if (text.includes('\n')) {
+        p.style.whiteSpace = 'pre-line';
+      } else {
+        p.style.whiteSpace = '';
+      }
+    }
+  };
+  const hideFileErrorDiv = () => {
+    if (!fileError) return;
+    fileError.style.display = 'none';
+    delete fileError.dataset.rwFileErrorType;
+  };
   const alreadyInitialized = dropZone.dataset.dropzoneInitialized === '1';
   dropZone.dataset.dropzoneInitialized = '1';
   //hidden値の有無判定
@@ -239,6 +274,11 @@ function initDropZone(options) {
   }
   async function uploadSingleFile(file, mode = 'add', replaceIndex = null) {
     if (!file) return;
+    //10MB超の画像はアップロードしない（警告表示のみ）
+    if (typeof file.size === 'number' && file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      showFileErrorDiv({ overwrite: false, type: 'size' });
+      return;
+    }
     if (!inputMode || !inputArea) {
       alert('画像アップロードの設定が正しくありません（inputModeまたはinputAreaが未設定）');
       return;
@@ -273,10 +313,16 @@ function initDropZone(options) {
     if (list['status'] == 'error') {
       if (fileError) {
         fileError.style.display = 'flex';
+        fileError.dataset.rwFileErrorType = 'server';
         fileError.querySelector('h5').innerHTML = list['title'];
         fileError.querySelector('p').innerHTML = list['msg'];
       }
       return;
+    }
+    //成功時は警告を隠す（※サイズ警告は残す）
+    if (fileError && fileError.style.display !== 'none') {
+      const t = fileError.dataset.rwFileErrorType;
+      if (t !== 'size') hideFileErrorDiv();
     }
     previewBlock.style.display = 'grid';
     if (mode === 'replace') {
@@ -302,6 +348,8 @@ function initDropZone(options) {
   async function handleFiles(files, mode = 'add', replaceIndex = null) {
     if (!files || files.length === 0) return;
     if (isUploading) return;
+    //新規操作時は一旦警告を隠す
+    hideFileErrorDiv();
     //画像のみ対象
     const imageFiles = Array.from(files).filter(
       (f) => f && typeof f.type === 'string' && f.type.startsWith('image/')
@@ -310,20 +358,47 @@ function initDropZone(options) {
       alert('画像ファイルを選択してください。');
       return;
     }
+    //10MB超が混在していても、10MB以下はアップロードする（10MB超はスキップして警告表示）
+    const skippedTooLarge = imageFiles.filter(
+      (f) => typeof f.size === 'number' && f.size > MAX_IMAGE_FILE_SIZE_BYTES
+    );
+    const eligibleFiles = imageFiles.filter(
+      (f) => !(typeof f.size === 'number' && f.size > MAX_IMAGE_FILE_SIZE_BYTES)
+    );
+    if (skippedTooLarge.length > 0) {
+      const maxNames = 5;
+      const names = skippedTooLarge
+        .slice(0, maxNames)
+        .map((f) => (f && f.name ? String(f.name) : '（ファイル名不明）'));
+      const rest = skippedTooLarge.length - names.length;
+      const msgLines = [
+        '10MBを超えるファイルはアップロードできません。',
+        `対象外: ${names.join('、')}${rest > 0 ? ` ほか${rest}件` : ''}`,
+      ];
+      showFileErrorDiv({
+        overwrite: true,
+        type: 'size',
+        title: 'ファイルサイズが大きすぎます',
+        msg: msgLines.join('\n'),
+      });
+    }
+    if (eligibleFiles.length === 0) {
+      return;
+    }
     //file選択と同様に fileInput 側へも反映して必須判定を通す（画像のみ）
-    syncFileInputFiles(imageFiles);
+    syncFileInputFiles(eligibleFiles);
     //only モードは1枚だけに制限
     const upImageMode = inputMode ? String(inputMode.value || '') : '';
     const currentCount = previewBlock ? previewBlock.querySelectorAll('li').length : 0;
     const maxCount = upImageMode === 'only' ? 1 : 10;
     const available = Math.max(0, maxCount - currentCount);
-    let targets = imageFiles;
+    let targets = eligibleFiles;
     if (mode === 'replace') {
-      targets = imageFiles.slice(0, 1);
+      targets = eligibleFiles.slice(0, 1);
     } else if (upImageMode === 'only') {
-      targets = imageFiles.slice(0, 1);
+      targets = eligibleFiles.slice(0, 1);
     } else {
-      targets = imageFiles.slice(0, available);
+      targets = eligibleFiles.slice(0, available);
     }
     if (targets.length === 0) return;
     isUploading = true;

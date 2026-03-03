@@ -261,6 +261,7 @@ function mirrorDbSelectiveMasterByRsync(string $srcDbDir, string $destDbDir, str
 		$cmd1 = escapeshellcmd($rsync)
 			. ' -a --delete'
 			. ' --exclude=' . escapeshellarg('.mirror_rsync.lock')
+			. ' --exclude=' . escapeshellarg('conditions.json')
 			. ' --exclude=' . escapeshellarg('master/')
 			. ' --exclude=' . escapeshellarg('master/**')
 			. ' ' . escapeshellarg($srcDbDir . '/')

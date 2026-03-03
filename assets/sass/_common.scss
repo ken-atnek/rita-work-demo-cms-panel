@@ -416,9 +416,13 @@ header {
                 p {
                     font-size: FZ(20);
                     font-weight: 600;
+                    min-width: 0;
+                    flex: 1 1 auto;
                 }
                 .btn-top-close {
                     position: relative;
+                    flex: 0 0 auto;
+                    z-index: 1;
                     @include btn-close;
                 }
             }

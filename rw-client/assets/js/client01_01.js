@@ -9,44 +9,126 @@ const __appStatusPrevByGroupName = Object.create(null);
 let __appStatusLastGroupName = '';
 let __appStatusPending = null;
 let __closeModalOriginal = null;
+function __cssEscape(value) {
+  const v = String(value ?? '');
+  if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(v);
+  return v.replace(/[^a-zA-Z0-9_\-]/g, (m) => `\\${m}`);
+}
 function __getAppStatusParts(groupName) {
-  const radios = document.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
-  const hiddenEl = document.querySelector(`input[data-selectbox-hidden][name="${groupName}"]`);
-  const box =
-    (hiddenEl && hiddenEl.closest('[data-selectbox]')) ||
-    (radios[0] && radios[0].closest('[data-selectbox]'));
+  const name = String(groupName || '');
+  if (!name) return { box: null, head: null, valueEl: null, hiddenEl: null, radios: [] };
+  const hiddenEl = document.querySelector(
+    `input[data-selectbox-hidden][name="${__cssEscape(name)}"]`
+  );
+  const box = hiddenEl ? hiddenEl.closest('[data-selectbox]') : null;
+  const head = box ? box.querySelector('.selectbox__head') : null;
   const valueEl = box ? box.querySelector('[data-selectbox-value]') : null;
-  return { box, valueEl, hiddenEl, radios };
+  const radios = box
+    ? Array.from(box.querySelectorAll(`input[type="radio"][name="${__cssEscape(name)}"]`))
+    : [];
+  return { box, head, valueEl, hiddenEl, radios };
+}
+function __syncHeadStatusClass(head, label) {
+  if (!head) return;
+  Array.from(head.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.remove(c);
+  });
+  if (!label) return;
+  Array.from(label.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.add(c);
+  });
+}
+function __setSelectBoxState(box, hiddenEl, value) {
+  if (!box) return;
+  const v = String(value ?? '').trim();
+  if (v) {
+    box.classList.add('is-selected');
+    box.classList.remove('is-empty');
+    if (hiddenEl) hiddenEl.value = v;
+  } else {
+    box.classList.remove('is-selected');
+    box.classList.add('is-empty');
+    if (hiddenEl) hiddenEl.value = '';
+  }
 }
 function __applyAppStatusToUi(groupName, value) {
-  const { valueEl, hiddenEl, radios } = __getAppStatusParts(groupName);
-  const targetValue = String(value || '');
-  let labelText = '';
-  radios.forEach((r) => {
-    const isTarget = String(r.value) === targetValue;
-    r.checked = isTarget;
-    if (isTarget && r.id) {
-      const label = document.querySelector(`label[for="${r.id}"]`);
-      if (label) labelText = label.textContent || '';
+  const { box, head, valueEl, hiddenEl, radios } = __getAppStatusParts(groupName);
+  if (!box || !valueEl || !hiddenEl) return;
+
+  const targetValue = String(value ?? '').trim();
+  let label = null;
+
+  if (targetValue !== '') {
+    const radio = radios.find((r) => String(r.value) === targetValue) || null;
+    radios.forEach((r) => {
+      r.checked = radio ? r === radio : false;
+    });
+    if (radio && radio.id) {
+      label = box.querySelector(`label[for="${__cssEscape(radio.id)}"]`);
     }
-  });
-  if (hiddenEl) hiddenEl.value = targetValue;
-  if (valueEl && labelText) valueEl.textContent = labelText;
+    if (label) valueEl.textContent = String(label.textContent || '').trim();
+    __syncHeadStatusClass(head, label);
+    __setSelectBoxState(box, hiddenEl, targetValue);
+  } else {
+    radios.forEach((r) => {
+      r.checked = false;
+    });
+    valueEl.textContent = '選択してください';
+    __syncHeadStatusClass(head, null);
+    __setSelectBoxState(box, hiddenEl, '');
+  }
+
+  box.classList.remove('is-open');
+  if (head) head.setAttribute('aria-expanded', 'false');
 }
 function __captureAppStatusPrevValue() {
+  const recordPrev = (groupName) => {
+    if (!groupName) return;
+    __appStatusLastGroupName = String(groupName);
+    const { hiddenEl } = __getAppStatusParts(groupName);
+    const prev = hiddenEl ? String(hiddenEl.value ?? '') : '';
+    __appStatusPrevByGroupName[String(groupName)] = String(prev);
+  };
+
+  const getGroupNameFromTarget = (target) => {
+    if (!(target instanceof Element)) return '';
+    if (target instanceof HTMLInputElement && target.type === 'radio') {
+      const n = String(target.name || '');
+      return n.startsWith('application_status') ? n : '';
+    }
+    const label = target.closest('label');
+    if (label && label.htmlFor) {
+      const input = document.getElementById(label.htmlFor);
+      if (input instanceof HTMLInputElement && input.type === 'radio') {
+        const n = String(input.name || '');
+        return n.startsWith('application_status') ? n : '';
+      }
+    }
+    const li = target.closest('li');
+    if (li) {
+      const input = li.querySelector('input[type="radio"][name^="application_status"]');
+      if (input instanceof HTMLInputElement) {
+        const n = String(input.name || '');
+        return n.startsWith('application_status') ? n : '';
+      }
+    }
+    return '';
+  };
+
+  document.addEventListener(
+    'pointerdown',
+    (e) => {
+      const groupName = getGroupNameFromTarget(e.target);
+      if (groupName) recordPrev(groupName);
+    },
+    true
+  );
+
   document.addEventListener(
     'click',
     (e) => {
-      const el = e.target;
-      if (!(el instanceof HTMLInputElement)) return;
-      if (el.type !== 'radio') return;
-      if (!el.name || !String(el.name).startsWith('application_status')) return;
-      const groupName = String(el.name);
-      __appStatusLastGroupName = groupName;
-      const { hiddenEl } = __getAppStatusParts(groupName);
-      const checked = document.querySelector(`input[type="radio"][name="${groupName}"]:checked`);
-      const prev = (hiddenEl && hiddenEl.value) || (checked && checked.value) || '';
-      if (prev) __appStatusPrevByGroupName[groupName] = String(prev);
+      const groupName = getGroupNameFromTarget(e.target);
+      if (groupName) recordPrev(groupName);
     },
     true
   );
@@ -69,8 +151,7 @@ function __restoreModalCloseDefault() {
 }
 function cancelApplicationStatusChange() {
   if (__appStatusPending && __appStatusPending.groupName) {
-    const prev = String(__appStatusPending.prevValue || '').trim();
-    if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+    __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
   }
   __appStatusPending = null;
   const orig = __closeModalOriginal;
@@ -78,8 +159,13 @@ function cancelApplicationStatusChange() {
   if (typeof orig === 'function') {
     orig();
   } else {
-    const modal = document.getElementById('modalBlock');
-    if (modal) modal.classList.remove('is-active');
+    const modal =
+      document.getElementById('modalBlockAlert') || document.getElementById('modalBlock');
+    if (modal) {
+      modal.classList.remove('is-active');
+      modal.classList.remove('bg-orange');
+      modal.classList.remove('bg-black');
+    }
   }
   document.documentElement.style.overflow = '';
 }
@@ -232,7 +318,9 @@ function checkApplicationStatus(
 ) {
   const groupName = __appStatusLastGroupName;
   const prevValue = groupName
-    ? __appStatusPrevByGroupName[groupName] || __getAppStatusParts(groupName).hiddenEl?.value || ''
+    ? Object.prototype.hasOwnProperty.call(__appStatusPrevByGroupName, groupName)
+      ? __appStatusPrevByGroupName[groupName]
+      : __getAppStatusParts(groupName).hiddenEl?.value || ''
     : '';
   __appStatusPending = {
     groupName: groupName,
@@ -240,7 +328,7 @@ function checkApplicationStatus(
     nextValue: String(status || ''),
   };
   __setModalCloseToCancel();
-  const blockModal = document.getElementById('modalBlock');
+  const blockModal = document.getElementById('modalBlockAlert');
   if (!blockModal) return;
   const boxTitleP = blockModal.querySelector('.box-title p');
   const boxDetails = blockModal.querySelector('.box-details');
@@ -330,7 +418,8 @@ async function changeApplicationStatus(
     });
     if (!response.ok) throw new Error('Network response was not ok');
     __restoreModalCloseDefault();
-    const blockModal = document.getElementById('modalBlock');
+    const blockModal =
+      document.getElementById('modalBlockAlert') || document.getElementById('modalBlock');
     if (blockModal) {
       blockModal.classList.remove('is-active');
       blockModal.classList.remove('bg-orange');
@@ -340,8 +429,7 @@ async function changeApplicationStatus(
     const list = await response.json();
     if (list && list.status === 'error') {
       if (__appStatusPending && __appStatusPending.groupName) {
-        const prev = String(__appStatusPending.prevValue || '').trim();
-        if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+        __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
       }
       __appStatusPending = null;
       __restoreModalCloseDefault();
@@ -385,8 +473,7 @@ async function changeApplicationStatus(
   } catch (error) {
     console.error('送信エラー:', error);
     if (__appStatusPending && __appStatusPending.groupName) {
-      const prev = String(__appStatusPending.prevValue || '').trim();
-      if (prev) __applyAppStatusToUi(__appStatusPending.groupName, prev);
+      __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
     }
     __appStatusPending = null;
     __restoreModalCloseDefault();
