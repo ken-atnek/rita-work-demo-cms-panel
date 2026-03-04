@@ -218,7 +218,6 @@ if ($searchConditions['sortTarget'] === 'interview_at') {
 } else {
   $sortMode = 'sortApplicationsDate_' . strtolower($applicationSortOrder);
 }
-
 #inline JS（onclick等）用
 $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 $searchModeJs = json_encode((string)($searchConditions['searchMode'] ?? ''), $jsonHex);
@@ -429,7 +428,6 @@ print <<<HTML
                   <h4>名前</h4>
                   <div class="wrap-select">
 
-
 HTML;
 #表示件数選択リストループで差し込む
 foreach ($filterInitialsList as $filterInitialsKey => $filterInitialsValue) {
@@ -551,6 +549,9 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
     $nameEsc = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     #ステータス変更用に名前セット（JS側で使用：$nameがあれば優先）
     $sendStatusChangeName = $name !== '' ? $name : $lineDisplayName;
+    #詳細ページ遷移用（onclick属性向けに安全化）
+    $lineUserIdRaw = isset($application['line_user_id']) ? (string)$application['line_user_id'] : '';
+    $lineUserIdUrlEsc = htmlspecialchars(rawurlencode($lineUserIdRaw), ENT_QUOTES, 'UTF-8');
     #応募中の求人情報を取得
     $appliedJobs = getAllAppliedJobs(
       $application['line_user_id'],
@@ -563,7 +564,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
     );
     print <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$application['line_user_id']}'">
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$lineUserIdUrlEsc}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 

@@ -404,3 +404,72 @@
         }
     }
 }
+// お知らせモーダル用
+.modal-article {
+    &.is-active {
+        h1 {
+            font-size: FZ(48);
+        }
+        h2 {
+            font-size: FZ(32);
+        }
+        h3 {
+            font-size: FZ(28);
+        }
+        h4 {
+            font-size: FZ(24);
+        }
+        h5 {
+            font-size: FZ(20);
+        }
+        h6 {
+            font-size: FZ(18);
+        }
+        p {
+            line-height: 1.4em;
+            min-height: 1lh;
+            span {
+                font-size: inherit;
+            }
+            s {
+                text-decoration: line-through;
+                font-size: inherit;
+            }
+        }
+        strong {
+            font-weight: 600;
+        }
+        ul {
+            font-size: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3em 0;
+            li {
+                font-size: FZ(16);
+                display: flex;
+                align-items: center;
+                &::before {
+                    content: "・";
+                    margin-right: 0.3em;
+                }
+            }
+        }
+        ol {
+            font-size: inherit;
+            counter-reset: number 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3em 0;
+            li {
+                font-size: FZ(16);
+                display: flex;
+                align-items: center;
+                &::before {
+                    counter-increment: number 1;
+                    content: counter(number) ".";
+                    margin-right: 0.3em;
+                }
+            }
+        }
+    }
+}

@@ -52,11 +52,12 @@ $jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
 
 #=============#
 # POSTチェック
@@ -677,7 +678,7 @@ HTML;
 				if (isset($db_applicationStatus) && $db_applicationStatus != '' && $db_applicationStatus != 'friend_only') {
 					$makeTag['tag'] .= <<<HTML
                   <div class="wrap-apply-status">
-                    <!--NOTE  連番注意 list01-status- -->
+                    <!--NOTE 連番注意 list01-status- -->
                     <div class="apply-status" data-selectbox>
                       <button type="button" class="selectbox__head" aria-expanded="false">
 

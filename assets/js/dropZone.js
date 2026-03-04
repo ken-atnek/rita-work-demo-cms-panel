@@ -42,6 +42,41 @@ function initDropZone(options) {
   if (!dropZone || !selectFileButton || !fileInput || !previewBlock) {
     return;
   }
+  //==============================
+  // クライアント側サイズ制限（10MB）
+  //  - 10MB超はアップロードせず、警告用div（fileError）を表示
+  //==============================
+  const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+  const showFileErrorDiv = (params = {}) => {
+    const { title = null, msg = null, overwrite = false, type = null } = params;
+    if (!fileError) {
+      if (title || msg) alert([title, msg].filter(Boolean).join('\n'));
+      return;
+    }
+    fileError.style.display = 'flex';
+    if (type) fileError.dataset.rwFileErrorType = String(type);
+    if (!overwrite) return;
+    const h5 = fileError.querySelector('h5');
+    const p = fileError.querySelector('p');
+    if (h5 && title != null) h5.textContent = String(title);
+    if (p && msg != null) {
+      const text = String(msg);
+      p.textContent = text;
+      p.style.textAlign = 'center';
+      p.style.lineHeight = '1.6em';
+      // 改行（\n）を表示上の改行として扱う
+      if (text.includes('\n')) {
+        p.style.whiteSpace = 'pre-line';
+      } else {
+        p.style.whiteSpace = '';
+      }
+    }
+  };
+  const hideFileErrorDiv = () => {
+    if (!fileError) return;
+    fileError.style.display = 'none';
+    delete fileError.dataset.rwFileErrorType;
+  };
   const alreadyInitialized = dropZone.dataset.dropzoneInitialized === '1';
   dropZone.dataset.dropzoneInitialized = '1';
   //hidden値の有無判定
@@ -59,7 +94,13 @@ function initDropZone(options) {
   try {
     const sendPHP = getHiddenValue('send_php', '');
     const areaName = inputArea && inputArea.value ? String(inputArea.value) : '';
-    const discardTargets = ['proc_master03_02_01.php', 'proc_master03_01_01.php'];
+    const discardTargets = [
+      'proc_client02_01.php',
+      'proc_client03_01_01.php',
+      'proc_master03_01_01.php',
+      'proc_master03_02_01.php',
+      'proc_master05_01_02.php',
+    ];
     if (discardTargets.includes(sendPHP) && areaName) {
       if (!window.__rwUploadDraftDiscard) {
         window.__rwUploadDraftDiscard = { sendPHP: sendPHP, areas: [] };
@@ -112,8 +153,8 @@ function initDropZone(options) {
   } catch {
     //no-op
   }
-  //画像格納変数初期化
-  let keepFiles = null;
+  //アップロード中フラグ（複数ファイル選択時の多重送信防止）
+  let isUploading = false;
   if (alreadyInitialized) {
     //プレビュー内ボタンの再バインドだけ行う（イベント二重登録防止）
     //bindPreviewButtons() はこの後定義される
@@ -231,106 +272,147 @@ function initDropZone(options) {
       };
     });
   }
-  //ファイル選択・ドロップ時の処理
-  function handleFiles(files, mode = 'add', replaceIndex = null) {
-    if (files.length > 0) {
-      //file選択と同様に fileInput 側へも反映して必須判定を通す
-      syncFileInputFiles(files);
-      const file = files[0];
-      keepFiles = files;
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          togglePreview(true, mode, replaceIndex);
-        };
-        reader.readAsDataURL(file);
+  async function uploadSingleFile(file, mode = 'add', replaceIndex = null) {
+    if (!file) return;
+    //10MB超の画像はアップロードしない（警告表示のみ）
+    if (typeof file.size === 'number' && file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      showFileErrorDiv({ overwrite: false, type: 'size' });
+      return;
+    }
+    if (!inputMode || !inputArea) {
+      alert('画像アップロードの設定が正しくありません（inputModeまたはinputAreaが未設定）');
+      return;
+    }
+    let sendPHP = getHiddenValue('send_php', '');
+    let upImageMode = inputMode.value;
+    let upImageArea = inputArea.value;
+    let facId = getHiddenValue('facId', '');
+    let jobId = getHiddenValue('jobId', '');
+    let sFd = new FormData();
+    if (mode === 'replace') {
+      sFd.append('action', 'replaceUploadImage');
+      sFd.append('replace_index', replaceIndex);
+      if (facId !== '') sFd.append('facId', facId);
+      if (jobId !== '') sFd.append('jobId', jobId);
+    } else {
+      sFd.append('action', 'preUploadImage');
+      if (facId !== '') sFd.append('facId', facId);
+      if (jobId !== '') sFd.append('jobId', jobId);
+    }
+    sFd.append('method', 'new_image');
+    sFd.append('up_image_mode', upImageMode);
+    sFd.append('up_image_area[]', upImageArea);
+    sFd.append('images_tmp', file);
+    let requestURL = './assets/function/' + sendPHP;
+    const response = await fetch(requestURL, {
+      method: 'POST',
+      body: sFd,
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    let list = await response.json();
+    if (list['status'] == 'error') {
+      if (fileError) {
+        fileError.style.display = 'flex';
+        fileError.dataset.rwFileErrorType = 'server';
+        fileError.querySelector('h5').innerHTML = list['title'];
+        fileError.querySelector('p').innerHTML = list['msg'];
+      }
+      return;
+    }
+    //成功時は警告を隠す（※サイズ警告は残す）
+    if (fileError && fileError.style.display !== 'none') {
+      const t = fileError.dataset.rwFileErrorType;
+      if (t !== 'size') hideFileErrorDiv();
+    }
+    previewBlock.style.display = 'grid';
+    if (mode === 'replace') {
+      previewBlock.innerHTML = list['tag'];
+    } else {
+      if (upImageMode === 'only') {
+        previewBlock.innerHTML = list['tag'];
       } else {
-        alert('画像ファイルを選択してください。');
+        previewBlock.insertAdjacentHTML('beforeend', list['tag']);
       }
     }
-  }
-  //プレビュー表示の切り替え
-  function togglePreview(show, mode = 'add', replaceIndex = null) {
-    if (show) {
-      if (!inputMode || !inputArea) {
-        alert('画像アップロードの設定が正しくありません（inputModeまたはinputAreaが未設定）');
-        return;
-      }
-      let sendPHP = getHiddenValue('send_php', '');
-      let upImageMode = inputMode.value;
-      let upImageArea = inputArea.value;
-      let facId = getHiddenValue('facId', '');
-      let jobId = getHiddenValue('jobId', '');
-      let sFd = new FormData();
-      if (mode === 'replace') {
-        sFd.append('action', 'replaceUploadImage');
-        sFd.append('replace_index', replaceIndex);
-        if (facId !== '') sFd.append('facId', facId);
-        if (jobId !== '') sFd.append('jobId', jobId);
-      } else {
-        sFd.append('action', 'preUploadImage');
-        if (facId !== '') sFd.append('facId', facId);
-        if (jobId !== '') sFd.append('jobId', jobId);
-      }
-      sFd.append('method', 'new_image');
-      sFd.append('up_image_mode', upImageMode);
-      sFd.append('up_image_area[]', upImageArea);
-      if (keepFiles && keepFiles.length > 0) {
-        sFd.append('images_tmp', keepFiles[0]);
-      }
-      let requestURL = './assets/function/' + sendPHP;
-      (async () => {
-        try {
-          const response = await fetch(requestURL, {
-            method: 'POST',
-            body: sFd,
-          });
-          if (!response.ok) throw new Error('Network response was not ok');
-          let list = await response.json();
-          if (list['status'] == 'error') {
-            if (fileError) {
-              fileError.style.display = 'flex';
-              fileError.querySelector('h5').innerHTML = list['title'];
-              fileError.querySelector('p').innerHTML = list['msg'];
-            }
-          } else {
-            previewBlock.style.display = 'grid';
-            if (mode === 'replace') {
-              previewBlock.innerHTML = list['tag'];
-            } else {
-              if (upImageMode === 'only') {
-                previewBlock.innerHTML = list['tag'];
-              } else {
-                previewBlock.insertAdjacentHTML('beforeend', list['tag']);
-              }
-            }
-            const liCount = previewBlock.querySelectorAll('li').length;
-            if (upImageMode === 'only' && liCount >= 1) {
-              //dropZone.style.display = 'none';
-              dropZone.classList.add('is-active');
-            } else if (upImageMode === 'multiple' && liCount >= 10) {
-              //dropZone.style.display = 'none';
-              dropZone.classList.add('is-active');
-            } else {
-              //dropZone.style.display = '';
-              dropZone.classList.remove('is-active');
-            }
-            bindPreviewButtons();
-          }
-        } catch (error) {
-          console.error(error);
-          alert('通信エラーが発生しました。ページを再読み込みしてください。');
-        }
-      })();
+    const liCount = previewBlock.querySelectorAll('li').length;
+    if (upImageMode === 'only' && liCount >= 1) {
+      dropZone.classList.add('is-active');
+    } else if (upImageMode === 'multiple' && liCount >= 10) {
+      dropZone.classList.add('is-active');
     } else {
-      previewBlock.style.display = 'none';
-      fileInput.value = '';
-      keepFiles = null;
-      let upImageMode = document.querySelector('input[type=hidden][name=upload_image_mode]').value;
-      if (upImageMode === 'only') {
-        //dropZone.style.display = '';
-        dropZone.classList.remove('is-active');
+      dropZone.classList.remove('is-active');
+    }
+    bindPreviewButtons();
+  }
+  //ファイル選択・ドロップ時の処理（複数ファイル対応）
+  async function handleFiles(files, mode = 'add', replaceIndex = null) {
+    if (!files || files.length === 0) return;
+    if (isUploading) return;
+    //新規操作時は一旦警告を隠す
+    hideFileErrorDiv();
+    //画像のみ対象
+    const imageFiles = Array.from(files).filter(
+      (f) => f && typeof f.type === 'string' && f.type.startsWith('image/')
+    );
+    if (imageFiles.length === 0) {
+      alert('画像ファイルを選択してください。');
+      return;
+    }
+    //10MB超が混在していても、10MB以下はアップロードする（10MB超はスキップして警告表示）
+    const skippedTooLarge = imageFiles.filter(
+      (f) => typeof f.size === 'number' && f.size > MAX_IMAGE_FILE_SIZE_BYTES
+    );
+    const eligibleFiles = imageFiles.filter(
+      (f) => !(typeof f.size === 'number' && f.size > MAX_IMAGE_FILE_SIZE_BYTES)
+    );
+    if (skippedTooLarge.length > 0) {
+      const maxNames = 5;
+      const names = skippedTooLarge
+        .slice(0, maxNames)
+        .map((f) => (f && f.name ? String(f.name) : '（ファイル名不明）'));
+      const rest = skippedTooLarge.length - names.length;
+      const msgLines = [
+        '10MBを超えるファイルはアップロードできません。',
+        `対象外: ${names.join('、')}${rest > 0 ? ` ほか${rest}件` : ''}`,
+      ];
+      showFileErrorDiv({
+        overwrite: true,
+        type: 'size',
+        title: 'ファイルサイズが大きすぎます',
+        msg: msgLines.join('\n'),
+      });
+    }
+    if (eligibleFiles.length === 0) {
+      return;
+    }
+    //file選択と同様に fileInput 側へも反映して必須判定を通す（画像のみ）
+    syncFileInputFiles(eligibleFiles);
+    //only モードは1枚だけに制限
+    const upImageMode = inputMode ? String(inputMode.value || '') : '';
+    const currentCount = previewBlock ? previewBlock.querySelectorAll('li').length : 0;
+    const maxCount = upImageMode === 'only' ? 1 : 10;
+    const available = Math.max(0, maxCount - currentCount);
+    let targets = eligibleFiles;
+    if (mode === 'replace') {
+      targets = eligibleFiles.slice(0, 1);
+    } else if (upImageMode === 'only') {
+      targets = eligibleFiles.slice(0, 1);
+    } else {
+      targets = eligibleFiles.slice(0, available);
+    }
+    if (targets.length === 0) return;
+    isUploading = true;
+    try {
+      for (const f of targets) {
+        await uploadSingleFile(f, mode, replaceIndex);
+        //replace は1回で終了
+        if (mode === 'replace') break;
       }
+    } catch (error) {
+      console.error(error);
+      alert('通信エラーが発生しました。ページを再読み込みしてください。');
+    } finally {
+      isUploading = false;
     }
   }
   //初期バインド

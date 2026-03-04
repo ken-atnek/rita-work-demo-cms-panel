@@ -27,42 +27,21 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 
-#===================================#
-# フロント側マスタ定義JSONファイル取得
-#-----------------------------------#
-#取得項目一覧
-$jsonMasters = [];
-try {
-	$jsonMasters = getJson_FrontEndMaster_many([
-		'jobCategories',
-		'contractPlans'
-	]);
-} catch (Throwable $e) {
-	if (function_exists('makeLog')) {
-		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
-	}
-	$jsonMasters = [];
-}
-#募集職種マスタ
-$jobCategories = $jsonMasters['jobCategories'] ?? [];
-
-#JS文脈用のjson_encodeフラグ
-$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
-
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
 
 #=============#
 # POSTチェック
 #-------------#
 #セッションキー
-$noUpDateKey = isset($_POST['noUpDateKey']) ? $_POST['noUpDateKey'] : '';
+$noUpDateKey = isset($_POST['noUpDateKey']) ? (string)$_POST['noUpDateKey'] : '';
 #noUpDateKey は「画面インスタンス識別用」。
 #画面遷移/マルチタブ等でキーが更新されている場合があるため、
 #POSTキーが無効ならセッション側の現行キーへフォールバックする。
@@ -83,6 +62,28 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 }
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
+
+#===================================#
+# フロント側マスタ定義JSONファイル取得
+#-----------------------------------#
+#取得項目一覧
+$jsonMasters = [];
+try {
+	$jsonMasters = getJson_FrontEndMaster_many([
+		'jobCategories',
+		'contractPlans'
+	]);
+} catch (Throwable $e) {
+	if (function_exists('makeLog')) {
+		makeLog('[proc_master04_01] master JSON load failed: ' . $e->getMessage());
+	}
+	$jsonMasters = [];
+}
+#募集職種マスタ
+$jobCategories = $jsonMasters['jobCategories'] ?? [];
+#JS文脈用のjson_encodeフラグ
+$jsonHex = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
 #-------------#
 #検索・ステータス変更
 $action = isset($_POST['action']) ? $_POST['action'] : '';
@@ -613,6 +614,9 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 	foreach ($applicationsList as $applicationKey => $application) {
 		#Liのz-index設定
 		$zIndexStyle = 'style="z-index:' . ($zIndexNo - $applicationKey) . ';"';
+		#詳細ページ遷移用（onclick属性向けに安全化）
+		$lineUserIdRaw = isset($application['line_user_id']) ? (string)$application['line_user_id'] : '';
+		$lineUserIdUrlEsc = htmlspecialchars(rawurlencode($lineUserIdRaw), ENT_QUOTES, 'UTF-8');
 		#ライン表示名
 		$lineDisplayName = isset($application['line_display_name']) ? (string)$application['line_display_name'] : '';
 		$lineDisplayNameEsc = htmlspecialchars($lineDisplayName, ENT_QUOTES, 'UTF-8');
@@ -633,7 +637,7 @@ if (is_array($applicationsList) && count($applicationsList) > 0) {
 		);
 		$makeTag['tag'] .= <<<HTML
             <!-- NOTE  インラインでz-indexを付与 -->
-            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?appId={$application['application_id']}'">
+            <li {$zIndexStyle} onclick="location.href='./master04_01_01.php?lineUserId={$lineUserIdUrlEsc}'">
               <div class="item-name">{$lineDisplayNameEsc}</div>
               <ul class="list-contact">
 
@@ -683,7 +687,7 @@ HTML;
 				if (isset($db_applicationStatus) && $db_applicationStatus != '' && $db_applicationStatus != 'friend_only') {
 					$makeTag['tag'] .= <<<HTML
                   <div class="wrap-apply-status">
-                    <!--NOTE  連番注意 list01-status- -->
+                    <!--NOTE 連番注意 list01-status- -->
                     <div class="apply-status" data-selectbox>
                       <button type="button" class="selectbox__head" aria-expanded="false">
 

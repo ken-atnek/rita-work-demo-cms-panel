@@ -3,6 +3,174 @@
  *
  */
 const requestURL = './assets/function/proc_client01_01.php';
+
+//応募状況変更：キャンセル時にUIを戻すための退避
+const __appStatusPrevByGroupName = Object.create(null);
+let __appStatusLastGroupName = '';
+let __appStatusPending = null;
+let __closeModalOriginal = null;
+function __cssEscape(value) {
+  const v = String(value ?? '');
+  if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(v);
+  return v.replace(/[^a-zA-Z0-9_\-]/g, (m) => `\\${m}`);
+}
+function __getAppStatusParts(groupName) {
+  const name = String(groupName || '');
+  if (!name) return { box: null, head: null, valueEl: null, hiddenEl: null, radios: [] };
+  const hiddenEl = document.querySelector(
+    `input[data-selectbox-hidden][name="${__cssEscape(name)}"]`
+  );
+  const box = hiddenEl ? hiddenEl.closest('[data-selectbox]') : null;
+  const head = box ? box.querySelector('.selectbox__head') : null;
+  const valueEl = box ? box.querySelector('[data-selectbox-value]') : null;
+  const radios = box
+    ? Array.from(box.querySelectorAll(`input[type="radio"][name="${__cssEscape(name)}"]`))
+    : [];
+  return { box, head, valueEl, hiddenEl, radios };
+}
+function __syncHeadStatusClass(head, label) {
+  if (!head) return;
+  Array.from(head.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.remove(c);
+  });
+  if (!label) return;
+  Array.from(label.classList).forEach((c) => {
+    if (String(c).startsWith('status-')) head.classList.add(c);
+  });
+}
+function __setSelectBoxState(box, hiddenEl, value) {
+  if (!box) return;
+  const v = String(value ?? '').trim();
+  if (v) {
+    box.classList.add('is-selected');
+    box.classList.remove('is-empty');
+    if (hiddenEl) hiddenEl.value = v;
+  } else {
+    box.classList.remove('is-selected');
+    box.classList.add('is-empty');
+    if (hiddenEl) hiddenEl.value = '';
+  }
+}
+function __applyAppStatusToUi(groupName, value) {
+  const { box, head, valueEl, hiddenEl, radios } = __getAppStatusParts(groupName);
+  if (!box || !valueEl || !hiddenEl) return;
+
+  const targetValue = String(value ?? '').trim();
+  let label = null;
+
+  if (targetValue !== '') {
+    const radio = radios.find((r) => String(r.value) === targetValue) || null;
+    radios.forEach((r) => {
+      r.checked = radio ? r === radio : false;
+    });
+    if (radio && radio.id) {
+      label = box.querySelector(`label[for="${__cssEscape(radio.id)}"]`);
+    }
+    if (label) valueEl.textContent = String(label.textContent || '').trim();
+    __syncHeadStatusClass(head, label);
+    __setSelectBoxState(box, hiddenEl, targetValue);
+  } else {
+    radios.forEach((r) => {
+      r.checked = false;
+    });
+    valueEl.textContent = '選択してください';
+    __syncHeadStatusClass(head, null);
+    __setSelectBoxState(box, hiddenEl, '');
+  }
+
+  box.classList.remove('is-open');
+  if (head) head.setAttribute('aria-expanded', 'false');
+}
+function __captureAppStatusPrevValue() {
+  const recordPrev = (groupName) => {
+    if (!groupName) return;
+    __appStatusLastGroupName = String(groupName);
+    const { hiddenEl } = __getAppStatusParts(groupName);
+    const prev = hiddenEl ? String(hiddenEl.value ?? '') : '';
+    __appStatusPrevByGroupName[String(groupName)] = String(prev);
+  };
+
+  const getGroupNameFromTarget = (target) => {
+    if (!(target instanceof Element)) return '';
+    if (target instanceof HTMLInputElement && target.type === 'radio') {
+      const n = String(target.name || '');
+      return n.startsWith('application_status') ? n : '';
+    }
+    const label = target.closest('label');
+    if (label && label.htmlFor) {
+      const input = document.getElementById(label.htmlFor);
+      if (input instanceof HTMLInputElement && input.type === 'radio') {
+        const n = String(input.name || '');
+        return n.startsWith('application_status') ? n : '';
+      }
+    }
+    const li = target.closest('li');
+    if (li) {
+      const input = li.querySelector('input[type="radio"][name^="application_status"]');
+      if (input instanceof HTMLInputElement) {
+        const n = String(input.name || '');
+        return n.startsWith('application_status') ? n : '';
+      }
+    }
+    return '';
+  };
+
+  document.addEventListener(
+    'pointerdown',
+    (e) => {
+      const groupName = getGroupNameFromTarget(e.target);
+      if (groupName) recordPrev(groupName);
+    },
+    true
+  );
+
+  document.addEventListener(
+    'click',
+    (e) => {
+      const groupName = getGroupNameFromTarget(e.target);
+      if (groupName) recordPrev(groupName);
+    },
+    true
+  );
+}
+function __setModalCloseToCancel() {
+  if (__closeModalOriginal === null && typeof window.closeModal === 'function') {
+    __closeModalOriginal = window.closeModal;
+  }
+  if (typeof window.closeModal === 'function') {
+    window.closeModal = () => {
+      cancelApplicationStatusChange();
+    };
+  }
+}
+function __restoreModalCloseDefault() {
+  if (__closeModalOriginal && typeof __closeModalOriginal === 'function') {
+    window.closeModal = __closeModalOriginal;
+  }
+  __closeModalOriginal = null;
+}
+function cancelApplicationStatusChange() {
+  if (__appStatusPending && __appStatusPending.groupName) {
+    __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
+  }
+  __appStatusPending = null;
+  const orig = __closeModalOriginal;
+  __restoreModalCloseDefault();
+  if (typeof orig === 'function') {
+    orig();
+  } else {
+    const modal =
+      document.getElementById('modalBlockAlert') || document.getElementById('modalBlock');
+    if (modal) {
+      modal.classList.remove('is-active');
+      modal.classList.remove('bg-orange');
+      modal.classList.remove('bg-black');
+    }
+  }
+  document.documentElement.style.overflow = '';
+}
+window.cancelApplicationStatusChange = cancelApplicationStatusChange;
+__captureAppStatusPrevValue();
 /**
  * 応募状況ボタン切替
  *
@@ -38,7 +206,6 @@ function detectInitialSortMode() {
   if (onclick.includes('sortApplicationsDate_desc')) return 'sortApplicationsDate_desc';
   return 'sortApplicationsDate_desc';
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   currentSearchMode = detectInitialSearchMode();
   currentSortMode = detectInitialSortMode();
@@ -66,7 +233,6 @@ async function requestApplications({ action, searchMode, sortMode, pageNumber })
     location.href = './client01_01.php';
     throw new Error(data.title || 'Session error');
   }
-
   if (data && data.noUpDateKey && noUpDateKeyEl) {
     noUpDateKeyEl.value = String(data.noUpDateKey);
   }
@@ -150,7 +316,19 @@ function checkApplicationStatus(
   searchMode,
   sortMode
 ) {
-  const blockModal = document.getElementById('modalBlock');
+  const groupName = __appStatusLastGroupName;
+  const prevValue = groupName
+    ? Object.prototype.hasOwnProperty.call(__appStatusPrevByGroupName, groupName)
+      ? __appStatusPrevByGroupName[groupName]
+      : __getAppStatusParts(groupName).hiddenEl?.value || ''
+    : '';
+  __appStatusPending = {
+    groupName: groupName,
+    prevValue: String(prevValue || ''),
+    nextValue: String(status || ''),
+  };
+  __setModalCloseToCancel();
+  const blockModal = document.getElementById('modalBlockAlert');
   if (!blockModal) return;
   const boxTitleP = blockModal.querySelector('.box-title p');
   const boxDetails = blockModal.querySelector('.box-details');
@@ -177,7 +355,7 @@ function checkApplicationStatus(
   cancelBtn.className = 'btn-cancel';
   cancelBtn.textContent = 'キャンセル';
   cancelBtn.addEventListener('click', () => {
-    if (typeof closeModal === 'function') closeModal();
+    cancelApplicationStatusChange();
   });
   btnWrap.appendChild(cancelBtn);
   //登録ボタン生成
@@ -239,8 +417,22 @@ async function changeApplicationStatus(
       body: cFd,
     });
     if (!response.ok) throw new Error('Network response was not ok');
+    __restoreModalCloseDefault();
+    const blockModal =
+      document.getElementById('modalBlockAlert') || document.getElementById('modalBlock');
+    if (blockModal) {
+      blockModal.classList.remove('is-active');
+      blockModal.classList.remove('bg-orange');
+      blockModal.classList.remove('bg-black');
+    }
+    document.documentElement.style.overflow = '';
     const list = await response.json();
     if (list && list.status === 'error') {
+      if (__appStatusPending && __appStatusPending.groupName) {
+        __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
+      }
+      __appStatusPending = null;
+      __restoreModalCloseDefault();
       alert(list.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
       location.href = './client01_01.php';
       return;
@@ -276,8 +468,15 @@ async function changeApplicationStatus(
     //ページの上端までスクロール
     const areaClient = document.querySelector('.area-client');
     if (areaClient) areaClient.scrollIntoView(true);
+    //ここまで来たら画面状態は成功として確定
+    __appStatusPending = null;
   } catch (error) {
     console.error('送信エラー:', error);
+    if (__appStatusPending && __appStatusPending.groupName) {
+      __applyAppStatusToUi(__appStatusPending.groupName, __appStatusPending.prevValue);
+    }
+    __appStatusPending = null;
+    __restoreModalCloseDefault();
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
   }
 }
@@ -311,9 +510,44 @@ async function movePage(pageNumber) {
  * お知らせモーダル作成
  *
  */
-function makeNewsModal() {
-  let blockModal = document.getElementById('modalBlock');
-  blockModal.classList.add('bg-orange');
-  blockModal.classList.add('is-active');
-  document.documentElement.style.overflow = 'hidden';
+async function makeNotificationsModal(action, notificationsId) {
+  const sFd = new FormData();
+  const noUpDateKeyEl = document.querySelector('input[name="noUpDateKey"]');
+  if (noUpDateKeyEl && noUpDateKeyEl.value) {
+    sFd.append('noUpDateKey', noUpDateKeyEl.value);
+  }
+  sFd.append('action', action);
+  sFd.append('notificationsId', String(notificationsId || ''));
+  try {
+    const response = await fetch(requestURL, {
+      method: 'POST',
+      body: sFd,
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data && data.noUpDateKey && noUpDateKeyEl) {
+      noUpDateKeyEl.value = String(data.noUpDateKey);
+    }
+    if (data && data.status === 'error' && !data.tag) {
+      alert(data.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
+      location.href = './client01_01.php';
+      return;
+    }
+    //表示中の情報入替
+    const currentInner = document.querySelector('.modal-article .inner-modal');
+    if (currentInner) currentInner.remove();
+    //ページ表示
+    const modalArticle = document.querySelector('.modal-article');
+    if (modalArticle && data && data.tag) {
+      modalArticle.insertAdjacentHTML('afterbegin', data.tag);
+    }
+    const blockModal = document.getElementById('modalBlock');
+    if (!blockModal) return;
+    blockModal.classList.add('bg-orange');
+    blockModal.classList.add('is-active');
+    document.documentElement.style.overflow = 'hidden';
+  } catch (error) {
+    console.error('送信エラー:', error);
+    alert('通信エラーが発生しました。ページを再読み込みしてください。');
+  }
 }

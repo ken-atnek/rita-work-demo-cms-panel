@@ -144,7 +144,7 @@ print <<<HTML
         <h2>求人カード一覧<span>住宅型有料老人ホーム メディケア癒やしDX花園</span></h2>
         <article class="block-card-list">
           <p class="announce-results"><span>{$jobCardCount}件</span>が登録中</p>
-          <!--NOTE  特別バナー契約時のみ表示 -->
+          <!--NOTE 特別バナー契約時のみ表示 -->
 
 HTML;
 if (isset($facilityDetailsJson['specialBanner']['enabled']) && $facilityDetailsJson['specialBanner']['enabled'] == true) {
@@ -160,6 +160,10 @@ HTML;
 #表示可能リストあればループ処理
 if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
   foreach ($jobCardList as $jobCard) {
+    #表示用（毎ループ初期化：前行の値が残る事故防止）
+    $jobCategoryName = '';
+    $contractPlanName = '';
+    $employmentTypeName = '';
     #ステータス判定
     $isActiveClass = '';
     #プレビューリンクURLパラメータ
@@ -189,25 +193,25 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
     #募集職種
     foreach ($jobCategories as $jobCategory) {
       if ($jobCategory['id'] == $jobCard['job_category_id']) {
-        $jobCategoryName = $jobCategory['name'];
+        $jobCategoryName = (string)($jobCategory['name'] ?? '');
         break;
       }
     }
     #契約プラン
     foreach ($contractPlans as $contractPlan) {
       if ($contractPlan['id'] == $jobCard['contract_plan_id']) {
-        $contractPlanName = $contractPlan['name'];
+        $contractPlanName = (string)($contractPlan['name'] ?? '');
         break;
       }
     }
     #掲載日
-    $publishedDate = date("Y/m/d", strtotime($jobCard['published_start']));
+    $publishedDate = (!empty($jobCard['published_start'])) ? date("Y/m/d", strtotime($jobCard['published_start'])) : '---';
     #最終更新日
     $lastUpdateDate = $jobCard['updated_at'] != null ? date("Y/m/d H:i", strtotime($jobCard['updated_at'])) : '---';
     #雇用形態
     foreach ($employmentTypes as $employmentType) {
       if ($employmentType['id'] == $jobCard['employment_type_id']) {
-        $employmentTypeName = $employmentType['name'];
+        $employmentTypeName = (string)($employmentType['name'] ?? '');
         break;
       }
     }
@@ -239,9 +243,21 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
     if (isset($jobCard['hero_image_primary']) && $jobCard['hero_image_primary'] != null) {
       $heroImages = json_decode($jobCard['hero_image_primary'], true);
       if (is_array($heroImages) && count($heroImages) > 0) {
-        $heroImagePath = DOMAIN_NAME . $heroImages[0];
+        $heroImagePath = (string)DOMAIN_NAME . (string)$heroImages[0];
       }
     }
+    #HTMLエスケープ（表示用）
+    $jobCode = isset($jobCard['job_code']) ? (string)$jobCard['job_code'] : '';
+    $jobCodeAttr = htmlspecialchars($jobCode, ENT_QUOTES, 'UTF-8');
+    $jobCategoryNameEsc = htmlspecialchars((string)$jobCategoryName, ENT_QUOTES, 'UTF-8');
+    $contractPlanNameEsc = htmlspecialchars((string)$contractPlanName, ENT_QUOTES, 'UTF-8');
+    $employmentTypeNameEsc = htmlspecialchars((string)$employmentTypeName, ENT_QUOTES, 'UTF-8');
+    $publishedDateEsc = htmlspecialchars((string)$publishedDate, ENT_QUOTES, 'UTF-8');
+    $lastUpdateDateEsc = htmlspecialchars((string)$lastUpdateDate, ENT_QUOTES, 'UTF-8');
+    $locationAddressEsc = htmlspecialchars((string)$locationAddress, ENT_QUOTES, 'UTF-8');
+    $salaryInfoEsc = htmlspecialchars((string)$salaryInfo, ENT_QUOTES, 'UTF-8');
+    $heroImagePathEsc = htmlspecialchars((string)$heroImagePath, ENT_QUOTES, 'UTF-8');
+    $cardTitleEsc = htmlspecialchars((string)($jobCard['card_title'] ?? ''), ENT_QUOTES, 'UTF-8');
     #公開ステータス「name」属性連番対応
     $statusName = 'list_status' . $jobCard['job_id'];
     #checked判定
@@ -254,13 +270,13 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
             <li {$isActiveClass}>
               <div class="box-head">
                 <div class="wrap-title">
-                  <div class="joc-category">{$jobCategoryName}</div>
+                  <div class="joc-category">{$jobCategoryNameEsc}</div>
                   <picture>
-                    <source srcset="{$heroImagePath}">
-                    <img src="{$heroImagePath}" alt="PR画像">
+                    <source srcset="{$heroImagePathEsc}">
+                    <img src="{$heroImagePathEsc}" alt="PR画像">
                   </picture>
                 </div>
-                <!--NOTE  連番注意 list01-status- -->
+                <!--NOTE 連番注意 list01-status- -->
                 <div class="select-status" data-selectbox>
                   <button type="button" class="selectbox__head" aria-expanded="false">
                     <input type="hidden" name="{$statusName}" value="{$valueNum}" data-selectbox-hidden>
@@ -270,11 +286,11 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
                   <div class="list-wrapper">
                     <ul class="selectbox__panel">
                       <li>
-                        <input type="radio" name="{$statusName}" value="1" id="list{$jobCard['job_id']}-status01" {$checkedDraft} onchange="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, this.value,'');">
+                        <input type="radio" name="{$statusName}" value="1" id="list{$jobCard['job_id']}-status01" {$checkedDraft} data-job-card-code="{$jobCodeAttr}" onchange="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, this.value,'');">
                         <label for="list{$jobCard['job_id']}-status01" class="status-draft">下書き中</label>
                       </li>
                       <li>
-                        <input type="radio" name="{$statusName}" value="2" id="list{$jobCard['job_id']}-status02" {$checkedPublic} onchange="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, this.value,'');">
+                        <input type="radio" name="{$statusName}" value="2" id="list{$jobCard['job_id']}-status02" {$checkedPublic} data-job-card-code="{$jobCodeAttr}" onchange="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, this.value,'');">
                         <label for="list{$jobCard['job_id']}-status02" class="status-published">公開中</label>
                       </li>
                     </ul>
@@ -284,10 +300,10 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
               <div class="box-details">
                 <a href="./master03_02_01.php?method=edit&facId={$jobCard['facility_id']}&jobId={$jobCard['job_id']}"></a>
                 <div class="item-id">{$jobCard['job_code']}</div>
-                <div class="item-plan">{$contractPlanName}</div>
-                <div class="item-contract-date">{$publishedDate}</div>
-                <div class="item-last-update">{$lastUpdateDate}</div>
-                <h3>{$jobCard['card_title']}</h3>
+                <div class="item-plan">{$contractPlanNameEsc}</div>
+                <div class="item-contract-date">{$publishedDateEsc}</div>
+                <div class="item-last-update">{$lastUpdateDateEsc}</div>
+                <h3>{$cardTitleEsc}</h3>
                 <ul class="list-job-highlights">
 
 HTML;
@@ -307,10 +323,10 @@ HTML;
     print <<<HTML
                 </ul>
                 <ul class="list-meta">
-                  <li class="meta-job-type">{$jobCategoryName}</li>
-                  <li class="meta-employment-type">{$employmentTypeName}</li>
-                  <li class="meta-location">{$locationAddress}</li>
-                  <li class="meta-salary">{$salaryInfo}</li>
+                  <li class="meta-job-type">{$jobCategoryNameEsc}</li>
+                  <li class="meta-employment-type">{$employmentTypeNameEsc}</li>
+                  <li class="meta-location">{$locationAddressEsc}</li>
+                  <li class="meta-salary">{$salaryInfoEsc}</li>
                 </ul>
               </div>
               <div class="box-btn">
@@ -323,13 +339,13 @@ HTML;
 HTML;
     if ($jobCard['is_active'] != 99) {
       print <<<HTML
-                  <button type="button" class="btn-cancel" onclick="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, '99','');">プランを解約</button>
+                  <button type="button" class="btn-cancel" data-job-card-code="{$jobCodeAttr}" onclick="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, '99','');">プランを解約</button>
 
 HTML;
     } else {
       print <<<HTML
-                  <button type="button" class="btn-cancel" onclick="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, '0','delete');">削除</button>
-                  <button type="button" class="btn-cancel" onclick="checkJobCardStatus({$facId}, '{$jobCard['job_code']}', {$jobCard['job_id']}, '2','restore');">掲載再開</button>
+                  <button type="button" class="btn-cancel" data-job-card-code="{$jobCodeAttr}" onclick="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, '0','delete');">削除</button>
+                  <button type="button" class="btn-cancel" data-job-card-code="{$jobCodeAttr}" onclick="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, '2','restore');">掲載再開</button>
 
 HTML;
     }
@@ -354,7 +370,7 @@ print <<<HTML
           </div>
         </article>
         <div class="bottom-box-btn">
-          <button type="button" class="item-register" onclick="checkNewJobCard()"><span>新規求人カード登録</span></button>
+          <button type="button" class="item-register" onclick="checkNewJobCard({$facId})"><span>新規求人カード登録</span></button>
         </div>
       </section>
 
@@ -380,7 +396,7 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master03_02.js" defer></script>
+    <script src="./assets/js/master03_02.js?34442102032026" defer></script>
   </body>
 </html>
 

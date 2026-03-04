@@ -231,7 +231,7 @@ print <<<HTML
       <section class="page-nav">
         <h2>求人カード管理</h2>
         <nav>
-          <a href="javascript:void(0);" class="is-active">求人カード一覧</a>
+          <a href="./client03_01.php" class="is-active">求人カード一覧</a>
         </nav>
       </section>
       <section class="container-job-card-register">
@@ -600,7 +600,7 @@ HTML;
 }
 print <<<HTML
                     </label>
-                    <!--NOTE  賞与有りの場合表示 -->
+                    <!--NOTE 賞与有りの場合表示 -->
                     <input type="text" name="bonus_note" id="bonusAmount" value="{$jobData['bonus_note']}" style="display: none;">
                   </div>
                 </div>
@@ -810,7 +810,7 @@ print <<<HTML
                   <div class="inner-details">
                     <dl>
                       <dt>タイトル</dt>
-                      <dd><input type="text" name="interview1_title" value="{$interview1Title}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="interview1_title" value="{$interview1Title}"></dd>
                     </dl>
                     <dl style="margin-top: 1.6rem">
                       <dt class="position-top">画像</dt>
@@ -901,7 +901,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview1HeadingName}" value="{$interview1HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview1HeadingName}" value="{$interview1HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -1025,7 +1025,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview2HeadingName}" value="{$interview2HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview2HeadingName}" value="{$interview2HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -1077,7 +1077,7 @@ print <<<HTML
 
 HTML;
 if (isset($jobInterviewDataJson['articles'][2]['image']) && $jobInterviewDataJson['articles'][2]['image'] != '') {
-  $ext = strtolower(pathinfo($info, PATHINFO_EXTENSION));
+  $ext = strtolower(pathinfo($jobInterviewDataJson['articles'][2]['image'], PATHINFO_EXTENSION));
   switch ($ext) {
     case 'jpg':
     case 'jpeg':
@@ -1141,7 +1141,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview3HeadingName}" value="{$interview3HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview3HeadingName}" value="{$interview3HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -2915,7 +2915,7 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/form.js" defer></script>
-    <script src="../assets/js/dropZone.js" defer></script>
+    <script src="../assets/js/dropZone.js?18432003032026" defer></script>
     <script src="../assets/js/modal.js" defer></script>
     <script src="./assets/js/client03_01_01.js" defer></script>
   </body>

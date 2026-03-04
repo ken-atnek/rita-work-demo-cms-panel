@@ -938,6 +938,7 @@
                                 dd {
                                     display: flex;
                                     flex-direction: column;
+                                    font-size: inherit;
                                     input[type="text"] {
                                         flex: 1;
                                     }

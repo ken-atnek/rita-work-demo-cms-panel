@@ -228,7 +228,8 @@
     .page-nav {
         @include container-left-menu;
     }
-    .container-register {
+    .container-register,
+    .container-confirm {
         @include layout-container-section;
         padding-bottom: 8rem;
         flex: 1;
@@ -369,6 +370,200 @@
             @include btn-delate-item;
         }
     }
+    .container-confirm {
+        .block-confirm {
+            background-color: #fff;
+            border-radius: $radius20;
+            padding: 5rem 9rem;
+            position: relative;
+            font-size: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            @include drop-shadow;
+            gap: 2rem 0;
+            .confirm-meta {
+                font-size: inherit;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                .item-switch {
+                    font-size: inherit;
+                    display: flex;
+                    align-items: center;
+                    gap: 0 1rem;
+                    span {
+                        font-size: FZ(16);
+                    }
+                    .wrap-toggle-button {
+                        pointer-events: none;
+                        font-size: inherit;
+                        display: flex;
+                        align-items: center;
+                        font-size: FZ(14);
+                        gap: 0 8px;
+                        .toggle-button {
+                            @include toggle-button("無効", "有効");
+                        }
+                    }
+                }
+                .status-draft {
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: auto;
+                    width: 12rem;
+                    height: 3rem;
+                    font-size: max(12px, 0.875em);
+                    font-weight: 300;
+                    border-radius: 100vmax;
+                    color: #fff;
+                    background-color: #ababab;
+                    display: none;
+                }
+            }
+            h3 {
+                font-size: FZ(24);
+                align-self: flex-start;
+            }
+            .box-image {
+                width: 100%;
+                img {
+                    width: 100%;
+                    object-fit: contain;
+                }
+            }
+            .box-time {
+                font-size: FZ(14);
+                color: #f29400;
+                width: 100%;
+            }
+            .box-body {
+                position: relative;
+                font-size: inherit;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-bottom: 5rem;
+                margin-top: 1.6rem;
+                gap: 1rem 0;
+                h1 {
+                    font-size: FZ(48);
+                }
+                h2 {
+                    font-size: FZ(32);
+                }
+                h3 {
+                    font-size: FZ(28);
+                }
+                h4 {
+                    font-size: FZ(24);
+                }
+                h5 {
+                    font-size: FZ(20);
+                }
+                h6 {
+                    font-size: FZ(18);
+                }
+                p {
+                    font-size: FZ(14);
+                    line-height: 1.4em;
+                    letter-spacing: 0.1em;
+                    min-height: 1lh;
+                    span {
+                        font-size: inherit;
+                    }
+                    s {
+                        text-decoration: line-through;
+                        font-size: inherit;
+                    }
+                }
+                strong {
+                    font-weight: 600;
+                }
+                & > ul {
+                    font-size: inherit;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.3em 0;
+                    li {
+                        font-size: FZ(14);
+                        display: flex;
+                        &::before {
+                            content: "・";
+                            margin-right: 0.3em;
+                        }
+                    }
+                }
+                & > ol {
+                    font-size: inherit;
+                    counter-reset: number 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.3em 0;
+                    li {
+                        display: flex;
+                        &::before {
+                            counter-increment: number 1;
+                            content: counter(number) ".";
+                            margin-right: 0.3em;
+                        }
+                        font-size: FZ(14);
+                    }
+                }
+                .tipsGallery {
+                    position: relative;
+                    font-size: inherit;
+                    ul {
+                        position: relative;
+                        display: grid;
+                        &:has(> li:nth-child(2)):not(:has(> li:nth-child(3))) {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                        &:has(> li:nth-child(3)):not(:has(> li:nth-child(4))) {
+                            grid-template-columns: repeat(3, 1fr);
+                        }
+                        &:has(> li:nth-child(4)) {
+                            grid-template-columns: repeat(4, 1fr);
+                        }
+                        li {
+                            position: relative;
+                            display: flex;
+                            div {
+                                position: relative;
+                                display: flex;
+                                img {
+                                    object-fit: cover;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.inner-05-03-02 {
+    .container-confirm {
+        .block-confirm {
+            gap: 1rem 0;
+            h3 {
+                align-self: flex-start;
+                margin-bottom: 1em;
+            }
+            .box-image {
+                padding: 0 2em;
+            }
+            .box-time,
+            .box-body {
+                padding: 0 1.2em;
+                color: #403726;
+            }
+        }
+    }
 }
 /*=================================
 ***TOP表示設定
@@ -388,6 +583,16 @@
             .list-search-results {
                 margin-block: 1.4rem;
                 @include layout-table-list(auto auto 1fr auto auto auto auto, 7);
+                &.is-dnd-dragging {
+                    .is-drop-target {
+                        outline: 2px solid #f29400;
+                        outline-offset: -2px;
+                        &::before {
+                            opacity: 1;
+                            background-color: #f1e7d7;
+                        }
+                    }
+                }
                 & > li {
                     & > div {
                         &:not(:last-of-type) {

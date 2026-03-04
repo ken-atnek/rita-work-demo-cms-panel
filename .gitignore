@@ -30,3 +30,4 @@ assets/css/
 
 # デバッグログファイル除外
 rw-master/_maintenance_log/
+rw-client/_maintenance_log/

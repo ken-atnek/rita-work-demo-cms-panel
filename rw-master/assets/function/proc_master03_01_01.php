@@ -26,11 +26,12 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+  'tag' => '',
+  'status' => '',
+  'title' => '',
+  'msg' => '',
+);
 
 #===================================#
 # フロント側マスタ定義JSONファイル取得（無ければ空）
@@ -641,7 +642,7 @@ HTML;
             break;
           }
         }
-
+        #削除応答
         if ($deleted) {
           $makeTag['status'] = 'success';
         } else {
@@ -649,7 +650,6 @@ HTML;
           $makeTag['title'] = '削除失敗';
           $makeTag['msg'] = '削除対象が見つかりませんでした。';
         }
-
         #空になった場合：DB由来のmaterializedなら空を保持（保存時に全削除を反映）
         if (empty($_SESSION[$targetImageUploadSessionKey])) {
           if ($wasMaterialized) {
@@ -699,6 +699,7 @@ HTML;
           break;
         }
       }
+      #削除応答
       if ($deleted) {
         $makeTag['status'] = 'success';
       } else {
@@ -706,6 +707,7 @@ HTML;
         $makeTag['title'] = '削除失敗';
         $makeTag['msg'] = '削除対象が見つかりませんでした。';
       }
+      #空になった場合：DB由来のmaterializedなら空を保持（保存時に全削除を反映）
       if (empty($_SESSION[$targetImageUploadSessionKey])) {
         $_SESSION[$targetImageUploadSessionKey] = [
           ['is_db' => true],
@@ -1582,9 +1584,15 @@ HTML;
 
 HTML;
       if ($method === 'edit') {
+        $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+        $facilityNameJs = json_encode((string)$facility_name, $jsonHex);
+        $facilityCodeJs = json_encode((string)$facCode, $jsonHex);
+        $facilityNameJsAttr = htmlspecialchars((string)$facilityNameJs, ENT_QUOTES, 'UTF-8');
+        $facilityCodeJsAttr = htmlspecialchars((string)$facilityCodeJs, ENT_QUOTES, 'UTF-8');
+        $facIdInt = (int)$facId;
         $makeTag['tag'] .= <<<HTML
         <!--NOTE 修正画面のみ表示 -->
-        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility('{$facId}','{$facility_name}','{$facCode}')">削除する</button>
+        <button type="button" class="btn-delate-item" onclick="checkDeleteFacility({$facIdInt}, {$facilityNameJsAttr}, {$facilityCodeJsAttr})">削除する</button>
 
 HTML;
       }
@@ -1679,6 +1687,11 @@ HTML;
           $pendingTmpFiles = [];
           $pendingClearSessions = [];
           #DB登録情報準備
+          $mapURLRaw = (!empty($map_url)) ? trim($map_url) : '';
+          $mapLinkURLRaw = (!empty($map_link_url)) ? trim($map_link_url) : '';
+          #URL用：スペース等（半角/全角含むホワイトスペース）を全て削除
+          $mapURL = preg_replace('/[\s　]+/u', '', $mapURLRaw);
+          $mapLinkURL = preg_replace('/[\s　]+/u', '', $mapLinkURLRaw);
           switch ($method) {
             #***** 新規登録 *****#
             case 'new': {
@@ -1706,8 +1719,8 @@ HTML;
                 $dbFiledData['recruitment_area'] = array(':recruitment_area', $recruitment_area, 0);
                 $dbFiledData['phone'] = array(':phone', $phone, 0);
                 $dbFiledData['email'] = array(':email', $email, 0);
-                $dbFiledData['map_url'] = array(':map_url', $map_url, 0);
-                $dbFiledData['map_link_url'] = array(':map_link_url', $map_link_url, 0);
+                $dbFiledData['map_url'] = array(':map_url', $mapURL, 0);
+                $dbFiledData['map_link_url'] = array(':map_link_url', $mapLinkURL, 0);
                 $dbFiledData['is_active'] = array(':is_active', 1, 1);
                 $dbFiledData['created_at'] = array(':created_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
@@ -1917,8 +1930,8 @@ HTML;
                 $dbFiledData['recruitment_area'] = array(':recruitment_area', trim($recruitment_area), 0);
                 $dbFiledData['phone'] = array(':phone', $phone, 0);
                 $dbFiledData['email'] = array(':email', $email, 0);
-                $dbFiledData['map_url'] = array(':map_url', $map_url, 0);
-                $dbFiledData['map_link_url'] = array(':map_link_url', $map_link_url, 0);
+                $dbFiledData['map_url'] = array(':map_url', $mapURL, 0);
+                $dbFiledData['map_link_url'] = array(':map_link_url', $mapLinkURL, 0);
                 $dbFiledData['updated_at'] = array(':updated_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
                 $dbFiledValue = array();

@@ -23,11 +23,12 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
 #================#
 # 応答用タグ初期化
 #----------------#
-$makeTag = array();
-$makeTag['tag'] = '';
-$makeTag['status'] = '';
-$makeTag['title'] = '';
-$makeTag['msg'] = '';
+$makeTag = array(
+	'tag' => '',
+	'status' => '',
+	'title' => '',
+	'msg' => '',
+);
 
 #=============#
 # POSTチェック
@@ -177,8 +178,11 @@ HTML;
 
 HTML;
 			if ($method === 'edit') {
+				$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+				$companyNameJs = json_encode((string)$company_name, $jsonHex);
+				$companyNameJsAttr = htmlspecialchars((string)$companyNameJs, ENT_QUOTES, 'UTF-8');
 				$makeTag['tag'] .= <<<HTML
-        <button type="button" class="btn-delate-item" onclick="checkDeleteCorporation({$corpId},'{$company_name}')">削除する</button>
+        <button type="button" class="btn-delate-item" onclick="checkDeleteCorporation({$corpId}, {$companyNameJsAttr})">削除する</button>
 
 HTML;
 			}

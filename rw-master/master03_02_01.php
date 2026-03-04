@@ -252,7 +252,7 @@ print <<<HTML
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico">
-    <link rel="stylesheet" href="../assets/css/master03-02.css">
+    <link rel="stylesheet" href="../assets/css/master03-02.css?58471903032026">
   </head>
 
   <body>
@@ -637,7 +637,7 @@ HTML;
 }
 print <<<HTML
                     </label>
-                    <!--NOTE  賞与有りの場合表示 -->
+                    <!--NOTE 賞与有りの場合表示 -->
                     <input type="text" name="bonus_note" id="bonusAmount" value="{$jobData['bonus_note']}" style="display: none;">
                   </div>
                 </div>
@@ -847,7 +847,7 @@ print <<<HTML
                   <div class="inner-details">
                     <dl>
                       <dt>タイトル</dt>
-                      <dd><input type="text" name="interview1_title" value="{$interview1Title}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="interview1_title" value="{$interview1Title}"></dd>
                     </dl>
                     <dl style="margin-top: 1.6rem">
                       <dt class="position-top">画像</dt>
@@ -938,7 +938,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview1HeadingName}" value="{$interview1HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview1HeadingName}" value="{$interview1HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -1062,7 +1062,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview2HeadingName}" value="{$interview2HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview2HeadingName}" value="{$interview2HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -1114,7 +1114,7 @@ print <<<HTML
 
 HTML;
 if (isset($jobInterviewDataJson['articles'][2]['image']) && $jobInterviewDataJson['articles'][2]['image'] != '') {
-  $ext = strtolower(pathinfo($info, PATHINFO_EXTENSION));
+  $ext = strtolower(pathinfo($jobInterviewDataJson['articles'][2]['image'], PATHINFO_EXTENSION));
   switch ($ext) {
     case 'jpg':
     case 'jpeg':
@@ -1178,7 +1178,7 @@ for ($i = 0; $i < 2; $i++) {
   print <<<HTML
                     <dl style="margin-top: 1.6rem">
                       <dt>見出し{$key}</dt>
-                      <dd><input type="text" name="{$interview3HeadingName}" value="{$interview3HeadingValue}" style="max-width: 34rem"></dd>
+                      <dd><input type="text" name="{$interview3HeadingName}" value="{$interview3HeadingValue}"></dd>
                     </dl>
                     <dl>
                       <dt>本文</dt>
@@ -2910,6 +2910,10 @@ foreach ($jobOptionTextData as $jobOptionText) {
     break;
   }
 }
+#JSONエスケープ処理
+$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+$methodJs = json_encode((string)$method, $jsonHex);
+$methodJsAttr = htmlspecialchars((string)$methodJs, ENT_QUOTES, 'UTF-8');
 print <<<HTML
                 </ul>
                 <textarea name="access_notice">{$accessNotice}</textarea>
@@ -2925,7 +2929,7 @@ print <<<HTML
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back" onclick="location.href='./master03_02.php?facId={$facId}'">戻る</button>
-          <button type="button" class="item-check" onclick="checkInput('{$method}')">登録する</button>
+          <button type="button" class="item-check" onclick="checkInput({$methodJsAttr})">登録する</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
 
@@ -2954,14 +2958,14 @@ print <<<HTML
           <p>新規求人カード情報を登録します。よろしいですか？</p>
           <div class="box-btn">
             <button type="button" class="btn-cancel" onclick="closeModal()">キャンセル</button>
-            <button type="button" class="btn-confirm" onclick="sendInput('{$method}');">はい</button>
+            <button type="button" class="btn-confirm" onclick="sendInput({$methodJsAttr});">はい</button>
           </div>
         </div>
       </div>
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/form.js" defer></script>
-    <script src="../assets/js/dropZone.js" defer></script>
+    <script src="../assets/js/dropZone.js?18432003032026" defer></script>
     <script src="../assets/js/modal.js" defer></script>
     <script src="./assets/js/master03_02_01.js" defer></script>
   </body>

@@ -204,7 +204,6 @@ if ($searchConditions['sortTarget'] === 'interview_at') {
 } else {
   $sortMode = 'sortApplicationsDate_' . strtolower($applicationSortOrder);
 }
-
 #inline JS（onclick等）用
 $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 $searchModeJs = json_encode((string)($searchConditions['searchMode'] ?? ''), $jsonHex);
@@ -243,7 +242,7 @@ print <<<HTML
       </section>
       <section class="container-applicant-details">
         <h2>求職者情報<span>{$viewTitleName}</span></h2>
-        <a href="javascript:history.back()" class="link-page-back">戻る</a>
+        <a href="./master04_01.php" class="link-page-back">戻る</a>
         <div class="inner-applicant-details">
           <!-- NOTE 応募者情報フォーム -->
           <form name="searchForm" style="display:none;">
@@ -252,7 +251,7 @@ print <<<HTML
             <input type="hidden" name="searchMode" value="{$searchModeEsc}">
             <input type="hidden" name="facility_id" value="0">
           </form>
-          <form name="inputForm" class="block-applicant-details">
+          <form name="inputForm" class="block-applicant-details" data-prevent-enter-submit="true">
             <dl>
               <dt>名前</dt>
               <dd class="dd-top">
@@ -643,7 +642,8 @@ print <<<HTML
     </article>
     <script src="../assets/js/common.js" defer></script>
     <script src="../assets/js/modal.js" defer></script>
-    <script src="./assets/js/master04_01_01.js" defer></script>
+    <script src="../assets/js/form.js" defer></script>
+    <script src="./assets/js/master04_01_01.js?36402002032026" defer></script>
   </body>
 </html>
 

@@ -26,6 +26,8 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_applications.php';
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities.php';
 #求人カード情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
+#事業所へのお知らせ
+require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facility_notifications.php';
 
 #================#
 # SESSIONチェック
@@ -53,6 +55,11 @@ if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
   header("Location: ./logout.php");
   exit;
 }
+
+#=========================#
+# 事業所へのお知らせ一覧取得
+#-------------------------#
+$FacilityNotificationsList = getFacilityNotificationsList('public');
 
 #===================================#
 # フロント側マスタ定義JSONファイル取得
@@ -216,6 +223,9 @@ if ($searchConditions['sortTarget'] === 'interview_at') {
 } else {
   $sortMode = 'sortApplicationsDate_' . strtolower($applicationSortOrder);
 }
+#-------------#
+#inline JS用エスケープ宣言
+$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 
 #***** タグ生成開始 *****#
 print <<<HTML
@@ -231,6 +241,7 @@ print <<<HTML
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico">
+    <link rel="stylesheet" href="../assets/css/tiptap_app.css">
     <link rel="stylesheet" href="../assets/css/master01.css">
   </head>
 
@@ -388,6 +399,16 @@ HTML;
         #面接日
         $interviewAtDate = !empty($jobData['interview_at']) ? date('Y/m/d', strtotime($jobData['interview_at'])) : 'ー';
         $interviewAtDateEsc = htmlspecialchars((string)$interviewAtDate, ENT_QUOTES, 'UTF-8');
+        #inline JS用エスケープ（属性崩壊・注入対策）
+        $lineUserIdJs = json_encode((string)($application['line_user_id'] ?? ''), $jsonHex);
+        $sendStatusChangeNameJs = json_encode((string)$sendStatusChangeName, $jsonHex);
+        $searchModeJs = json_encode((string)($searchConditions['searchMode'] ?? ''), $jsonHex);
+        $sortModeJs = json_encode((string)$sortMode, $jsonHex);
+        $lineUserIdJsAttr = htmlspecialchars((string)$lineUserIdJs, ENT_QUOTES, 'UTF-8');
+        $sendStatusChangeNameJsAttr = htmlspecialchars((string)$sendStatusChangeNameJs, ENT_QUOTES, 'UTF-8');
+        $searchModeJsAttr = htmlspecialchars((string)$searchModeJs, ENT_QUOTES, 'UTF-8');
+        $sortModeJsAttr = htmlspecialchars((string)$sortModeJs, ENT_QUOTES, 'UTF-8');
+        $jobIdInt = (int)($jobData['job_id'] ?? 0);
         print <<<HTML
                 <li>
                   <div class="item-job"><span>{$jobCategoryNameEsc}</span></div>
@@ -442,7 +463,7 @@ HTML;
               print <<<HTML
                           <!-- NOTE インラインでz-indexを付与 -->
                           <li {$zIndexStyleStatus}>
-                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="changeApplicationStatus({$appliedJobsFacId}, '{$application['line_user_id']}', '{$sendStatusChangeName}', {$jobData['job_id']}, this.value,'{$searchConditions['searchMode']}','{$sortMode}');">
+                            <input type="radio" name="application_status{$jobKey}" value="{$appStatusKey}" id="application_status{$jobKey}-{$appStatusKey}" {$checked} onchange="checkApplicationStatus({$appliedJobsFacId}, {$lineUserIdJsAttr}, {$sendStatusChangeNameJsAttr}, {$jobIdInt}, this.value, {$searchModeJsAttr}, {$sortModeJsAttr});">
                             <label for="application_status{$jobKey}-{$appStatusKey}" class="status-{$appStatusKey}">{$appStatus}</label>
                           </li>
 
@@ -518,26 +539,40 @@ print <<<HTML
       <section class="container-announcement">
         <h2>運営からのお知らせ</h2>
         <ul class="list-announcement">
-          <li onclick="openModal()">
-            <div class="item-date">2025/10/30</div>
-            <p>こんな機能が使えるようになりました。</p>
+
+HTML;
+#表示可能リストあればループ処理
+if (isset($FacilityNotificationsList) && is_array($FacilityNotificationsList) && count($FacilityNotificationsList) > 0) {
+  foreach ($FacilityNotificationsList as $notification) {
+    #お知らせ日付
+    $notificationDate = !empty($notification['published_start']) ? date('Y/m/d', strtotime($notification['published_start'])) : '';
+    $notificationDateEsc = htmlspecialchars((string)$notificationDate, ENT_QUOTES, 'UTF-8');
+    #お知らせタイトル
+    $notificationTitle = isset($notification['title']) ? (string)$notification['title'] : '';
+    $notificationTitleEsc = htmlspecialchars((string)$notificationTitle, ENT_QUOTES, 'UTF-8');
+    #inline JS用エスケープ（属性崩壊・注入対策）
+    $actionJs = json_encode('openModal', $jsonHex);
+    $actionJsAttr = htmlspecialchars((string)$actionJs, ENT_QUOTES, 'UTF-8');
+    $notificationId = (int)($notification['notification_id'] ?? 0);
+    #お知らせが開封済みかどうかチェック
+    $isOpened = isFacilityNotificationOpened((int)$facId, $notificationId);
+    print <<<HTML
+          <li onclick="makeNotificationsModal({$actionJsAttr}, {$notificationId})">
+            <div class="item-date">{$notificationDateEsc}</div>
+            <p>{$notificationTitleEsc}</p>
           </li>
-          <li onclick="openModal()">
-            <div class="item-date">2025/10/30</div>
-            <p>こんな機能が使えるようになりました。</p>
+
+HTML;
+  }
+} else {
+  print <<<HTML
+          <li class="no-data" style="display:flex;justify-content:center;align-items:center;padding:2em 0;">
+            <div style="font-size:max(12px,0.875em);">お知らせはありません。</div>
           </li>
-          <li onclick="openModal()">
-            <div class="item-date">2025/10/30</div>
-            <p>こんな機能が使えるようになりました。</p>
-          </li>
-          <li onclick="openModal()">
-            <div class="item-date">2025/10/30</div>
-            <p>こんな機能が使えるようになりました。</p>
-          </li>
-          <li onclick="openModal()">
-            <div class="item-date">2025/10/30</div>
-            <p>こんな機能が使えるようになりました。</p>
-          </li>
+
+HTML;
+}
+print <<<HTML
         </ul>
       </section>
 
@@ -545,52 +580,49 @@ HTML;
 @include './inc_page-top.html';
 print <<<HTML
     </main>
+    <!-- NOTE お知らせモーダル用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
     <article class="modal-article" id="modalBlock">
       <div class="inner-modal">
         <div class="box-title">
-          <p>利用規約を改定いたしました<span>（改定日：2025年10月30日）</span></p>
+          <p>タイトルが入ります。</p>
           <button type="button" onclick="closeModal()" class="btn-top-close"></button>
         </div>
         <div class="box-details">
           <div class="wrap-details">
-            <span class="item-date">3025/12/11</span>
+            <span class="item-date"></span>
             <div class="item-image">
               <picture>
-                <source src="../assets/images/_dummy/01.jpg" />
-                <img src="../assets/images/_dummy/01.jpg" alt="" />
+                <source src="#">
+                <img src="#" alt="">
               </picture>
             </div>
             <div class="item-text">
-              <p>
-                本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。<br />
-                <br />
-                本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。
-                <br />
-                本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。本文が入ります。
-              </p>
+              <p>本文が入ります。</p>
             </div>
           </div>
           <button type="button" onclick="closeModal()" class="btn-bottom-close">閉じる</button>
         </div>
       </div>
     </article>
+    <!-- NOTE 修正画面用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
+    <article class="modal-alert" id="modalBlockAlert">
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>応募状況変更</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <p>応募状況を変更します。よろしいですか？</p>
+          <div class="box-btn">
+            <button type="button" class="btn-cancel">キャンセル</button>
+            <button type="button" class="btn-confirm">はい</button>
+          </div>
+        </div>
+      </div>
+    </article>
     <script src="../assets/js/common.js" defer></script>
-    <script src="./assets/js/client01_01.js" defer></script>
-    <script>
-      function openModal() {
-        const modal = document.getElementById('modalBlock');
-        if (!modal) return;
-        modal.classList.add('is-active');
-        document.documentElement.classList.add('modal-open');
-        document.body.classList.add('modal-open');
-      }
-      function closeModal() {
-        const modal = document.getElementById('modalBlock');
-        if (modal) modal.classList.remove('is-active');
-        document.documentElement.classList.remove('modal-open');
-        document.body.classList.remove('modal-open');
-      }
-    </script>
+    <script src="../assets/js/modal.js?49311603032026" defer></script>
+    <script src="./assets/js/client01_01.js?49311603032026" defer></script>
   </body>
 </html>
 

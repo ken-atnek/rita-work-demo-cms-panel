@@ -7,7 +7,7 @@
  */
 
 define('DB_DSN', 'localhost');
-define('DB_N', 'rita5258_workRecruit');
+define('DB_N', 'rita5258_workrecruit');
 #define('DB_N', 'rita5258_demowork');
 define('DB_USER', 'rita5258_rwdbad');
 define('DB_PASS', 'AUjYx4THYp/UwB#x');

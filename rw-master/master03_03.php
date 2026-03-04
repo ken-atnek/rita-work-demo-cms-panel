@@ -162,11 +162,18 @@ HTML;
 
 HTML;
 }
+
+$jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+$facIdJs = json_encode((string)$facId, $jsonHex);
+$accountStatusJs = json_encode((string)$accountStatus, $jsonHex);
+$facIdJsAttr = htmlspecialchars((string)$facIdJs, ENT_QUOTES, 'UTF-8');
+$accountStatusJsAttr = htmlspecialchars((string)$accountStatusJs, ENT_QUOTES, 'UTF-8');
+
 print <<<HTML
         </form>
         <div class="bottom-box-btn">
           <button type="button" class="item-back" onclick="history.back()">戻る</button>
-          <button type="button" class="item-check" onclick="checkPasswordSetting('{$facId}','{$accountStatus}')">{$setBtnLabel}</button>
+          <button type="button" class="item-check" onclick="checkPasswordSetting({$facIdJsAttr}, {$accountStatusJsAttr})">{$setBtnLabel}</button>
         </div>
         <!--NOTE 修正画面のみ表示 -->
       </section>

@@ -173,9 +173,12 @@ print <<<HTML
 
 HTML;
 if ($method === 'edit') {
+  $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+  $corpNameJs = json_encode((string)$corporationData['name'], $jsonHex);
+  $corpNameJsAttr = htmlspecialchars((string)$corpNameJs, ENT_QUOTES, 'UTF-8');
   print <<<HTML
         <!--NOTE 修正画面のみ表示 -->
-        <button type="button" class="btn-delate-item" onclick="checkDeleteCorporation({$corpId},'{$corporationData['name']}')">削除する</button>
+    <button type="button" class="btn-delate-item" onclick="checkDeleteCorporation({$corpId}, {$corpNameJsAttr})">削除する</button>
 
 HTML;
 }
