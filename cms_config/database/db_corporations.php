@@ -32,7 +32,16 @@ function getCorporationList()
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at FROM corporations WHERE is_active = 1 ORDER BY corporation_id DESC";
+		$strSQL = "
+			SELECT 
+				corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at 
+			FROM 
+				corporations 
+			WHERE 
+				is_active = 1 
+			ORDER BY 
+				corporation_id DESC
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#SQL実行
@@ -60,7 +69,14 @@ function searchCorporationList($searchConditions, $pageNumber, $displayNumber)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at FROM corporations WHERE is_active = 1";
+		$strSQL = "
+			SELECT 
+				corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at 
+			FROM 
+				corporations 
+			WHERE 
+				is_active = 1
+		";
 		#WHERE句生成：ヘルパー関数呼び出し
 		list($whereSql, $sqlParams) = searchCorporationHelper($searchConditions);
 		$strSQL .= $whereSql;
@@ -233,10 +249,24 @@ function getCorporations_FindById_Code($corpId = null, $corpCode = null)
 	try {
 		if ($corpId !== null) {
 			#「$corpId」で検索
-			$strSQL = "SELECT corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at FROM corporations WHERE corporation_id = :value LIMIT 1";
+			$strSQL = "
+				SELECT 
+					corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at 
+				FROM 
+					corporations 
+				WHERE 
+					corporation_id = :value LIMIT 1
+			";
 		} elseif ($corpCode !== null) {
 			#「$corpCode」で検索
-			$strSQL = "SELECT corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at FROM corporations WHERE corporation_code = :value LIMIT 1";
+			$strSQL = "
+				SELECT 
+					corporation_id, corporation_code, contract_date, name, name_kana, postal_code, prefecture, city, address_line, phone, email, created_at 
+				FROM 
+					corporations 
+				WHERE 
+					corporation_code = :value LIMIT 1
+			";
 		} else {
 			#どちらも指定されていない場合
 			return null;

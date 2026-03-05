@@ -9,7 +9,16 @@ function accounts_Login($strEmail)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT account_id, account_type, facility_id, login_email, password_hash FROM accounts WHERE is_active = 1 AND login_email = :login_email AND (locked_until IS NULL OR locked_until < NOW()) LIMIT 1";
+		$strSQL = "
+			SELECT 
+				account_id, account_type, facility_id, login_email, password_hash 
+			FROM 
+				accounts 
+			WHERE 
+				is_active = 1 AND 
+				login_email = :login_email AND 
+				(locked_until IS NULL OR locked_until < NOW()) LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -37,7 +46,16 @@ function accounts_FindActiveById($accountId)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT account_id, account_type, facility_id, login_email FROM accounts WHERE account_id = :account_id AND is_active = 1 AND (locked_until IS NULL OR locked_until < NOW()) LIMIT 1";
+		$strSQL = "
+			SELECT 
+				account_id, account_type, facility_id, login_email 
+			FROM 
+				accounts 
+			WHERE 
+				account_id = :account_id AND 
+				is_active = 1 AND 
+				(locked_until IS NULL OR locked_until < NOW()) LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド

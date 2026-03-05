@@ -32,7 +32,17 @@ function getTipsArticlesTopList()
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start,updated_at FROM tips_articles WHERE is_top = 1 AND status = 'public' ORDER BY top_sort ASC, article_id DESC";
+		$strSQL = "
+			SELECT 
+				article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start,updated_at 
+			FROM 
+				tips_articles 
+			WHERE 
+				is_top = 1 AND 
+				status = 'public' 
+			ORDER BY 
+				top_sort ASC, article_id DESC
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#SQL実行
@@ -56,7 +66,14 @@ function getTipsArticlesList()
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start,updated_at FROM tips_articles ORDER BY article_id DESC";
+		$strSQL = "
+			SELECT 
+				article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start,updated_at 
+			FROM 
+				tips_articles 
+			ORDER BY 
+				article_id DESC
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#SQL実行
@@ -84,7 +101,12 @@ function searchTipsArticlesList($searchConditions, $pageNumber, $displayNumber)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start, updated_at FROM tips_articles";
+		$strSQL = "
+			SELECT 
+				article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start, updated_at 
+			FROM 
+				tips_articles
+		";
 		#WHERE句生成：ヘルパー関数呼び出し
 		list($whereSql, $sqlParams) = searchTipsArticlesHelper($searchConditions);
 		$strSQL .= $whereSql;
@@ -206,7 +228,14 @@ function getTipsArticles_FindById($articleId = null)
 	global $DB_CONNECT;
 	try {
 		#「$articleId」で検索
-		$strSQL = "SELECT article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start, updated_at FROM tips_articles WHERE article_id = :value LIMIT 1";
+		$strSQL = "
+			SELECT 
+				article_id, code, status, is_top, top_sort, title, body_text, body_json, tips_image_path, published_start, updated_at 
+			FROM 
+				tips_articles 
+			WHERE 
+				article_id = :value LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
