@@ -32,7 +32,17 @@ function getFacilityList()
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, postal_code, prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at FROM facilities WHERE is_active = 1 ORDER BY corporation_id DESC";
+		$strSQL = "
+			SELECT 
+				facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, postal_code, 
+				prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at 
+			FROM 
+				facilities 
+			WHERE 
+				is_active = 1 
+			ORDER BY 
+				corporation_id DESC
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#SQL実行
@@ -60,7 +70,15 @@ function searchFacilityList($searchConditions, $pageNumber, $displayNumber)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, postal_code, prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at FROM facilities WHERE is_active = 1";
+		$strSQL = "
+			SELECT 
+				facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, postal_code, 
+				prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at 
+			FROM 
+				facilities 
+			WHERE 
+				is_active = 1
+		";
 		#WHERE句生成：ヘルパー関数呼び出し
 		list($whereSql, $sqlParams) = searchFacilityHelper($searchConditions);
 		$strSQL .= $whereSql;
@@ -271,7 +289,15 @@ function getFacility_FindById($facId)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, postal_code, prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at FROM facilities WHERE facility_id = :facility_id LIMIT 1";
+		$strSQL = "
+			SELECT 
+				facility_id, facility_code, corporation_id, facility_type_id, name, name_kana, established_date, 
+				postal_code, prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at 
+			FROM 
+				facilities 
+			WHERE 
+				facility_id = :facility_id LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -299,7 +325,14 @@ function getFacilityDetails_FindById($facId)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT facility_id, department_name, contact_person, is_emergency_designated, details_json FROM facility_details WHERE facility_id = :facility_id LIMIT 1";
+		$strSQL = "
+			SELECT 
+				facility_id, department_name, contact_person, is_emergency_designated, details_json 
+			FROM 
+				facility_details 
+			WHERE 
+				facility_id = :facility_id LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド

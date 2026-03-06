@@ -34,7 +34,13 @@ function getJobList($facId = null)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, is_active, created_at, updated_at FROM jobs";
+		$strSQL = "
+			SELECT 
+				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, is_active, created_at, updated_at 
+			FROM 
+				jobs
+		";
 		if ($facId !== null) {
 			$strSQL .= " WHERE facility_id = :fac_id";
 		}
@@ -68,7 +74,15 @@ function getJob_FindByCode($jobCode)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active FROM jobs WHERE job_code = :job_code LIMIT 1";
+		$strSQL = "
+			SELECT 
+				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active 
+			FROM 
+				jobs 
+			WHERE 
+				job_code = :job_code LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -96,7 +110,15 @@ function getJob_FindById($jobId)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active FROM jobs WHERE job_id = :job_id LIMIT 1";
+		$strSQL = "
+			SELECT 
+				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active 
+			FROM 
+				jobs 
+			WHERE 
+				job_id = :job_id LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド

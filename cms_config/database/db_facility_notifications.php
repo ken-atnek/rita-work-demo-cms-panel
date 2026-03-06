@@ -34,7 +34,12 @@ function getFacilityNotificationsList($whereParam = 'all')
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at FROM facility_notifications";
+		$strSQL = "
+			SELECT 
+				notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at 
+			FROM 
+				facility_notifications
+		";
 		$sqlParams = [];
 		$whereParam = is_string($whereParam) ? $whereParam : 'all';
 		#取得条件
@@ -78,7 +83,12 @@ function searchFacilityNotificationsList($searchConditions, $pageNumber, $displa
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at FROM facility_notifications";
+		$strSQL = "
+			SELECT 
+				notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at 
+			FROM 
+				facility_notifications
+		";
 		#WHERE句生成：ヘルパー関数呼び出し
 		list($whereSql, $sqlParams) = searchFacilityNotificationsHelper($searchConditions);
 		$strSQL .= $whereSql;
@@ -200,7 +210,14 @@ function getFacilityNotifications_FindById($notificationId = null)
 	global $DB_CONNECT;
 	try {
 		#「$notificationId」で検索
-		$strSQL = "SELECT notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at FROM facility_notifications WHERE notification_id = :value LIMIT 1";
+		$strSQL = "
+			SELECT 
+				notification_id, code, status, title, body_json, notification_image_path, published_start, updated_at 
+			FROM 
+				facility_notifications 
+			WHERE 
+				notification_id = :value LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -229,7 +246,15 @@ function isFacilityNotificationOpened($facilityId = null, $notificationId = null
 	global $DB_CONNECT;
 	try {
 		#「$facilityId」「$notificationId」で検索
-		$strSQL = "SELECT COUNT(*) AS cnt FROM facility_notification_reads WHERE facility_id = :facilityId AND notification_id = :notificationId";
+		$strSQL = "
+			SELECT 
+				COUNT(*) AS cnt 
+			FROM 
+				facility_notification_reads 
+			WHERE 
+				facility_id = :facilityId AND 
+				notification_id = :notificationId
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド

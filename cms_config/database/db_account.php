@@ -10,7 +10,17 @@ function accounts_FindById_and_Email($intId, $strEmail)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT account_id, account_type, facility_id, login_email, password_hash FROM accounts WHERE is_active = 1 AND account_id = :account_id AND login_email = :login_email AND (locked_until IS NULL OR locked_until < NOW()) LIMIT 1";
+		$strSQL = "
+			SELECT 
+				account_id, account_type, facility_id, login_email, password_hash 
+			FROM 
+				accounts 
+			WHERE 
+				is_active = 1 AND 
+				account_id = :account_id AND 
+				login_email = :login_email AND 
+				(locked_until IS NULL OR locked_until < NOW()) LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -39,7 +49,16 @@ function accounts_FindByEmail($strEmail)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT account_id, account_type, facility_id, login_email, password_hash FROM accounts WHERE is_active = 1 AND login_email = :login_email AND (locked_until IS NULL OR locked_until < NOW()) LIMIT 1";
+		$strSQL = "
+			SELECT 
+				account_id, account_type, facility_id, login_email, password_hash 
+			FROM 
+				accounts 
+			WHERE 
+				is_active = 1 AND 
+				login_email = :login_email AND 
+				(locked_until IS NULL OR locked_until < NOW()) LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -67,7 +86,16 @@ function accounts_Waiting_FindByEmail($strEmail)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT account_id, account_type, facility_id, login_email, password_hash FROM accounts WHERE is_active = 9 AND login_email = :login_email AND (locked_until IS NULL OR locked_until < NOW()) LIMIT 1";
+		$strSQL = "
+			SELECT 
+				account_id, account_type, facility_id, login_email, password_hash 
+			FROM 
+				accounts 
+			WHERE 
+				is_active = 9 AND 
+				login_email = :login_email AND 
+				(locked_until IS NULL OR locked_until < NOW()) LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
@@ -96,7 +124,14 @@ function accountPasswordReset_FindBySelectorAndValidator($selector, $validator)
 	global $DB_CONNECT;
 	try {
 		#SQL定義
-		$strSQL = "SELECT * FROM account_password_resets WHERE selector = :selector AND expires_at > NOW() LIMIT 1";
+		$strSQL = "
+			SELECT 
+				* 
+			FROM 
+				account_password_resets 
+			WHERE 
+				selector = :selector AND expires_at > NOW() LIMIT 1
+		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
 		#変数バインド
