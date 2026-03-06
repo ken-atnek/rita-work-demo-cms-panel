@@ -1,0 +1,122 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/client07.css" />
+  </head>
+
+  <body>
+    <!--#include virtual="./inc_header.html"-->
+    <main class="inner-07-01">
+      <section class="page-nav">
+        <h2>メッセージ管理</h2>
+        <nav>
+          <a href="#">メッセージ作成</a>
+          <a href="#" class="is-active">送信履歴</a>
+        </nav>
+      </section>
+      <section class="container-register">
+        <h2>メッセージ作成</h2>
+        <form class="block-form">
+          <dl>
+            <dt class="is-required">件名</dt>
+            <dd>
+              <div class="select-subject" data-selectbox>
+                <button type="button" class="selectbox__head" aria-expanded="false">
+                  <input type="hidden" name="selectSubject" value="" data-selectbox-hidden />
+                  <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                </button>
+                <div class="list-wrapper">
+                  <ul class="selectbox__panel">
+                    <li>
+                      <input type="radio" name="selectSubject" value="1" id="subject01" />
+                      <label for="subject01">プランについて</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="selectSubject" value="2" id="subject02" />
+                      <label for="subject02">電話</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="selectSubject" value="3" id="subject03" />
+                      <label for="subject03">その他</label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="is-required">返信方法</dt>
+            <dd>
+              <div class="select-reply-method" data-selectbox>
+                <button type="button" class="selectbox__head" aria-expanded="false">
+                  <input type="hidden" name="selectReplyMethod" value="" data-selectbox-hidden />
+                  <span class="selectbox__value" data-selectbox-value>選択してください</span>
+                </button>
+                <div class="list-wrapper">
+                  <ul class="selectbox__panel">
+                    <li>
+                      <input type="radio" name="selectReplyMethod" value="1" id="reply01" />
+                      <label for="reply01">メール</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="selectReplyMethod" value="2" id="reply02" />
+                      <label for="reply02">電話</label>
+                    </li>
+                    <li>
+                      <input type="radio" name="selectReplyMethod" value="3" id="reply03" />
+                      <label for="reply03">その他</label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </dd>
+          </dl>
+          <dl>
+            <dt class="is-required position-top">メッセージ<br />内容</dt>
+            <dd>
+              <textarea></textarea>
+            </dd>
+          </dl>
+        </form>
+        <div class="bottom-box-btn">
+          <button type="button" class="item-back">戻る</button>
+          <button type="button" class="item-check">入力を確認する</button>
+        </div>
+      </section>
+      <!--#include virtual="./inc_page-top.html"-->
+    </main>
+    <!-- NOTE 修正画面用 is-active付与(bg-orange or bg-black)でモーダル表示 -->
+    <article class="modal-alert" id="modalBlock">
+      <div class="inner-modal">
+        <div class="box-title">
+          <p>新規事業所削除</p>
+          <button type="button" onclick="closeModal()" class="btn-top-close"></button>
+        </div>
+        <div class="box-details">
+          <p>新規法人情報を削除します。よろしいですか？</p>
+          <div class="box-btn">
+            <button type="button" class="btn-cancel">キャンセル</button>
+            <button type="button" class="btn-confirm">はい</button>
+          </div>
+        </div>
+      </div>
+    </article>
+    <script src="../assets/js/common.js" defer></script>
+  </body>
+</html>

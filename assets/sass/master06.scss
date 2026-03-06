@@ -103,8 +103,8 @@
         .block-vendor-list {
             @include layout-block-article;
             .list-search-results {
-                @include layout-table-list(auto 1fr auto auto auto, 5);
                 margin-top: 1.4rem;
+
                 .item-price,
                 .item-name,
                 .item-date {
@@ -219,6 +219,12 @@
                             }
                         }
                     }
+                }
+            }
+            // マスター管理画面用
+            &.status-master {
+                .list-search-results {
+                    @include layout-table-list(auto 1fr auto auto auto, 5);
                 }
             }
         }
