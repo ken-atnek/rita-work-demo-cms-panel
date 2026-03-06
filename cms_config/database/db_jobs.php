@@ -37,7 +37,7 @@ function getJobList($facId = null)
 		$strSQL = "
 			SELECT 
 				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
-				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, is_active, created_at, updated_at 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, lstep_url, is_active, created_at, updated_at 
 			FROM 
 				jobs
 		";
@@ -77,7 +77,7 @@ function getJob_FindByCode($jobCode)
 		$strSQL = "
 			SELECT 
 				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
-				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, lstep_url, is_active 
 			FROM 
 				jobs 
 			WHERE 
@@ -113,7 +113,7 @@ function getJob_FindById($jobId)
 		$strSQL = "
 			SELECT 
 				job_id, job_code, facility_id, job_category_id, employment_type_id, first_year_income_range_id, card_title, published_start, published_end, 
-				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range,bonus_has_bonus, bonus_note, hero_image_primary, is_active 
+				contract_plan_id, salary_unit_id, salary_min, salary_max, salary_range, bonus_has_bonus, bonus_note, hero_image_primary, lstep_url, is_active 
 			FROM 
 				jobs 
 			WHERE 
