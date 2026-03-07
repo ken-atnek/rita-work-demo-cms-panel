@@ -538,6 +538,7 @@ HTML;
                 <div class="item-ban"><i></i></div>
               </div>
             </li>
+
 HTML;
     }
   }

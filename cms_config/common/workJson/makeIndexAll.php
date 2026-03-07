@@ -11,6 +11,7 @@
 #===========================================#
 # 基本設定
 #-------------------------------------------#
+require(__DIR__ . '/../../common/define.php');
 require(__DIR__ . '/../../common/set_function.php');
 require(__DIR__ . '/../../database/set_db.php');
 require(__DIR__ . '/../../database/db_corporations.php');
@@ -19,10 +20,10 @@ require(__DIR__ . '/../../database/db_jobs.php');
 #-------------------------------------------#
 #===========================================#
 #POSTチェック
-#$facId = $argv[1];
-#デバッグ用
 #
-$facId = '1';
+$facId = $argv[1];
+#デバッグ用
+#$facId = '1';
 #-------------------------------------------#
 #求人カード情報を取得
 $jobsCardData = getJobList();
@@ -34,7 +35,6 @@ if ($jobsCardData === null) {
 #-------------------------------------------#
 #json保存先
 #indexAll.json
-require(__DIR__ . '/../../common/define.php');
 $saveIndexAllDir = DEFINE_JSON_DIR_PATH . '/jobs';
 #details_list.json
 $saveDetailsListDir = DEFINE_JSON_DIR_PATH;
