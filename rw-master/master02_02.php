@@ -205,9 +205,9 @@ print <<<HTML
         </div>
       </div>
     </article>
-    <script type="text/javascript" src="../assets/js/modal.js"></script>
-    <script type="text/javascript" src="../assets/js/form.js"></script>
-    <script type="text/javascript" src="./assets/js/master02_02.js"></script>
+    <script src="../assets/js/modal.js"></script>
+    <script src="../assets/js/form.js"></script>
+    <script src="./assets/js/master02_02.js"></script>
   </body>
 </html>
 

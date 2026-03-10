@@ -320,7 +320,7 @@ HTML;
               <div class="box-btn">
                 <div class="box-btn-inner">
                   <button type="button" class="btn-preview" onclick="openPreviewPage({$previewUrlParamJsAttr})">プレビュー</button>
-                  <button type="button" class="btn-contact" onclick="location.href='./client08_01.php?title=plan&facId={$jobCard['facility_id']}&jobId={$jobCard['job_id']}'">お問い合わせ</button>
+                  <button type="button" class="btn-contact" onclick="location.href='./client07_01.php?method=plan&facId={$jobCard['facility_id']}'">お問い合わせ</button>
                 </div>
               </div>
             </li>

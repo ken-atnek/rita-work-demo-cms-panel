@@ -539,7 +539,7 @@ if (isset($FacilityNotificationsList) && is_array($FacilityNotificationsList) &&
     $actionJsAttr = htmlspecialchars((string)$actionJs, ENT_QUOTES, 'UTF-8');
     $notificationId = (int)($notification['notification_id'] ?? 0);
     print <<<HTML
-          <li onclick="makeNotificationsModal({$actionJsAttr}, {$notificationId})">
+          <li onclick="makeNotificationsModal({$actionJsAttr}, {$notificationId})" style="cursor:pointer;">
             <div class="item-date">{$notificationDateEsc}</div>
             <p>{$notificationTitleEsc}</p>
           </li>

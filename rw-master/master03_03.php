@@ -162,13 +162,13 @@ HTML;
 
 HTML;
 }
-
+#inline JS用エスケープ宣言
 $jsonHex = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+#inline JS用エスケープ（属性崩壊・注入対策）
 $facIdJs = json_encode((string)$facId, $jsonHex);
 $accountStatusJs = json_encode((string)$accountStatus, $jsonHex);
 $facIdJsAttr = htmlspecialchars((string)$facIdJs, ENT_QUOTES, 'UTF-8');
 $accountStatusJsAttr = htmlspecialchars((string)$accountStatusJs, ENT_QUOTES, 'UTF-8');
-
 print <<<HTML
         </form>
         <div class="bottom-box-btn">
