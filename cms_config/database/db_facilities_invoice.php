@@ -1,8 +1,98 @@
 <?php
 /*
- * [請求事業所一覧取得]
+ * [明細詳細取得]
+ *  引数
+ *   $facId    ：事業所ID
+ *   $invoiceId：請求ID
  */
-function getFacilityInvoiceList()
+function getFacilityInvoiceDetail($facId = null, $invoiceId = null)
+{
+	global $DB_CONNECT;
+	try {
+		#SQL定義
+		$strSQL = "
+			SELECT
+				fi.invoice_id, fi.facility_id, fi.billing_period, fi.cutoff_at, fi.is_special_banner, fi.amount_total,
+				fi.status, fi.created_at, fi.tax_rate, fi.tax_rounding, fi.tax_amount, fi.amount_total_incl_tax,
+				f.facility_code, f.name AS facility_name, f.name_kana AS facility_name_kana,
+				GROUP_CONCAT(DISTINCT CASE WHEN fii.plan_id <> 'special_banner' THEN fii.plan_id END ORDER BY fii.plan_id SEPARATOR ',') AS plan_ids,
+				GROUP_CONCAT(CASE WHEN fii.plan_id <> 'special_banner' THEN CONCAT(fii.plan_id, ':', fii.quantity) END ORDER BY fii.plan_id SEPARATOR ',') AS plan_items
+			FROM
+				facility_invoices fi
+				INNER JOIN facilities f ON f.facility_id = fi.facility_id
+				LEFT JOIN facility_invoice_items fii ON fii.invoice_id = fi.invoice_id
+			WHERE
+				fi.invoice_id = :value AND
+				fi.facility_id = :facId
+			GROUP BY
+				fi.invoice_id
+			LIMIT 1
+		";
+		#プリペアードステートメント作成
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		#変数バインド
+		$newStmt->bindValue(':value', $invoiceId, PDO::PARAM_INT);
+		$newStmt->bindValue(':facId', $facId, PDO::PARAM_INT);
+		#SQL実行
+		$newStmt->execute();
+		#実行結果取得
+		$invoice = $newStmt->fetch(PDO::FETCH_ASSOC);
+		#ステートメントクローズ
+		$newStmt->closeCursor();
+		#存在しない場合はnullを返却
+		return $invoice ?: null;
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
+ * [請求明細行取得]
+ *  引数
+ *   $invoiceId：請求ID
+ */
+function getFacilityInvoiceItems($invoiceId = null)
+{
+	global $DB_CONNECT;
+	try {
+		$invoiceId = (int)$invoiceId;
+		if ($invoiceId <= 0) {
+			return [];
+		}
+		$strSQL = "
+			SELECT
+				plan_id, quantity, unit_price, amount, meta_json
+			FROM
+				facility_invoice_items
+			WHERE
+				invoice_id = :invoice_id
+			ORDER BY
+				CASE plan_id
+					WHEN 'special_banner' THEN 0
+					WHEN 'premium' THEN 1
+					WHEN 'standard' THEN 2
+					WHEN 'light' THEN 3
+					ELSE 50
+				END,
+				plan_id ASC
+		";
+		$newStmt = $DB_CONNECT->prepare($strSQL);
+		$newStmt->bindValue(':invoice_id', $invoiceId, PDO::PARAM_INT);
+		$newStmt->execute();
+		$items = $newStmt->fetchAll(PDO::FETCH_ASSOC);
+		$newStmt->closeCursor();
+		return $items ?: [];
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		exit;
+	}
+}
+/*
+ * [請求事業所一覧取得]
+ *  引数
+ *   $facId：事業所ID
+ */
+function getFacilityInvoiceList($facId = null)
 {
 	global $DB_CONNECT;
 	try {
@@ -20,11 +110,20 @@ function getFacilityInvoiceList()
 				LEFT JOIN facility_invoice_items fii ON fii.invoice_id = fi.invoice_id
 			GROUP BY
 				fi.invoice_id
+		";
+		if ($facId !== null) {
+			$strSQL .= " WHERE facility_id = :fac_id";
+		}
+		$strSQL .= "
 			ORDER BY
 				fi.invoice_id DESC
 		";
 		#プリペアードステートメント作成
 		$newStmt = $DB_CONNECT->prepare($strSQL);
+		#変数バインド
+		if ($facId !== null) {
+			$newStmt->bindValue(':fac_id', $facId, PDO::PARAM_INT);
+		}
 		#SQL実行
 		$newStmt->execute();
 		#実行結果取得
@@ -82,7 +181,7 @@ function searchFacilityInvoiceList($searchConditions, $pageNumber, $displayNumbe
 		} elseif ($sortTarget === 'facility_id') {
 			$strSQL .= " ORDER BY fi.facility_id " . $idSortOrderSql . ", fi.billing_period " . $billingPeriodSortOrderSql . ", fi.invoice_id DESC";
 		} else {
-			// billing_period
+			#billing_period
 			$strSQL .= " ORDER BY fi.billing_period " . $billingPeriodSortOrderSql . ", fi.invoice_id DESC";
 		}
 		#ページング
@@ -234,7 +333,6 @@ function searchFacilityInvoiceHelper($searchConditions)
 	#共通WHERE句を応答
 	return array($whereSql, $sqlParams);
 }
-
 /*
  * 請求月検索の入力正規化
  * - input[type=month] は YYYY-MM を返すため、月初/月末のYYYY-MM-DDへ変換
@@ -245,8 +343,7 @@ function normalizeBillingPeriodDateRange($start, $end)
 	$tz = new DateTimeZone('Asia/Tokyo');
 	$startNorm = $start;
 	$endNorm = $end;
-
-	// YYYY-MM → 月初
+	#YYYY-MM → 月初
 	if (is_string($startNorm) && preg_match('/^\d{4}-\d{2}$/', $startNorm)) {
 		try {
 			$dt = new DateTimeImmutable($startNorm . '-01', $tz);
@@ -255,7 +352,7 @@ function normalizeBillingPeriodDateRange($start, $end)
 			$startNorm = null;
 		}
 	}
-	// YYYY-MM → 月末
+	#YYYY-MM → 月末
 	if (is_string($endNorm) && preg_match('/^\d{4}-\d{2}$/', $endNorm)) {
 		try {
 			$dt = new DateTimeImmutable($endNorm . '-01', $tz);
@@ -264,14 +361,12 @@ function normalizeBillingPeriodDateRange($start, $end)
 			$endNorm = null;
 		}
 	}
-
-	// 空文字はnullへ
+	#空文字はnullへ
 	if ($startNorm === '') {
 		$startNorm = null;
 	}
 	if ($endNorm === '') {
 		$endNorm = null;
 	}
-
 	return array($startNorm, $endNorm);
 }

@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/master06_01.php]
- *  - 管理画面 -
+ * [rw-client/client06_01.php]
+ *  - 【事業所】管理画面 -
  *  明細一覧
  *
  * [初版]
- *  2026.3.5
+ *  2026.3.10
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -16,7 +16,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
@@ -29,8 +29,8 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_facilities_invoice.ph
 # SESSIONチェック
 #----------------#
 #セッションキー
-$searchConditionsSessionKey = 'searchConditions_master06_01';
-$pagePrefix = 'mKey06-01_';
+$searchConditionsSessionKey = 'searchConditions_client06_01';
+$pagePrefix = 'cKey06-01_';
 #このページのユニークなセッションキーを生成
 $noUpDateKey = $pagePrefix . bin2hex(random_bytes(8));
 $_SESSION['sKey'] = $noUpDateKey;
@@ -38,16 +38,27 @@ $_SESSION['sKey'] = $noUpDateKey;
 foreach ($_SESSION as $key => $val) {
 	#他ページの検索条件はページ移動時に破棄（このページの条件のみ保持）
 	$isSearchConditionsKey = ($key === $searchConditionsSessionKey);
-	if ($key !== 'sKey' && $key !== 'master_login' && $key !== $noUpDateKey && $isSearchConditionsKey === false) {
+	if ($key !== 'sKey' && $key !== 'client_login' && $key !== $noUpDateKey && $isSearchConditionsKey === false) {
 		unset($_SESSION[$key]);
 	}
 }
 #セッション本体の初期化
 $_SESSION[$noUpDateKey] = array();
 #アカウントキー
-$_SESSION[$noUpDateKey]['masterKey'] = $_SESSION['master_login']['account_id'];
+$_SESSION[$noUpDateKey]['clientKey'] = $_SESSION['client_login']['account_id'];
 #データ取得エラー
-if ($_SESSION[$noUpDateKey]['masterKey'] < 1) {
+if ($_SESSION[$noUpDateKey]['clientKey'] < 1) {
+	header("Location: ./logout.php");
+	exit;
+}
+
+#==============#
+# 事業所情報取得
+#--------------#
+#事業所ID
+$facId = isset($_SESSION['client_login']['facility_id']) ? $_SESSION['client_login']['facility_id'] : null;
+$facilityData = getFacility_FindById($facId);
+if (!$facilityData) {
 	header("Location: ./logout.php");
 	exit;
 }
@@ -63,7 +74,7 @@ try {
 	]);
 } catch (Throwable $e) {
 	if (function_exists('makeLog')) {
-		makeLog('[master06_01] master JSON load failed: ' . $e->getMessage());
+		makeLog('[client06_01] master JSON load failed: ' . $e->getMessage());
 	}
 	$jsonMasters = [];
 }
@@ -88,10 +99,9 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
 	$prevMonth = $today->modify('first day of last month')->format('Y-m');
 	#セッション無し：初期化
 	$_SESSION[$searchConditionsSessionKey] = array(
-		'facilityName' => '',
+		'facilityId' => $facId,
 		'startDay' => $prevMonth,
 		'endDay' => $prevMonth,
-		'initials' => array(),
 		'sortTarget' => 'billing_period',
 		'billingPeriodSortOrder' => 'desc',
 		'displayNumber' => $initialDisplayNumber,
@@ -104,17 +114,16 @@ if (isset($_SESSION[$searchConditionsSessionKey]) === false || !is_array($_SESSI
 	$searchConditions = $_SESSION[$searchConditionsSessionKey];
 }
 #必須キーが欠けている場合は初期化（運用上は常に揃う前提）
-$requiredKeys = ['facilityName', 'startDay', 'endDay', 'initials', 'sortTarget', 'billingPeriodSortOrder', 'displayNumber', 'pageNumber'];
+$requiredKeys = ['facilityId', 'startDay', 'endDay', 'sortTarget', 'billingPeriodSortOrder', 'displayNumber', 'pageNumber'];
 foreach ($requiredKeys as $requiredKey) {
 	if (!array_key_exists($requiredKey, $searchConditions)) {
 		$today = new DateTimeImmutable('now', new DateTimeZone('Asia/Tokyo'));
 		$prevMonth = $today->modify('first day of last month')->format('Y-m');
 		#欠けているキーがあれば初期化
 		$searchConditions = array(
-			'facilityName' => '',
+			'facilityId' => $facId,
 			'startDay' => $prevMonth,
 			'endDay' => $prevMonth,
-			'initials' => array(),
 			'sortTarget' => 'billing_period',
 			'billingPeriodSortOrder' => 'desc',
 			'displayNumber' => $initialDisplayNumber,
@@ -131,16 +140,10 @@ $pageNumber = isset($searchConditions['pageNumber']) ? intval($searchConditions[
 #-------------#
 #検索項目フォームのアクティブ判定
 $activeSearchForm = '';
-if ($searchConditions['facilityName'] !== '' || $searchConditions['startDay'] !== '' || $searchConditions['endDay'] !== '') {
+if ($searchConditions['facilityId'] !== '' || $searchConditions['startDay'] !== '' || $searchConditions['endDay'] !== '') {
 	$activeSearchForm = ' load is-active';
 } else {
 	$activeSearchForm = '';
-}
-$activeFilterForm = '';
-if (is_array($searchConditions['initials']) && count($searchConditions['initials']) > 0) {
-	$activeFilterForm = ' load is-active';
-} else {
-	$activeFilterForm = '';
 }
 
 #=====================#
@@ -182,7 +185,7 @@ print <<<HTML
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <title>リタワーク｜コントロールパネル(事業所)</title>
     <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;">
@@ -204,7 +207,7 @@ print <<<HTML
       <section class="page-nav">
         <h2>明細管理</h2>
         <nav>
-          <a href="./master06_01.php" class="is-active">明細一覧</a>
+          <a href="./client06_01.php" class="is-active">明細一覧</a>
         </nav>
       </section>
       <section class="container-detail-list">
@@ -216,10 +219,6 @@ print <<<HTML
           <article id="innerSearch" class="{$activeSearchForm}">
             <div class="blockGrid">
               <ul class="box-search-items">
-                <li class="item-name">
-                  <h4>事業所名</h4>
-                  <input type="text" name="searchFacilityName" value="{$searchConditions['facilityName']}">
-                </li>
                 <li class="item-application-date">
                   <h4>請求月</h4>
                   <div class="wrap-period">
@@ -236,53 +235,7 @@ print <<<HTML
             </div>
           </article>
         </form>
-        <form name="filterForm" class="block-filter">
-          <button type="button" id="btnSwitchFilter" class="btn-switch {$activeFilterForm}" aria-controls="innerFilter" aria-expanded="false"></button>
-          <h3>絞り込み</h3>
-          <article id="innerFilter" class="{$activeFilterForm}">
-            <div class="blockGrid">
-              <ul class="box-search-items">
-                <li class="item-name">
-                  <h4>事業所名</h4>
-                  <div class="wrap-select">
-
-HTML;
-#表示件数選択リストループで差し込む
-foreach ($filterInitialsList as $filterInitialsKey => $filterInitialsValue) {
-	#checked判定
-	$checked = '';
-	if (!is_array($searchConditions['initials'])) {
-		$searchConditions['initials'] = array();
-	}
-	#value設定値生成(「行」を削除)
-	$setFilterInitialsValue = str_replace('行', '', $filterInitialsValue);
-	foreach ($searchConditions['initials'] as $selectedInitials) {
-		if ($selectedInitials === (string)$setFilterInitialsValue) {
-			$checked = ' checked';
-			break;
-		} else {
-			$checked = '';
-		}
-	}
-	print <<<HTML
-                    <div class="item-check-box">
-                      <input type="checkbox" name="searchInitials[]" value="{$setFilterInitialsValue}" id="select-initials{$filterInitialsKey}" {$checked} onchange="searchConditions('search','none')">
-                      <label for="select-initials{$filterInitialsKey}">{$filterInitialsValue}</label>
-                    </div>
-
-HTML;
-}
-print <<<HTML
-                  </div>
-                </li>
-              </ul>
-              <div class="box-btn">
-                <button type="button" class="item-clear" onclick="searchConditions('release','none')">絞り込みを解除</button>
-              </div>
-            </div>
-          </article>
-        </form>
-        <article class="block-vendor-list status-master">
+        <article class="block-vendor-list status-client">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$facilityCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>
@@ -331,7 +284,6 @@ print <<<HTML
                   <button type="button" class="arrow-bottom {$sortInvoiceDateDescActive}" onclick="searchConditions('search','sortInvoiceDate_desc')"></button>
                 </span>
               </div>
-              <div>事業所名</div>
               <div>契約プラン</div>
               <div>請求額<small>(税別)</small></div>
               <div>ダウンロード</div>
@@ -341,12 +293,10 @@ HTML;
 #表示可能リストあればループで差し込む
 if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 	foreach ($facilityInvoiceList as $facility) {
-		#事業所ID
-		$facilityId = isset($facility['facility_id']) ? (int)$facility['facility_id'] : 0;
 		#明細ID
 		$invoiceId = isset($facility['invoice_id']) ? (int)$facility['invoice_id'] : 0;
-		#請求期間
 		$billingPeriodRaw = isset($facility['billing_period']) ? (string)$facility['billing_period'] : '';
+		#請求期間
 		$billingMonth = '';
 		if ($billingPeriodRaw !== '') {
 			$ts = strtotime($billingPeriodRaw);
@@ -354,7 +304,6 @@ if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 				$billingMonth = date('Y/m', $ts);
 			}
 		}
-		$facName = convertData((string)($facility['facility_name'] ?? ''));
 		#契約プラン（請求スナップショット：facility_invoice_items.plan_id + quantity）
 		# - 同一プランでも quantity 分すべて表示する（重複削除しない）
 		$planNames = [];
@@ -446,12 +395,11 @@ if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 		print <<<HTML
             <li>
               <div class="item-date">{$billingMonth}</div>
-              <div class="item-name">{$facName}</div>
               <div class="item-plan">
                 {$contractPlanNameTag}
               </div>
               <div class="item-price">{$amountTotalText}</div>
-              <div class="item-btn"><button type="button" onclick="makeReceiptPDF({$facilityId}, {$invoiceId})"></button></div>
+              <div class="item-btn"><button type="button" onclick="makeReceiptPDF({$facId}, {$invoiceId})"></button></div>
             </li>
 
 HTML;
@@ -473,7 +421,7 @@ print makePagerBoxTag((int)$pageNumber, (int)$totalPages, $pagerDisplayMax, 'mov
 print <<<HTML
         </article>
         <div class="bottom-box-btn">
-          <button type="button" class="item-back" onclick="location.href='./master06_01.php'">戻る</button>
+          <button type="button" class="item-back" onclick="location.href='./client06_01.php'">戻る</button>
         </div>
       </section>
 
@@ -482,11 +430,11 @@ HTML;
 print <<<HTML
     </main>
     <script src="../assets/js/common.js" defer></script>
-    <script src="./assets/js/master06_01.js" defer></script>
+    <script src="./assets/js/client06_01.js" defer></script>
     <!-- 必須：html2canvas + jsPDF（defer + 順番重要） -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
-    <script src="../assets/lib/jsPDF/js/jspdf_app.js?17451710032026" defer></script>
+    <script src="../assets/lib/jsPDF/js/jspdf_app.js" defer></script>
   </body>
 </html>
 

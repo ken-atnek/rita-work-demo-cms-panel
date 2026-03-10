@@ -1,11 +1,11 @@
 <?php
 /*
- * [rw-master/assets/function/proc_master06_01.php]
- *  - 管理画面 -
+ * [rw-client/assets/function/proc_client06_01.php]
+ *  - 【事業所】管理画面 -
  *  明細一覧（請求一覧）：検索/絞り込み/並び替え/ページング（AJAX）
  *
  * [初版]
- *  2026.3.5
+ *  2026.3.10
  */
 
 #***** 定数定義ファイル：インクルード *****#
@@ -16,7 +16,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_contents.php';
 #***** DB設定ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/set_db.php';
 #***** ★ 処理開始：セッション宣言ファイルインクルード ★ *****#
-require_once DOCUMENT_ROOT_PATH . '/cms_config/master/start_processing.php';
+require_once DOCUMENT_ROOT_PATH . '/cms_config/client/start_processing.php';
 #***** ★ DBテーブル読み書きファイル：インクルード ★ *****#
 #法人情報
 require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_corporations.php';
@@ -59,6 +59,20 @@ if ($noUpDateKey === '' || isset($_SESSION[$noUpDateKey]) === false) {
 #応答には常に現行のキーを含め、フロント側のhiddenを更新できるようにする
 $makeTag['noUpDateKey'] = ($currentNoUpDateKey !== '' ? $currentNoUpDateKey : $noUpDateKey);
 
+#==============#
+# 事業所情報取得
+#--------------#
+#事業所ID
+$facId = isset($_SESSION['client_login']['facility_id']) ? $_SESSION['client_login']['facility_id'] : null;
+if (!$facId) {
+	header('Content-Type: application/json; charset=UTF-8');
+	$makeTag['status'] = 'error';
+	$makeTag['title'] = 'ログインエラー';
+	$makeTag['msg'] = 'ログイン情報が確認できません。ページを再読み込みしてください。';
+	echo json_encode($makeTag);
+	exit;
+}
+
 #===================================#
 # フロント側マスタ定義JSONファイル取得
 #-----------------------------------#
@@ -69,7 +83,7 @@ try {
 	]);
 } catch (Throwable $e) {
 	if (function_exists('makeLog')) {
-		makeLog('[proc_master06_01] master JSON load failed: ' . $e->getMessage());
+		makeLog('[proc_client06_01] master JSON load failed: ' . $e->getMessage());
 	}
 	$jsonMasters = [];
 }
@@ -89,16 +103,9 @@ if (is_array($contractPlans)) {
 #-------------#
 $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
 $sortMode = isset($_POST['sortMode']) ? (string)$_POST['sortMode'] : '';
-#事業所名
-$searchFacilityName = isset($_POST['searchFacilityName']) ? (string)$_POST['searchFacilityName'] : '';
 #請求月（開始/終了）
 $searchStartDay = isset($_POST['searchStartDay']) ? (string)$_POST['searchStartDay'] : '';
 $searchEndDay = isset($_POST['searchEndDay']) ? (string)$_POST['searchEndDay'] : '';
-#絞り込み：あ～わ行
-$searchInitials = isset($_POST['searchInitials']) ? $_POST['searchInitials'] : [];
-if (!is_array($searchInitials)) {
-	$searchInitials = [];
-}
 #表示件数
 $displayNumber = isset($_POST['displayNumber']) ? intval($_POST['displayNumber']) : $initialDisplayNumber;
 #ページ番号
@@ -115,14 +122,13 @@ $prevMonth = $today->modify('first day of last month')->format('Y-m');
 #-------------#
 #ソート（請求月）
 #-------------#
-$searchConditionsSessionKey = 'searchConditions_master06_01';
+$searchConditionsSessionKey = 'searchConditions_client06_01';
 $prevSearchConditions = isset($_SESSION[$searchConditionsSessionKey]) && is_array($_SESSION[$searchConditionsSessionKey]) ? $_SESSION[$searchConditionsSessionKey] : null;
 if (!is_array($prevSearchConditions)) {
 	$prevSearchConditions = [
-		'facilityName' => '',
+		'facilityId' => $facId,
 		'startDay' => $prevMonth,
 		'endDay' => $prevMonth,
-		'initials' => [],
 		'sortTarget' => 'billing_period',
 		'billingPeriodSortOrder' => 'desc',
 		'idSortOrder' => 'desc',
@@ -154,7 +160,7 @@ $sortInvoiceDateDescActive = (strtolower($billingPeriodSortOrder) === 'asc') ? '
 # 検索条件配列生成→SESSION
 #------------------------#
 #検索条件が変わる操作は原則1ページ目に戻す
-if ($action === 'search' || $action === 'reset' || $action === 'release') {
+if ($action === 'search' || $action === 'reset') {
 	if (!isset($_POST['pageNumber'])) {
 		$pageNumber = 1;
 	}
@@ -165,10 +171,9 @@ switch ($action) {
 	#条件で検索
 	case 'search':
 		$searchConditions = [
-			'facilityName' => $searchFacilityName,
+			'facilityId' => $facId,
 			'startDay' => $searchStartDay,
 			'endDay' => $searchEndDay,
-			'initials' => $searchInitials,
 			'sortTarget' => 'billing_period',
 			'billingPeriodSortOrder' => $billingPeriodSortOrder,
 			'idSortOrder' => 'desc',
@@ -179,24 +184,9 @@ switch ($action) {
 	#条件をクリア
 	case 'reset':
 		$searchConditions = [
-			'facilityName' => '',
+			'facilityId' => $facId,
 			'startDay' => $prevMonth,
 			'endDay' => $prevMonth,
-			'initials' => [],
-			'sortTarget' => 'billing_period',
-			'billingPeriodSortOrder' => $billingPeriodSortOrder,
-			'idSortOrder' => 'desc',
-			'displayNumber' => $displayNumber,
-			'pageNumber' => $pageNumber,
-		];
-		break;
-	#絞り込み解除
-	case 'release':
-		$searchConditions = [
-			'facilityName' => $searchFacilityName,
-			'startDay' => $searchStartDay,
-			'endDay' => $searchEndDay,
-			'initials' => [],
 			'sortTarget' => 'billing_period',
 			'billingPeriodSortOrder' => $billingPeriodSortOrder,
 			'idSortOrder' => 'desc',
@@ -207,10 +197,9 @@ switch ($action) {
 	#ページ移動
 	case 'page':
 		$searchConditions = [
-			'facilityName' => $searchFacilityName,
+			'facilityId' => $facId,
 			'startDay' => $searchStartDay,
 			'endDay' => $searchEndDay,
-			'initials' => $searchInitials,
 			'sortTarget' => 'billing_period',
 			'billingPeriodSortOrder' => $billingPeriodSortOrder,
 			'idSortOrder' => 'desc',
@@ -254,7 +243,7 @@ $sortModeValue = (strtolower($billingPeriodSortOrderSaved) === 'asc') ? 'sortInv
 
 #***** タグ生成開始 *****#
 $makeTag['tag'] .= <<<HTML
-        <article class="block-vendor-list status-master" data-current-sort-mode="{$sortModeValue}">
+        <article class="block-vendor-list" data-current-sort-mode="{$sortModeValue}">
           <div class="box-head">
             <p class="announce-results">条件に<span>{$totalCount}件</span>が該当</p>
             <div class="list-display" data-selectbox>
@@ -302,7 +291,6 @@ $makeTag['tag'] .= <<<HTML
                   <button type="button" class="arrow-bottom {$sortInvoiceDateDescActive}" onclick="searchConditions('search','sortInvoiceDate_desc')"></button>
                 </span>
               </div>
-              <div>事業所名</div>
               <div>契約プラン</div>
               <div>請求額<small>(税別)</small></div>
               <div>ダウンロード</div>
@@ -312,8 +300,6 @@ HTML;
 #表示可能リストあればループで差し込む
 if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 	foreach ($facilityInvoiceList as $facility) {
-		#事業所ID
-		$facilityId = isset($facility['facility_id']) ? (int)$facility['facility_id'] : 0;
 		#明細ID
 		$invoiceId = isset($facility['invoice_id']) ? (int)$facility['invoice_id'] : 0;
 		#請求期間
@@ -325,7 +311,6 @@ if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 				$billingMonth = date('Y/m', $ts);
 			}
 		}
-		$facName = convertData((string)($facility['facility_name'] ?? ''));
 		#契約プラン（請求スナップショット：facility_invoice_items.plan_id + quantity）
 		# - 同一プランでも quantity 分すべて表示する（重複削除しない）
 		$planNames = [];
@@ -417,12 +402,11 @@ if (is_array($facilityInvoiceList) && count($facilityInvoiceList) > 0) {
 		$makeTag['tag'] .= <<<HTML
             <li>
               <div class="item-date">{$billingMonth}</div>
-              <div class="item-name">{$facName}</div>
               <div class="item-plan">
                 {$contractPlanNameTag}
               </div>
               <div class="item-price">{$amountTotalText}</div>
-              <div class="item-btn"><button type="button" onclick="makeReceiptPDF({$facilityId}, {$invoiceId})"></button></div>
+              <div class="item-btn"><button type="button" onclick="makeReceiptPDF({$facId}, {$invoiceId})"></button></div>
             </li>
 
 HTML;

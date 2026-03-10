@@ -2,7 +2,7 @@
  * API送信先 共通定数
  *
  */
-const requestURL = './assets/function/proc_master06_01.php';
+const requestURL = './assets/function/proc_client06_01.php';
 /**
  * 検索条件確認：直近の並び替え状態（ページ移動・絞り込みでも維持する）
  *
@@ -46,12 +46,10 @@ function getCurrentDisplayNumber() {
 async function requestCorporations({ action, sortMode, pageNumber }) {
   //検索フォーム
   const searchForm = document.querySelector('form[name=searchForm]');
-  //絞り込みフォーム
-  const filterForm = document.querySelector('form[name=filterForm]');
   //表示件数取得
   const displayNumber = getCurrentDisplayNumber();
-  //フォームを連結
-  const cFd = mergeFormData(searchForm, filterForm);
+  //フォーム生成
+  const cFd = new FormData(searchForm);
   cFd.append('action', action);
   cFd.append('sortMode', sortMode);
   cFd.append('displayNumber', String(displayNumber));
@@ -65,7 +63,7 @@ async function requestCorporations({ action, sortMode, pageNumber }) {
   const data = await response.json();
   if (data && data.status === 'error') {
     alert(data.msg || '通信エラーが発生しました。ページを再読み込みしてください。');
-    location.href = './master06_01.php';
+    location.href = './client06_01.php';
     throw new Error(data.title || 'Session error');
   }
   //サーバ側で noUpDateKey が更新/フォールバックされた場合に備えて同期
@@ -78,21 +76,6 @@ async function requestCorporations({ action, sortMode, pageNumber }) {
     }
   }
   return data;
-}
-/**
- * 事業所検索・絞り込み
- *
- */
-function mergeFormData(...forms) {
-  const merged = new FormData();
-  for (const form of forms) {
-    const fd = new FormData(form);
-    for (const [k, v] of fd.entries()) {
-      //同名キーが複数ある場合は「複数値」として append される
-      merged.append(k, v);
-    }
-  }
-  return merged;
 }
 async function searchConditions(action, sortMode) {
   try {
@@ -107,7 +90,7 @@ async function searchConditions(action, sortMode) {
     //表示中の情報入替
     document.querySelector('.block-vendor-list').remove();
     //ページ表示
-    document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    document.querySelector('.block-search').insertAdjacentHTML('afterend', list['tag']);
     // サーバ側の現行ソート状態に同期（セッション初期化などのズレを吸収）
     {
       const detected = detectCurrentSortMode();
@@ -118,42 +101,19 @@ async function searchConditions(action, sortMode) {
       //条件をクリア
       case 'reset':
         {
-          document.querySelector('input[name="searchFacilityName"]').value = '';
           const { start, end } = getPrevMonthRangeYM();
           const startEl = document.querySelector('input[name="searchStartDay"]');
           const endEl = document.querySelector('input[name="searchEndDay"]');
           if (startEl) startEl.value = start;
           if (endEl) endEl.value = end;
-          const selectInitialsDiv = document.querySelectorAll('.item-check-box');
-          //チェックボックスのchecked解除
-          selectInitialsDiv.forEach((initialDiv) => {
-            const targetCheckBox = initialDiv.querySelector('input[type="checkbox"]');
-            if (targetCheckBox != null) {
-              targetCheckBox.checked = false;
-            }
-          });
-        }
-        break;
-      //絞り込み解除
-      case 'release':
-        {
-          const selectInitialsDiv = document.querySelectorAll('.item-check-box');
-          //チェックボックスのchecked解除
-          selectInitialsDiv.forEach((initialDiv) => {
-            //チェックボックス判定
-            let targetCheckBox = initialDiv.querySelector('input[type="checkbox"]');
-            if (targetCheckBox != null) {
-              targetCheckBox.checked = false;
-            }
-          });
         }
         break;
     }
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    const areaMaster = document.querySelector('.area-master');
-    if (areaMaster) areaMaster.scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
@@ -173,7 +133,7 @@ async function movePage(pageNumber) {
     //表示中の情報入替
     document.querySelector('.block-vendor-list').remove();
     //ページ表示
-    document.querySelector('.block-filter').insertAdjacentHTML('afterend', list['tag']);
+    document.querySelector('.block-search').insertAdjacentHTML('afterend', list['tag']);
     // サーバ側の現行ソート状態に同期
     {
       const detected = detectCurrentSortMode();
@@ -182,8 +142,8 @@ async function movePage(pageNumber) {
     //セレクトボックス：初期化
     initSelectBox();
     //ページの上端までスクロール
-    const areaMaster = document.querySelector('.area-master');
-    if (areaMaster) areaMaster.scrollIntoView(true);
+    const areaClient = document.querySelector('.area-client');
+    if (areaClient) areaClient.scrollIntoView(true);
   } catch (error) {
     console.error('送信エラー:', error);
     alert('通信エラーが発生しました。ページを再読み込みしてください。');
