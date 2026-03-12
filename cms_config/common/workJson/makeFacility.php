@@ -11,6 +11,7 @@
 #===========================================#
 # 基本設定
 #-------------------------------------------#
+require(__DIR__ . '/../../common/define.php');
 require(__DIR__ . '/../../common/set_function.php');
 require(__DIR__ . '/../../database/set_db.php');
 require(__DIR__ . '/../../database/db_corporations.php');
@@ -19,10 +20,10 @@ require(__DIR__ . '/../../database/db_jobs.php');
 #-------------------------------------------#
 #===========================================#
 #POSTチェック
-#$facId = $argv[1];
-#デバッグ用
 #
-$facId = '3';
+$facId = $argv[1];
+#デバッグ用
+#$facId = '3';
 #-------------------------------------------#
 #事業所IDがあれば事業所情報取得
 if ($facId !== null) {
@@ -47,7 +48,6 @@ if (!is_array($facilityData) || count($facilityData) === 0) {
 }
 #-------------------------------------------#
 #json保存先
-require(__DIR__ . '/../../common/define.php');
 $saveDir = DEFINE_JSON_DIR_PATH . '/facilities/' . $facilityData['facility_code'];
 #-------------------------------------------#
 #===========================================#

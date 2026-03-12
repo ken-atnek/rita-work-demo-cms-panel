@@ -103,6 +103,7 @@
         .block-vendor-list {
             @include layout-block-article;
             .list-search-results {
+                @include layout-table-list(auto 1fr auto auto, 4);
                 margin-top: 1.4rem;
 
                 .item-price,

@@ -371,7 +371,6 @@ if ($pageNumber < 1) {
 $facilityList = searchFacilityList($searchConditions, $pageNumber, $displayNumber);
 #該当件数（表示用：総件数）
 $facilityCount = $totalFacilityCount;
-
 #返却HTML：現在の主ソートモード（JS初期判定用）
 $sortModeValue = '';
 $sortTargetSaved = isset($searchConditions['sortTarget']) ? (string)$searchConditions['sortTarget'] : 'facility_id';
@@ -618,6 +617,7 @@ $makeTag['tag'] .= <<<HTML
           </ul>
 
 HTML;
+#ページャー表示
 $makeTag['tag'] .= makePagerBoxTag((int)$pageNumber, (int)$totalPages, $pagerDisplayMax, 'movePage');
 $makeTag['tag'] .= <<<HTML
         </article>

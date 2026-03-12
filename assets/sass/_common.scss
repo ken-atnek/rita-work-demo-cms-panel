@@ -338,7 +338,8 @@ header {
         --key-color: #489dd6;
         --hover-white: #fcdfe2;
         nav {
-            grid-template-columns: repeat(7, 1fr);
+            // grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 0 3px;
         }
     }
@@ -406,7 +407,8 @@ header {
             font-size: inherit;
             max-height: 90vh;
             overflow-y: auto;
-            .box-title {
+            .box-title,
+            .box-from {
                 padding: 2.7rem;
                 display: flex;
                 justify-content: space-between;
@@ -426,13 +428,42 @@ header {
                     @include btn-close;
                 }
             }
+            .box-from {
+                padding: 1.4rem;
+                .item-from,
+                .item-response {
+                    position: relative;
+                    font-size: FZ(14);
+                    font-weight: 600;
+                    &::before {
+                        content: "";
+                        font-weight: 400;
+                    }
+                }
+                .item-from {
+                    &::before {
+                        content: "From：";
+                    }
+                }
+                .item-response {
+                    &::before {
+                        content: "返信希望：";
+                    }
+                }
+            }
         }
     }
 }
 // 黒背景記事用
 .modal-article {
     &.is-active {
-        background-color: rgba($font-black, 0.4);
+        // background-color: rgba($font-black, 0.4);
+        &.bg-orange {
+            background-color: rgba($main-orange, 0.4);
+        }
+        &.bg-black {
+            background-color: rgba($font-black, 0.4);
+        }
         .inner-modal {
             max-width: 98rem;
             .box-details {
@@ -464,6 +495,28 @@ header {
                             font-weight: 300;
                             text-align: justify;
                             line-height: 1.6em;
+                        }
+                    }
+                }
+                .box-btn {
+                    position: relative;
+                    font-size: inherit;
+                    display: flex;
+                    justify-content: center;
+                    gap: 0 2.4rem;
+                    margin-top: 4rem;
+                    button {
+                        width: 16rem;
+                        height: 4rem;
+                        margin-top: 7rem;
+                        &.btn-bottom-close {
+                            @include main-button("cancel");
+                        }
+                        &.btn-cancel {
+                            @include main-button("cancel");
+                        }
+                        &.btn-confirm {
+                            @include main-button("confirm");
                         }
                     }
                 }

@@ -543,7 +543,7 @@ async function makeNotificationsModal(action, notificationsId) {
     }
     const blockModal = document.getElementById('modalBlock');
     if (!blockModal) return;
-    blockModal.classList.add('bg-orange');
+    blockModal.classList.add('bg-black');
     blockModal.classList.add('is-active');
     document.documentElement.style.overflow = 'hidden';
   } catch (error) {
