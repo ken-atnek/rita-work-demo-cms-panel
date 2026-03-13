@@ -1,26 +1,125 @@
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>リタワーク｜コントロールパネル(管理者)</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/images/favicon/apple-touch-icon.png"
+    />
+    <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/master06.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>リタワーク｜コントロールパネル(管理者)</title>
-  <meta name="robots" content="noindex,nofollow" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon/favicon.svg" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" />
-  <link rel="stylesheet" href="../assets/css/master06.css" />
-</head>
-
-<body>
-  <!--bodyタグ直下、下記のdivタグで作成をお願いします。"-->
-  <!--A4サイズのPDFを生成するので、class="invoiceのwhidthは「width: 210mm」として下さい。"-->
-  <div id="pdfTarget" class="invoice">
-
-  </div>
-
-</body>
-
+  <body style="background-color: #fff">
+    <!--bodyタグ直下、下記のdivタグで作成をお願いします。"-->
+    <!--A4サイズのPDFを生成するので、class="invoiceのwhidthは「width: 210mm」として下さい。"-->
+    <div id="pdfTarget" class="area-invoice">
+      <h2>請求書</h2>
+      <article class="block-head">
+        <div class="box-left">
+          <h3>リハセンター みどりの樹　帯山</h3>
+          <p>下記の通り、ご請求申し上げます。</p>
+          <div class="wrap-total-price">
+            <h4>ご請求金額（税込）</h4>
+            <p>入金期日：<span>4月20日</span></p>
+            <div class="item-total-price"><span>49,500</span></div>
+          </div>
+          <p>振り込み手数料は御社のご負担にてお願いいたします。</p>
+        </div>
+        <div class="box-right">
+          <dl>
+            <div>
+              <dt>請求日</dt>
+              <dd>2026-03-31</dd>
+            </div>
+            <div>
+              <dt>請求番号</dt>
+              <dd>INV-00000000001</dd>
+            </div>
+          </dl>
+          <div class="wrap-shop-info">
+            <div class="item-logo">
+              <img src="../assets/images/logo.webp" alt="RITAのロゴ" />
+            </div>
+            <span class="item-name">株式会社RITA</span>
+            <address>
+              <span>〒862-0950 </span>
+              <span>熊本県熊本市中央区水前寺4-20-36-801 </span>
+              <span>ロマネスク水前寺ルネッサンス</span>
+            </address>
+          </div>
+        </div>
+      </article>
+      <article class="block-details">
+        <div class="box-title">
+          <h4>品目詳細</h4>
+          <p>サービス期間：2026年4月1日〜2026年4月30日</p>
+        </div>
+        <ul>
+          <li>
+            <div>求人ＩＤ</div>
+            <div>サービス名</div>
+            <div>単価</div>
+            <div>数量</div>
+            <div class="item-price" style="text-align: center">金額</div>
+          </li>
+          <li>
+            <div>job_001</div>
+            <div>プレミアムプラン</div>
+            <div>25,000</div>
+            <div>1</div>
+            <div class="item-price">¥25,000</div>
+          </li>
+          <li>
+            <div>job_001</div>
+            <div>プレミアムプラン</div>
+            <div>25,000</div>
+            <div>1</div>
+            <div class="item-price">¥25,000</div>
+          </li>
+          <li>
+            <div>job_001</div>
+            <div>プレミアムプラン</div>
+            <div>25,000</div>
+            <div>1</div>
+            <div class="item-price">¥25,000</div>
+          </li>
+          <li>
+            <div>job_001</div>
+            <div>プレミアムプラン</div>
+            <div>25,000</div>
+            <div>1</div>
+            <div class="item-price">¥25,000</div>
+          </li>
+        </ul>
+      </article>
+      <article class="block-bottom">
+        <p>ご利用いただき、誠にありがとうございます。</p>
+        <dl>
+          <div>
+            <dt>小計</dt>
+            <dd>¥45,000</dd>
+          </div>
+          <div>
+            <dt>消費税</dt>
+            <dd>¥4,500</dd>
+          </div>
+          <div>
+            <dt>合計</dt>
+            <dd>¥49,500</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  </body>
 </html>
