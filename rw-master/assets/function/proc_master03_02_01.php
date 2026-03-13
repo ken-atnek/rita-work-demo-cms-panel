@@ -219,6 +219,8 @@ $job_status = isset($_POST['jobStatus']) ? $_POST['jobStatus'] : null;
 $published_start = isset($_POST['published_start']) ? $_POST['published_start'] : null;
 #カードタイトル
 $card_title = isset($_POST['card_title']) ? $_POST['card_title'] : null;
+#LステップURL
+$lstep_url = isset($_POST['lstep_url']) ? $_POST['lstep_url'] : null;
 #募集職種
 $job_category = isset($_POST['job_category']) ? $_POST['job_category'] : null;
 #雇用形態
@@ -520,7 +522,6 @@ function jobCardImageMimeTypeFromExt(string $ext): string
       return '';
   }
 }
-
 /**
  * 画像ドラフトセッションが「どの求人(job_id)向けか」を保持するメタキー
  */
@@ -1380,6 +1381,18 @@ HTML;
           $pendingDeleteDirs = [];
           $imageDraftTouched = false;
           #DB登録情報準備
+          $lstepURLRaw = (!empty($lstep_url)) ? trim($lstep_url) : '';
+          #URL用：スペース等（半角/全角含むホワイトスペース）を全て削除
+          $lstepURL = preg_replace('/[\s　]+/u', '', $lstepURLRaw);
+          if ($lstepURL === '') {
+            DB_Transaction(3);
+            $makeTag['status'] = 'error';
+            $makeTag['title'] = '登録エラー';
+            $makeTag['msg'] = 'Lステップの友達追加URLを入力してください。';
+            header('Content-Type: application/json');
+            echo json_encode($makeTag);
+            exit;
+          }
           switch ($method) {
             #***** 新規登録 *****#
             case 'new': {
@@ -1400,6 +1413,7 @@ HTML;
                 $dbFiledData['salary_range'] = array(':salary_range', json_encode($bandIds, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 1);
                 $dbFiledData['bonus_has_bonus'] = array(':bonus_has_bonus', $bonus, 0);
                 $dbFiledData['bonus_note'] = array(':bonus_note', $bonus_note, 0);
+                $dbFiledData['lstep_url'] = array(':lstep_url', $lstepURL, 0);
                 $dbFiledData['is_active'] = array(':is_active', 1, 1);
                 $dbFiledData['created_at'] = array(':created_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
@@ -1824,6 +1838,7 @@ HTML;
                 $dbFiledData['salary_range'] = array(':salary_range', json_encode($bandIds, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 1);
                 $dbFiledData['bonus_has_bonus'] = array(':bonus_has_bonus', $bonus, 0);
                 $dbFiledData['bonus_note'] = array(':bonus_note', $bonus_note, 0);
+                $dbFiledData['lstep_url'] = array(':lstep_url', $lstepURL, 0);
                 $dbFiledData['is_active'] = array(':is_active', $job_status, 1);
                 $dbFiledData['updated_at'] = array(':updated_at', date("Y-m-d H:i:s"), 0);
                 #更新用キー：初期化
@@ -1836,6 +1851,7 @@ HTML;
                 $exeFlg = 2;
                 #DB更新
                 $dbSuccessFlg = SQL_Process($DB_CONNECT, "jobs", $dbFiledData, $dbFiledValue, $processFlg, $exeFlg);
+                #求人カード登録完了後に詳細情報を登録する
                 if ($dbSuccessFlg == 1) {
 
                   #--- 画像の本登録処理 ---#
@@ -2809,6 +2825,10 @@ HTML;
               if (!is_array($heroImagesForMaster)) {
                 $heroImagesForMaster = [];
               }
+              #LステップURL：スペース等（半角/全角含むホワイトスペース）を全て削除
+              $lstepURLRaw = (!empty($lstep_url)) ? trim($lstep_url) : '';
+              $lstepURL = preg_replace('/[\s　]+/u', '', $lstepURLRaw);
+              #job_〇〇〇.json
               $masterJsonData = [];
               $masterJsonData = [
                 'id' => $job_code,
@@ -2818,6 +2838,7 @@ HTML;
                   'start' => $published_start,
                   'end' => null,
                 ],
+                'lStepUrl' => $lstepURL,
                 'jobCategoryId' => $job_category,
                 'employmentTypeId' => $employment_type,
                 'title' => $card_title,

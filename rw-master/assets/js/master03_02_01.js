@@ -324,6 +324,12 @@ async function checkInput(method) {
     errorMessage = '掲載日を入力してください。';
     errorInput = 'input[type="date"][name="published_start"]';
   }
+  //== LステップURL入力チェック
+  const LStepURL = document.querySelector('input[type="text"][name="lstep_url"]').value;
+  if (LStepURL === '' || LStepURL === null) {
+    errorMessage = 'Lステップの友達追加URLを入力してください。';
+    errorInput = 'input[type="text"][name="lstep_url"]';
+  }
   //== 募集職種入力チェック
   const jobCategory = document.querySelector('input[type="hidden"][name="job_category"]').value;
   if (jobCategory === '' || jobCategory === null) {

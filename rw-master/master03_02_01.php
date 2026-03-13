@@ -178,6 +178,7 @@ if (is_array($jobData) === false || count($jobData) === 0) {
     'bonus_has_bonus' => '',
     'bonus_note' => '',
     'hero_image_primary' => '',
+    'lstep_url' => '',
     'is_active' => 1,
   );
 }
@@ -313,6 +314,12 @@ print <<<HTML
                 <input type="text" name="job_code" value="{$job_code}" readonly>
                 <div class="title">掲載日</div>
                 <div class="input-date"><input type="date" name="published_start" value="{$jobData['published_start']}"></div>
+              </dd>
+            </dl>
+            <dl>
+              <dt style="align-items: flex-start">Lステップ<br>友達追加URL</dt>
+              <dd>
+                <input type="text" name="lstep_url" value="{$jobData['lstep_url']}" placeholder="https://liff.line.me/xxxxxxxxxxxxxxxxxxxx">
               </dd>
             </dl>
             <dl>
@@ -638,7 +645,7 @@ HTML;
 print <<<HTML
                     </label>
                     <!--NOTE 賞与有りの場合表示 -->
-                    <input type="text" name="bonus_note" id="bonusAmount" value="{$jobData['bonus_note']}" style="display: none;">
+                    <input type="text" name="bonus_note" id="bonusAmount" value="{$jobData['bonus_note']}" placeholder="年2回・業績による" style="display: none;">
                   </div>
                 </div>
                 <!--NOTE 「時給」選択でis-inactiveを付与 -->
