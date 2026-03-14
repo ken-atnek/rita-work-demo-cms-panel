@@ -1,8 +1,8 @@
 <?php
 /*
- * [cms_config/common/workJson/makeIndexAll.php]
+ * [cms_config/cron/makeInvoice.php]
  *  - 管理画面 -
- *  求人カード登録／編集／削除後のJSONファイル作成 (全求人カード情報)
+ *  請求書作成 (全施設分)
  *
  * [初版]
  *  2026.1.9
@@ -72,6 +72,13 @@ function calcTaxAmount(int $amount, int $taxRateScaled, string $rounding, int $s
 		default:
 			return intdiv($numerator, $scale);
 	}
+}
+/**
+ * 月末最終日か判定する
+ */
+function isLastDayOfMonth(DateTimeImmutable $date): bool
+{
+	return $date->format('Y-m-d') === $date->modify('last day of this month')->format('Y-m-d');
 }
 /**
  * 求人カードが当月請求の対象か判定する
@@ -212,22 +219,25 @@ function replaceFacilityInvoiceItems(int $invoiceId, array $items): void
 }
 #===========================================#
 #事業所一覧取得
-$facilityList = getFacilityList();
+$facilityList = getFacilityList(true);
 #事業所情報が無ければ処理終了
 if ($facilityList === null) {
 	#事業所情報無し：処理終了
 	exit;
 }
-#-------------------------------------------#
 #===========================================#
 # 請求生成の基準時刻（cutoff_at = cron実行時刻）
 #-------------------------------------------#
 $cutoffAt = new DateTimeImmutable('now', new DateTimeZone('Asia/Tokyo'));
+# 月末最終日以外は請求確定しない
+if (!isLastDayOfMonth($cutoffAt)) {
+	error_log('[makeInvoice] skipped: today is not the last day of month. cutoff_at=' . $cutoffAt->format('Y-m-d H:i:s'));
+	exit;
+}
 $billingPeriod = $cutoffAt->format('Y-m-01');
 $periodStart = $cutoffAt
 	->setDate((int)$cutoffAt->format('Y'), (int)$cutoffAt->format('m'), 1)
 	->setTime(0, 0, 0);
-
 #税（方針: set_contents.php の $taxRate を採用）
 $invoiceTaxRateNum = (isset($taxRate) && is_numeric($taxRate)) ? (float)$taxRate : 0.1;
 $invoiceTaxRateStr = number_format($invoiceTaxRateNum, 4, '.', '');
@@ -348,6 +358,7 @@ if (is_array($facilityList) && count($facilityList) > 0) {
 		$items = [];
 		$amountTotalExTax = 0;
 		$taxAmountTotal = 0;
+		$hasPriceConfigError = false;
 		foreach ($planAgg as $planId => $agg) {
 			$quantity = (int)($agg['quantity'] ?? 0);
 			if ($quantity <= 0) {
@@ -357,7 +368,8 @@ if (is_array($facilityList) && count($facilityList) > 0) {
 				$unitPrice = resolvePlanUnitPrice($planId, $fallbackPlanPrices);
 			} catch (Throwable $e) {
 				error_log('[makeInvoice] unit price resolve failed: facility_id=' . $facId . ' plan_id=' . $planId . ' error=' . $e->getMessage());
-				continue;
+				$hasPriceConfigError = true;
+				break;
 			}
 			$amount = $unitPrice * $quantity;
 			$meta = [
@@ -377,10 +389,14 @@ if (is_array($facilityList) && count($facilityList) > 0) {
 			$amountTotalExTax += $amount;
 			$taxAmountTotal += calcTaxAmount($amount, $taxRateScaled, $invoiceTaxRounding);
 		}
+		if ($hasPriceConfigError) {
+			continue;
+		}
 		#特別バナー明細
 		if ($isSpecialBanner === 1) {
 			if ($specialBannerUnitPrice <= 0) {
 				error_log('[makeInvoice] special_banner unit price is not configured. facility_id=' . $facId);
+				continue;
 			} else {
 				$amount = $specialBannerUnitPrice;
 				$items[] = [

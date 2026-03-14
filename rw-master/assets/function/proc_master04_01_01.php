@@ -30,7 +30,7 @@ require_once DOCUMENT_ROOT_PATH . '/cms_config/database/db_jobs.php';
 #==============#
 # 事業所一覧取得
 #--------------#
-$facilityList = getFacilityList();
+$facilityList = getFacilityList(false);
 
 #================#
 # 応答用タグ初期化

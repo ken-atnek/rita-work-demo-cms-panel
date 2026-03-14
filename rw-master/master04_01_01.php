@@ -72,7 +72,7 @@ $jobCategories = $jsonMasters['jobCategories'] ?? [];
 #==============#
 # 事業所一覧取得
 #--------------#
-$facilityList = getFacilityList();
+$facilityList = getFacilityList(false);
 
 #=============#
 # POSTチェック

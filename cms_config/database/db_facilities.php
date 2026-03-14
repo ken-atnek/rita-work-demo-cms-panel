@@ -26,8 +26,10 @@ function getLastFacilityId()
 }
 /*
  * [事業所一覧取得]
+ *  引数
+ *   $includeInactive: true の場合は is_active による絞り込みを行わない
  */
-function getFacilityList()
+function getFacilityList($includeInactive = false)
 {
 	global $DB_CONNECT;
 	try {
@@ -38,8 +40,14 @@ function getFacilityList()
 				prefecture, city, address_line, recruitment_area, phone, email, map_url, map_link_url, created_at 
 			FROM 
 				facilities 
+		";
+		if ($includeInactive !== true) {
+			$strSQL .= "
 			WHERE 
 				is_active = 1 
+			";
+		}
+		$strSQL .= "
 			ORDER BY 
 				corporation_id DESC
 		";

@@ -145,7 +145,7 @@ if (is_array($searchConditions['initials']) && count($searchConditions['initials
 if (is_array($searchConditions) && count($searchConditions) > 0) {
   $facilityList = searchFacilityList($searchConditions, $pageNumber, $displayNumber);
 } else {
-  $facilityList = getFacilityList();
+  $facilityList = getFacilityList(false);
 }
 #総件数（ページャー用）
 $totalFacilityCount = searchFacilityCount($searchConditions);

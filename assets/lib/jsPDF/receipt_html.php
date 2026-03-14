@@ -13,7 +13,7 @@ header('Pragma: no-cache');
  */
 
 #***** 定数定義ファイル：インクルード *****#
-// このファイルは assets/lib/jsPDF 配下のため、プロジェクトルートへ3階層戻る
+#このファイルは assets/lib/jsPDF 配下のため、プロジェクトルートへ3階層戻る
 require_once dirname(__DIR__, 3) . '/cms_config/common/define.php';
 #***** 定数・関数宣言ファイル：インクルード *****#
 require_once DOCUMENT_ROOT_PATH . '/cms_config/common/set_function.php';
@@ -45,30 +45,32 @@ if ($invoiceId <= 0) {
   echo 'invalid invoice_id';
   exit;
 }
-
-#========================#
+#=================================#
 # SESSION開始（master/client両対応）
-#------------------------#
-# ※このエンドポイントはAJAXで直接呼ばれるため、ここで確実にセッションを復元する
-# ※セッションを書き戻す必要はないため read_and_close で読み取り専用にする
+#---------------------------------#
+#※このエンドポイントはAJAXで直接呼ばれるため、ここで確実にセッションを復元する
+#※セッションを書き戻す必要はないため session_abort() で書き込み無しで閉じる
 if (session_status() !== PHP_SESSION_ACTIVE) {
-  $sessionNamesToTry = [];
-  # clientを優先（施設ひも付けチェックを適用できるため）
-  if (isset($_COOKIE['RW_CLIENT_SESSID'])) {
-    $sessionNamesToTry[] = 'RW_CLIENT_SESSID';
+  $referer = (string)($_SERVER['HTTP_REFERER'] ?? '');
+  $isMasterReferer = ($referer !== '' && strpos($referer, '/rw-master/') !== false);
+  $isClientReferer = ($referer !== '' && strpos($referer, '/rw-client/') !== false);
+  #refererが分かる場合は呼び出し元に合わせて優先順を決める
+  if ($isMasterReferer && !$isClientReferer) {
+    $sessionNamesToTry = ['RW_MASTER_SESSID', 'RW_CLIENT_SESSID'];
+  } elseif ($isClientReferer && !$isMasterReferer) {
+    $sessionNamesToTry = ['RW_CLIENT_SESSID', 'RW_MASTER_SESSID'];
+  } else {
+    #判別できない場合は client→master（施設ひも付けチェックを優先）
+    $sessionNamesToTry = ['RW_CLIENT_SESSID', 'RW_MASTER_SESSID'];
   }
-  if (isset($_COOKIE['RW_MASTER_SESSID'])) {
-    $sessionNamesToTry[] = 'RW_MASTER_SESSID';
-  }
-
-  # Cookieが無い状態で session_start() すると新規セッション発行→既存ログインCookie上書きの原因になるため、ここで弾く
-  if (count($sessionNamesToTry) === 0) {
+  #Cookieが無い状態で session_start() すると新規セッション発行→Cookie上書きの原因になるため、ここで弾く
+  $hasAnyCookie = (isset($_COOKIE['RW_CLIENT_SESSID']) || isset($_COOKIE['RW_MASTER_SESSID']));
+  if (!$hasAnyCookie) {
     http_response_code(403);
     echo 'forbidden';
     exit;
   }
-
-  # start_processing.php と同じCookie属性（path=/ 等）で復元できるように明示
+  #start_processing.php と同じCookie属性（path=/ 等）で復元できるように明示
   session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
@@ -77,20 +79,22 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     'httponly' => true,
     'samesite' => 'Lax'
   ]);
-
   foreach ($sessionNamesToTry as $sessionName) {
-    $_SESSION = [];
+    if (!isset($_COOKIE[$sessionName])) {
+      continue;
+    }
     session_name($sessionName);
-    session_start(['read_and_close' => true]);
-
+    session_start();
     $hasMasterLogin = !empty($_SESSION['master_login']['status']);
     $hasClientLogin = !empty($_SESSION['client_login']['status']);
+    #書き込み不要なので必ずabortしてクローズ（セッションロック解放＆書き戻し防止）
+    session_abort();
     if ($hasMasterLogin || $hasClientLogin) {
       break;
     }
+    $_SESSION = [];
   }
 }
-
 #================#
 # SESSIONチェック
 #----------------#
@@ -100,8 +104,7 @@ if (empty($_SESSION['master_login']['status']) && empty($_SESSION['client_login'
   echo 'forbidden';
   exit;
 }
-
-# client側ログインの場合は、セッションの施設IDとPOST施設IDの一致を必須にする
+#client側ログインの場合は、セッションの施設IDとPOST施設IDの一致を必須にする
 if (!empty($_SESSION['client_login']['status'])) {
   $sessionFacId = (int)($_SESSION['client_login']['facility_id'] ?? 0);
   if ($sessionFacId <= 0 || $sessionFacId !== $facId) {
@@ -110,7 +113,6 @@ if (!empty($_SESSION['client_login']['status'])) {
     exit;
   }
 }
-
 #-------------#
 #エスケープ関数
 function h(string $s): string
@@ -119,7 +121,7 @@ function h(string $s): string
 }
 function yen(int $n): string
 {
-  return '¥' . number_format($n);
+  return number_format($n);
 }
 
 #===================================#
@@ -149,7 +151,6 @@ if (is_array($contractPlans)) {
     $contractPlanNameById[(string)$p['id']] = (string)($p['name'] ?? '');
   }
 }
-
 #-------------#
 #DBから請求情報を取得
 $invoiceDetails = getFacilityInvoiceDetail($facId, $invoiceId);
@@ -158,13 +159,12 @@ if (!$invoiceDetails) {
   echo 'invoice not found';
   exit;
 }
-
 #請求日（cutoff_at）
 $billingDate = date('Y-m-d', strtotime((string)($invoiceDetails['cutoff_at'] ?? 'now')));
-
+#入金期日（翌月の20日）
+$paymentDueDate = date('n月20日', strtotime('first day of next month', strtotime($billingDate)));
 #請求書番号（invoice_id から採番）
 $invoiceNo = 'INV-' . str_pad((string)$invoiceId, 10, '0', STR_PAD_LEFT);
-
 #請求期間（billing_period 月初〜月末）
 $billingPeriodRaw = (string)($invoiceDetails['billing_period'] ?? '');
 $servicePeriodText = '';
@@ -177,21 +177,18 @@ if ($billingPeriodRaw !== '') {
     $servicePeriodText = '';
   }
 }
-
 #金額（DBスナップショット）
 $subtotalExTax = (int)($invoiceDetails['amount_total'] ?? 0);
 $taxAmount = (int)($invoiceDetails['tax_amount'] ?? 0);
 $grandTotal = (int)($invoiceDetails['amount_total_incl_tax'] ?? 0);
-
 $billingDateEsc = h($billingDate);
 $invoiceNoEsc = h($invoiceNo);
 $facilityNameEsc = h((string)($invoiceDetails['facility_name'] ?? ''));
-$facilityNameLine = ($facilityNameEsc !== '') ? ($facilityNameEsc . ' 御中') : '-';
+$facilityNameLine = ($facilityNameEsc !== '') ? ($facilityNameEsc) : '-';
 $servicePeriodEsc = h($servicePeriodText !== '' ? $servicePeriodText : '-');
 $grandTotalText = h(yen($grandTotal));
 $subtotalText = h(yen($subtotalExTax));
 $taxText = h(yen($taxAmount));
-
 #明細行（facility_invoice_items）
 $invoiceItems = [];
 if (function_exists('getFacilityInvoiceItems')) {
@@ -200,8 +197,7 @@ if (function_exists('getFacilityInvoiceItems')) {
 if (!is_array($invoiceItems)) {
   $invoiceItems = [];
 }
-
-# 特別バナー明細は jobCodes を持たないため、表示補完用に「他プランの求人ID一覧」を集計しておく
+#特別バナー明細は jobCodes を持たないため、表示補完用に「他プランの求人ID一覧」を集計しておく
 $invoiceJobCodesForDisplay = [];
 if (count($invoiceItems) > 0) {
   foreach ($invoiceItems as $row) {
@@ -237,63 +233,58 @@ if (count($invoiceItems) > 0) {
 
 #***** タグ生成開始 *****#
 print <<<HTML
-<div id="pdfTarget" class="invoice">
-  <div class="invoice-inner">
-    <div class="header">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">RITA</div>
-        <div class="company">
-          <div class="name">株式会社 RITA</div>
-          <div class="meta">〒860-0950 熊本県熊本市中央区水前寺 4-20-36-801 ロマネスク水前寺ルネッサンス</div>
-        </div>
+<div id="pdfTarget" class="invoice area-invoice">
+  <h2><span>請求書</span></h2>
+  <article class="block-head">
+    <div class="box-left">
+      <h3>{$facilityNameLine}</h3>
+      <p><i>下記の通り、ご請求申し上げます。</i></p>
+      <div class="wrap-total-price">
+        <h4><span>ご請求金額（税込）</span></h4>
+        <p><i>入金期日：<span>{$paymentDueDate}</span></i></p>
+        <div class="item-total-price"><span>{$grandTotalText}</span></div>
       </div>
-      <div class="doc">
-        <div class="title">請 求 書</div>
-        <div class="no">請求日：{$billingDateEsc}</div>
-        <div class="no">請求書番号：{$invoiceNoEsc}</div>
+      <p>振り込み手数料は御社のご負担にてお願いいたします。</p>
+    </div>
+    <div class="box-right">
+      <dl>
+        <div>
+          <dt>請求日</dt>
+          <dd>{$billingDateEsc}</dd>
+        </div>
+        <div>
+          <dt>請求番号</dt>
+          <dd>{$invoiceNoEsc}</dd>
+        </div>
+      </dl>
+      <div class="wrap-shop-info">
+        <div class="item-logo">
+          <img src="../assets/images/logo.webp" alt="RITAのロゴ" />
+        </div>
+        <span class="item-name">株式会社RITA</span>
+        <address>
+          <span>〒862-0950 </span>
+          <span>熊本県熊本市中央区水前寺4-20-36-801 </span>
+          <span>ロマネスク水前寺ルネッサンス</span>
+        </address>
       </div>
     </div>
-
-    <div class="block">
-      <div class="card">
-        <h3>宛先</h3>
-        <div class="kv">
-          <div class="k">事業所名</div>
-          <div class="v">{$facilityNameLine}</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>請求内容</h3>
-        <div class="kv">
-          <div class="k">サービス期間</div>
-          <div class="v">{$servicePeriodEsc}</div>
-        </div>
-      </div>
+  </article>
+  <article class="block-details">
+    <div class="box-title">
+      <h4><span>品目詳細</span></h4>
+      <p><i>サービス期間：{$servicePeriodEsc}</i></p>
     </div>
-
-    <div class="total-box">
-      <div>
-        <div class="label">ご請求金額（税込）</div>
-        <div class="small">※本書は請求書です</div>
-      </div>
-      <div class="amount">{$grandTotalText}</div>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th style="width:18%;">求人ID</th>
-          <th style="width:34%;">サービス名</th>
-          <th style="width:16%;" class="right">単価</th>
-          <th style="width:16%;" class="right">数量</th>
-          <th style="width:16%;" class="right">金額</th>
-        </tr>
-      </thead>
-      <tbody>
+    <ul>
+      <li>
+        <div><span>求人ＩＤ</span></div>
+        <div><span>サービス名</span></div>
+        <div><span>単価</span></div>
+        <div><span>数量</span></div>
+        <div class="item-price" style="text-align: center"><span>金額</span></div>
+      </li>
 
 HTML;
-
 if (count($invoiceItems) > 0) {
   foreach ($invoiceItems as $row) {
     if (!is_array($row)) {
@@ -303,7 +294,6 @@ if (count($invoiceItems) > 0) {
     $qty = (int)($row['quantity'] ?? 0);
     $unit = (int)($row['unit_price'] ?? 0);
     $amount = (int)($row['amount'] ?? 0);
-
     $meta = [];
     $metaRaw = $row['meta_json'] ?? null;
     if (is_string($metaRaw) && $metaRaw !== '') {
@@ -312,7 +302,6 @@ if (count($invoiceItems) > 0) {
         $meta = $decoded;
       }
     }
-
     $jobCodes = [];
     if (isset($meta['jobCodes']) && is_array($meta['jobCodes'])) {
       foreach ($meta['jobCodes'] as $code) {
@@ -321,18 +310,15 @@ if (count($invoiceItems) > 0) {
         }
       }
     }
-
-    # 特別バナー明細はjobCodesを持たないため、請求内の求人ID一覧を補完して表示（2行目にズレるのを防ぐ）
+    #特別バナー明細はjobCodesを持たないため、請求内の求人ID一覧を補完して表示（2行目にズレるのを防ぐ）
     if ($planId === 'special_banner' && count($jobCodes) === 0 && count($invoiceJobCodesForDisplay) > 0) {
       $jobCodes = $invoiceJobCodesForDisplay;
     }
-
     $jobCodesHtml = (count($jobCodes) > 0)
       ? implode('<br>', array_map(function ($s) {
         return h((string)$s);
       }, $jobCodes))
       : '';
-
     $planName = '';
     if (isset($meta['planName']) && is_string($meta['planName'])) {
       $planName = trim($meta['planName']);
@@ -346,10 +332,8 @@ if (count($invoiceItems) > 0) {
         $planName = $planId;
       }
     }
-
     $planNameHtml = h($planName);
-
-    // jobCodes が quantity と一致する場合は、求人IDごとに1行ずつ展開（サンプル画像の体裁）
+    #jobCodes が quantity と一致する場合は、求人IDごとに1行ずつ展開（サンプル画像の体裁）
     if ($qty > 1 && count($jobCodes) > 0 && count($jobCodes) === $qty) {
       $unitText = h(yen($unit));
       $isEven = ($qty > 0 && $unit * $qty === $amount);
@@ -360,68 +344,66 @@ if (count($invoiceItems) > 0) {
         $lineAmount = $isEven ? $unit : (($i === $qty - 1) ? $remain : $base);
         $amountText = h(yen($lineAmount));
         print <<<HTML
-          <tr>
-            <td>{$jobCodeEsc}</td>
-            <td>{$planNameHtml}</td>
-            <td class="right">{$unitText}</td>
-            <td class="right">1</td>
-            <td class="right">{$amountText}</td>
-          </tr>
+      <li>
+        <div><span>{$jobCodeEsc}</span></div>
+        <div><span>{$planNameHtml}</span></div>
+        <div><span>{$unitText}</span></div>
+        <div><span>{$qty}</span></div>
+        <div class="item-price"><span>{$amountText}</span></div>
+      </li>
 
 HTML;
       }
       continue;
     }
-
-    // 集計行として表示
+    #集計行として表示
     $jobCell = ($jobCodesHtml !== '') ? $jobCodesHtml : '-';
     $unitText = h(yen($unit));
     $amountText = h(yen($amount));
-
     print <<<HTML
-          <tr>
-            <td>{$jobCell}</td>
-            <td>{$planNameHtml}</td>
-            <td class="right">{$unitText}</td>
-            <td class="right">{$qty}</td>
-            <td class="right">{$amountText}</td>
-          </tr>
+      <li>
+        <div><span>{$jobCell}</span></div>
+        <div><span>{$planNameHtml}</span></div>
+        <div><span>{$unitText}</span></div>
+        <div><span>{$qty}</span></div>
+        <div class="item-price"><span>{$amountText}</span></div>
+      </li>
 
 HTML;
   }
 } else {
   print <<<HTML
-          <tr>
-            <td colspan="5" class="muted">明細がありません</td>
-          </tr>
+      <li>
+        <div><span>明細がありません</span></div>
+      </li>
 
 HTML;
 }
-
 print <<<HTML
-      </tbody>
-    </table>
+    </ul>
+  </article>
 
-    <div class="card" style="margin-top:8mm;">
-      <h3>金額</h3>
-      <div class="kv">
-        <div class="k">小計</div>
-        <div class="v right">{$subtotalText}</div>
-        <div class="k">消費税</div>
-        <div class="v right">{$taxText}</div>
-        <div class="k">合計</div>
-        <div class="v right">{$grandTotalText}</div>
+HTML;
+print <<<HTML
+  <article class="block-bottom">
+    <p>ご利用いただき、誠にありがとうございます。</p>
+    <dl>
+      <div>
+        <dt><span>小計</span></dt>
+        <dd><span>{$subtotalText}</span></dd>
       </div>
-    </div>
-
-    <div class="footer">
-      <div class="note">ご利用いただき、誠にありがとうございます。</div>
-      <div class="stamp">STAMP</div>
-    </div>
-
-    <!-- 2ページで切りたい場合の決め打ち -->
-    <!-- <div class="page-break"></div> -->
-  </div>
+      <div>
+        <dt><span>消費税</span></dt>
+        <dd><span>{$taxText}</span></dd>
+      </div>
+      <div>
+        <dt><span>合計</span></dt>
+        <dd><span>{$grandTotalText}</span></dd>
+      </div>
+    </dl>
+  </article>
+  <!-- 2ページで切りたい場合の決め打ち -->
+  <!-- <div class="page-break"></div> -->
 </div>
 
 HTML;

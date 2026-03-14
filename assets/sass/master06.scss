@@ -258,15 +258,20 @@
     display: flex;
     flex-direction: column;
     padding: 2em;
-    font-size: inherit;
+    font-size: 1.6rem;
+    line-height: 1;
     --main-gray: #5e5b5a;
     h2 {
         background-color: $main-orange;
         color: #fff;
         font-size: FZ(26);
         text-align: center;
-        padding-block: 0.2em;
         font-weight: 700;
+        span {
+            display: inline-block;
+            margin-top: 0.5rem;
+            margin-bottom: 2rem;
+        }
     }
     .block-head {
         position: relative;
@@ -283,9 +288,18 @@
                 font-size: FZ(20);
                 font-weight: 600;
                 margin-bottom: 0.8em;
+                max-width: 35rem;
                 &::after {
                     content: "御中";
                     margin-left: 0.8em;
+                }
+            }
+            p {
+                i {
+                    font-style: normal;
+                    display: inline-block;
+                    margin-top: 0.01rem;
+                    margin-bottom: 1.2rem;
                 }
             }
             .wrap-total-price {
@@ -297,26 +311,40 @@
                 flex-direction: column;
                 font-size: inherit;
                 h4 {
-                    padding: 0.5rem 1rem;
+                    padding: 0 1rem;
                     font-size: FZ(16);
                     font-weight: 600;
                     background-color: #d8d9d9;
+                    span {
+                        display: inline-block;
+                        margin-top: 0.01rem;
+                        margin-bottom: 1.2rem;
+                    }
                 }
                 p {
                     border-top: 1px solid;
                     border-bottom: 1px solid;
                     font-size: FZ(16);
-                    padding: 0.5rem 1rem;
+                    padding: 0 1rem;
                     font-weight: 600;
+                    i {
+                        font-style: normal;
+                        display: inline-block;
+                        margin-top: 0.01rem;
+                        margin-bottom: 1.2rem;
+                    }
                 }
                 .item-total-price {
                     display: flex;
                     justify-content: flex-end;
                     font-size: inherit;
-                    padding: 1rem;
+                    padding: 0 1rem;
                     span {
                         font-size: FZ(24);
                         font-weight: 600;
+                        display: inline-block;
+                        margin-top: 0.01rem;
+                        margin-bottom: 1.2rem;
                         &::before {
                             content: "¥";
                         }
@@ -394,14 +422,24 @@
             display: flex;
             justify-content: space-between;
             font-size: inherit;
-            padding: 1rem;
-            align-items: center;
+            padding: 0 1rem;
             h4 {
                 font-size: FZ(20);
                 font-weight: 700;
+                span {
+                    display: inline-block;
+                    margin-top: 0.01rem;
+                    margin-bottom: 1.4rem;
+                }
             }
             p {
                 font-size: FZ(16);
+                i {
+                    font-style: normal;
+                    display: inline-block;
+                    margin-top: 0.01rem;
+                    margin-bottom: 1.4rem;
+                }
             }
         }
         ul {
@@ -415,7 +453,7 @@
                 grid-column: span 5;
                 display: grid;
                 grid-template-columns: subgrid;
-                padding: 1rem;
+                padding: 0 1rem;
                 border-bottom: 1px solid var(--main-gray);
                 font-size: inherit;
                 & > div {
@@ -426,8 +464,12 @@
                         text-align: right;
                         min-width: 6rem;
                     }
+                    span {
+                        display: inline-block;
+                        margin-top: 0.4rem;
+                        margin-bottom: 1.6rem;
+                    }
                 }
-
                 &:first-of-type {
                     background-color: #b5b5b6;
                 }
@@ -462,11 +504,15 @@
                 display: grid;
                 grid-template-columns: subgrid;
                 border-bottom: 1px solid var(--main-gray);
-
                 dt,
                 dd {
                     font-size: FZ(14);
-                    padding: 0.8rem 1rem;
+                    padding: 0 1rem;
+                    span {
+                        display: inline-block;
+                        margin-top: 0.4rem;
+                        margin-bottom: 1.6rem;
+                    }
                 }
                 dt {
                     border-right: 1px solid var(--main-gray);

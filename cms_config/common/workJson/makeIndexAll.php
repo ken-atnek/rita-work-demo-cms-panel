@@ -224,7 +224,7 @@ if ((is_array($jobsCardData) && count($jobsCardData) > 0) && (is_array($jobsCard
 #pickUp.json
 $pickUpList = [];
 #事業所情報取得
-$facilityList = getFacilityList();
+$facilityList = getFacilityList(false);
 if (is_array($facilityList) && count($facilityList) > 0) {
 	foreach ($facilityList as $facility) {
 		$facId = $facility['facility_id'];
