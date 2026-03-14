@@ -264,8 +264,13 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
     $checkedDraft = ($jobCard['is_active'] == 1) ? 'checked' : '';
     $checkedPublic = ($jobCard['is_active'] == 2) ? 'checked' : '';
     #value値／label設定
-    $valueNum = ($jobCard['is_active'] == 1) ? '1' : '2';
-    $labelName = ($jobCard['is_active'] == 1) ? '下書き中' : '公開中';
+    if ($jobCard['is_active'] == 99) {
+      $valueNum = '99';
+      $labelName = '掲載停止中';
+    } else {
+      $valueNum = ($jobCard['is_active'] == 1) ? '1' : '2';
+      $labelName = ($jobCard['is_active'] == 1) ? '下書き中' : '公開中';
+    }
     print <<<HTML
             <li {$isActiveClass}>
               <div class="box-head">
@@ -293,6 +298,18 @@ if (isset($jobCardList) && is_array($jobCardList) && count($jobCardList) > 0) {
                         <input type="radio" name="{$statusName}" value="2" id="list{$jobCard['job_id']}-status02" {$checkedPublic} data-job-card-code="{$jobCodeAttr}" onchange="checkJobCardStatus({$facId}, this.getAttribute('data-job-card-code'), {$jobCard['job_id']}, this.value,'');">
                         <label for="list{$jobCard['job_id']}-status02" class="status-published">公開中</label>
                       </li>
+
+HTML;
+    if ($jobCard['is_active'] == 99) {
+      print <<<HTML
+                      <li>
+                        <input type="radio" name="{$statusName}" value="99" id="list{$jobCard['job_id']}-status03">
+                        <label for="list{$jobCard['job_id']}-status03" class="status-draft">掲載停止中</label>
+                      </li>
+
+HTML;
+    }
+    print <<<HTML
                     </ul>
                   </div>
                 </div>
