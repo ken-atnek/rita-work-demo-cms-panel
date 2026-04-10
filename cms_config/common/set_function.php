@@ -191,10 +191,18 @@ function sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $fromEmail, $
 	if (defined('DEFINE_DEBUGFLG') && (int)DEFINE_DEBUGFLG === 1) {
 		return true;
 	}
-	#文字コード設定（mb_send_mail の内部変換に合わせる）
-	#  - 本文は ISO-2022-JP で送信されるため、ヘッダの charset も揃える
-	@mb_language('Japanese');
+	#文字化け回避重視：UTF-8メールとして送信（ヘッダ/本文の想定を揃える）
+	# - mb_send_mail() の内部処理に合わせて language/encoding をUTF-8寄りにする
+	# - ヘッダの charset も UTF-8 に統一
+	@mb_language('uni');
 	@mb_internal_encoding('UTF-8');
+	#入力がUTF-8でない可能性に備え、最低限UTF-8へ寄せる
+	foreach (['toName', 'mailTitle', 'mailBody', 'fromName'] as $k) {
+		$v = ${$k} ?? '';
+		if (is_string($v) && $v !== '' && function_exists('mb_check_encoding') && !mb_check_encoding($v, 'UTF-8')) {
+			${$k} = mb_convert_encoding($v, 'UTF-8', 'auto');
+		}
+	}
 	#送信先リストの正規化
 	if (!is_array($sendAddressList)) {
 		$sendAddressList = [];
@@ -202,13 +210,13 @@ function sendMail_Common($toEmail, $toName, $mailTitle, $mailBody, $fromEmail, $
 	#改行コード設定
 	$eol = "\r\n";
 	#ヘッダー情報設定
-	$encodedFromName = mb_encode_mimeheader((string)$fromName, 'ISO-2022-JP', 'B', $eol);
+	$encodedFromName = mb_encode_mimeheader((string)$fromName, 'UTF-8', 'B', $eol);
 	$headers = '';
 	$headers .= 'From: ' . $encodedFromName . ' <' . $fromEmail . '>' . $eol;
 	$headers .= 'Reply-To: ' . $encodedFromName . ' <' . $fromEmail . '>' . $eol;
 	$headers .= 'MIME-Version: 1.0' . $eol;
-	$headers .= 'Content-Type: text/plain; charset=ISO-2022-JP' . $eol;
-	$headers .= 'Content-Transfer-Encoding: 7bit' . $eol;
+	$headers .= 'Content-Type: text/plain; charset=UTF-8' . $eol;
+	$headers .= 'Content-Transfer-Encoding: 8bit' . $eol;
 	#メール送信
 	$result = @mb_send_mail((string)$toEmail, (string)$mailTitle, (string)$mailBody, $headers, "-f" . (string)$fromEmail);
 	#複数アドレス送信（主送信が成功している場合のみ、失敗しても主結果は維持）
@@ -427,34 +435,52 @@ function formatPostalCode($input)
 #-------------------------------------
 function separateAddress(string $address)
 {
+	$address = trim($address);
 	#都道府県
 	$prefPattern = '(.{2,3}?[都道府県])';
-	#市
+	#市・区パターン
 	$cityPattern = '(.+?市)';
-	#区（任意）
 	$wardPattern = '(.*?区)?';
-	#その他
 	$otherPattern = '(.*)';
-	$pattern = '@^' . $prefPattern . $cityPattern . $wardPattern . $otherPattern . '@u';
+	$cityAddressPattern = '@^' . $prefPattern . $cityPattern . $wardPattern . $otherPattern . '@u';
+	#郡・町村パターン
+	$countyPattern = '(.+?郡(?:.+?[町村])?)';
+	$countyAddressPattern = '@^' . $prefPattern . $countyPattern . $otherPattern . '@u';
 	#都道府県・市・区・その他に分割
-	if (preg_match($pattern, $address, $matches) !== 1) {
+	if (preg_match($cityAddressPattern, $address, $matches) === 1) {
+		#区が存在する場合はotherに区を入れる
+		$other = '';
+		if (!empty($matches[3])) {
+			$other = $matches[3] . (isset($matches[4]) ? $matches[4] : '');
+		} else {
+			$other = isset($matches[4]) ? $matches[4] : '';
+		}
+		return [
+			'state' => $matches[1],
+			'city' => $matches[2],
+			'other' => $other,
+		];
+	}
+	#都道府県・郡町村・その他に分割
+	if (preg_match($countyAddressPattern, $address, $matches) === 1) {
+		return [
+			'state' => $matches[1],
+			'city' => $matches[2],
+			'other' => isset($matches[3]) ? $matches[3] : '',
+		];
+	}
+	#どのパターンにも一致しない場合
+	if (preg_match('@^' . $prefPattern . '(.*?)(.*)@u', $address, $matches) !== 1) {
 		return [
 			'state' => null,
 			'city' => null,
 			'other' => null
 		];
 	}
-	#区が存在する場合はotherに区を入れる
-	$other = '';
-	if (!empty($matches[3])) {
-		$other = $matches[3] . (isset($matches[4]) ? $matches[4] : '');
-	} else {
-		$other = isset($matches[4]) ? $matches[4] : '';
-	}
 	return [
 		'state' => $matches[1],
-		'city' => $matches[2],
-		'other' => $other,
+		'city' => isset($matches[2]) ? $matches[2] : '',
+		'other' => isset($matches[3]) ? $matches[3] : '',
 	];
 }
 

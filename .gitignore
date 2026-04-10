@@ -31,3 +31,6 @@ assets/css/
 # デバッグログファイル除外
 rw-master/_maintenance_log/
 rw-client/_maintenance_log/
+.github/copilot-instructions.md
+cms_config/___仕様書バックアップ/
+cms_config/00_specification/
