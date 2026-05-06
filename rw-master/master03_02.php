@@ -108,6 +108,8 @@ if ($facId !== null) {
   header("Location: ./master03_01.php");
   exit;
 }
+#事業者名
+$facilityName = isset($facilityData['name']) ? '<span>' . htmlspecialchars($facilityData['name'], ENT_QUOTES, 'UTF-8') . '</span>' : '';
 
 #***** タグ生成開始 *****#
 print <<<HTML
@@ -141,7 +143,7 @@ print <<<HTML
         </nav>
       </section>
       <section class="container-job-card">
-        <h2>求人カード一覧<span>住宅型有料老人ホーム メディケア癒やしDX花園</span></h2>
+        <h2>求人カード一覧{$facilityName}</h2>
         <article class="block-card-list">
           <p class="announce-results"><span>{$jobCardCount}件</span>が登録中</p>
           <!--NOTE 特別バナー契約時のみ表示 -->
